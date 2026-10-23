@@ -1,11 +1,11 @@
-# Copio
+# Copio Cards
 
 <div align="center">
-  <img style="margin: 0 auto; max-width: 512px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" src="https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F4eb7cf55-5d05-497a-8745-9002f292c32a_512x512.png" alt="Copio Logo" />
+  <img style="margin: 0 auto; max-width: 512px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" src="https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F4eb7cf55-5d05-497a-8745-9002f292c32a_512x512.png" alt="Copio Cards Logo" />
 
-  <h3>The Private, Offline-First Document Scanner & Manager</h3>
+  <h3>The Private, Offline-First Loyalty Card & Document Wallet</h3>
 
-  <p><i>Capture, enhance, organise, and export multi-page documents — 100% in your browser with zero cloud dependencies.</i></p>
+  <p><i>Capture, crop, flip, and display your supermarket loyalty cards and pocket documents — 100% in your browser with zero cloud dependencies.</i></p>
 
   <div>
     <img src="https://img.shields.io/badge/Privacy-100%25%20Local-brightgreen?style=for-the-badge&logo=shield" alt="100% Local Privacy" />
@@ -22,9 +22,9 @@
 
 ## 🌟 Overview
 
-**Copio** is a modern, lightweight, privacy-focused document scanning and document management application that runs entirely on your device.
+**Copio Cards** is a lightweight, privacy-focused offline loyalty card and document wallet application that runs entirely on your device.
 
-Whether you're digitising paper receipts, creating multi-page document archives, importing existing PDFs, or taking Markdown notes alongside your scans — Copio gives you the full power of a desktop document management suite with **zero cloud servers, zero user accounts, and zero data tracking**.
+Keep your supermarket cards, member barcodes, receipts, and personal notes ready to flash at the checkout with **zero cloud servers, zero user accounts, and zero data tracking**.
 
 > 📖 **Read the Story:** Learn about the vision and evolution of Copio in [Ed Williams' Substack post](https://edwilliams.substack.com/p/copio). Originally built in React in 2019, Copio was completely rebuilt in 2026 using Web Components (Lit) and TinyBase for ultimate performance and zero framework overhead.
 

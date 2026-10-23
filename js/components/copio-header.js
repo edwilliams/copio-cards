@@ -92,7 +92,7 @@ export class CopioHeader extends LitElement {
             </sl-menu>
           </sl-dropdown>
         </div>
-        <h1>COPIO</h1>
+        <h1>COPIO CARDS</h1>
         <div class="header-right"></div>
       </header>
     `;
