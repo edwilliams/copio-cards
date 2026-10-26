@@ -149,7 +149,7 @@
 
     /* ==========================================================================
        3. APP HEADER
-       ======================================================================== */
+       ========================================================================== */
     .app-header {
       background-color: var(--color-surface);
       border-bottom: 1px solid var(--color-border);
@@ -459,7 +459,7 @@
       border-color: var(--color-border-strong);
     }
 
-    /* FRONT FACE: Authentic Store Image & Card Artwork */
+    /* FRONT FACE */
     .card-face-front {
       color: #ffffff;
       background-size: cover;
@@ -565,12 +565,14 @@
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
     }
 
-    /* BACK FACE: Instant Till Barcode & Max Brightness */
+    /* BACK FACE: Barcode & Max Bright */
     .card-face-back {
       transform: rotateY(180deg);
       background-color: #ffffff;
       color: #090c13;
       padding: 14px 18px;
+      background-size: cover;
+      background-position: center;
     }
 
     .back-top-row {
@@ -683,7 +685,7 @@
     }
 
     /* ==========================================================================
-       6. ADD CARD MODAL
+       6. ADD CARD MODAL WITH VIEWFINDER & UPLOAD SUITE
        ========================================================================== */
     .modal-overlay {
       position: fixed;
@@ -707,7 +709,7 @@
 
     .modal-sheet {
       width: 100%;
-      max-width: 520px;
+      max-width: 560px;
       background-color: var(--color-surface);
       border: 1px solid var(--color-border-strong);
       border-radius: var(--radius-xl);
@@ -715,7 +717,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      max-height: 90vh;
+      max-height: 92vh;
     }
 
     .modal-header {
@@ -805,7 +807,122 @@
       width: 100%;
     }
 
-    /* Auto-Card Preview in Add Modal */
+    /* Embedded Scanner Viewfinder */
+    .scanner-view-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .copio-scanner-sim {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background-color: #03060a;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .barcode-reticle-overlay {
+      position: absolute;
+      width: 78%;
+      height: 80px;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reticle-corner {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: #f59e0b;
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .r-tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 4px; }
+    .r-tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 4px; }
+    .r-bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 4px; }
+    .r-br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 4px; }
+
+    .reticle-badge {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      position: absolute;
+      bottom: -28px;
+      white-space: nowrap;
+    }
+
+    .scanner-action-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-scan-action {
+      flex: 1;
+      min-width: 140px;
+      height: 38px;
+      background-color: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-scan-action:hover {
+      background-color: var(--color-surface-hover);
+      border-color: var(--color-border-strong);
+    }
+
+    .scanner-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 4px;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 4px;
+    }
+
+    .filter-pill-btn {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface-elevated);
+      color: var(--color-text-muted);
+      cursor: pointer;
+    }
+
+    .filter-pill-btn.active {
+      background-color: var(--color-primary);
+      color: var(--color-primary-contrast);
+      border-color: var(--color-primary);
+    }
+
+    /* Live Card Artwork Preview */
     .modal-card-preview-container {
       width: 100%;
       height: 140px;
@@ -818,6 +935,8 @@
       box-shadow: var(--shadow-sm);
       position: relative;
       overflow: hidden;
+      background-size: cover;
+      background-position: center;
     }
 
     .form-group {
@@ -846,29 +965,6 @@
 
     .form-input:focus {
       border-color: var(--color-primary);
-    }
-
-    .btn-scan-barcode {
-      height: 44px;
-      padding: 0 16px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      background-color: var(--color-surface-elevated);
-      color: var(--color-text);
-      border: 1px solid var(--color-border);
-      transition: all var(--transition-fast);
-      white-space: nowrap;
-    }
-
-    .btn-scan-barcode:hover {
-      background-color: var(--color-surface-hover);
-      border-color: var(--color-border-strong);
     }
 
     .modal-footer {
@@ -941,7 +1037,7 @@
   <aside class="prototype-banner">
     <div class="prototype-banner-tag">
       <span class="prototype-badge">CPO-047 Prototype</span>
-      <span><strong>Stow Cards</strong> (Direct In-Place Flip & Auto Store Artwork)</span>
+      <span><strong>Stow Cards</strong> (Direct In-Place Flip & Card Photo Upload)</span>
     </div>
     <div class="prototype-controls">
       <button class="btn-harness" id="btn-theme-toggle" title="Toggle Light/Dark Theme">
@@ -979,6 +1075,17 @@
       </a>
 
       <div class="header-actions">
+        <!-- Direct Quick Photo Upload Input -->
+        <label class="btn-action btn-action-secondary" title="Upload Card Photo" style="cursor: pointer; margin: 0;">
+          <input type="file" id="global-card-upload-input" accept="image/*" style="display: none;" />
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span class="desktop-only">Upload Photo</span>
+        </label>
+
         <button class="btn-action btn-action-secondary" id="btn-open-sync" title="Peer-to-Peer Device Sync">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
@@ -1055,7 +1162,7 @@
   <div class="brightness-boost-screen" id="brightness-overlay"></div>
 
   <!-- ========================================================================
-       ADD CARD MODAL (AUTO STORE ARTWORK + SCAN BARCODE BUTTON)
+       ADD CARD MODAL (CAMERA & UPLOAD SUITE)
        ======================================================================== -->
   <div class="modal-overlay" id="add-modal" role="dialog" aria-modal="true">
     <div class="modal-sheet">
@@ -1069,7 +1176,7 @@
           </div>
           <div>
             <h2>Add Loyalty Card</h2>
-            <div style="font-size: 11px; color: var(--color-text-muted);">Auto Store Artwork + Card Barcode</div>
+            <div style="font-size: 11px; color: var(--color-text-muted);">Auto Store Artwork or Upload Card Photos</div>
           </div>
         </div>
         <button class="modal-close-btn" id="modal-close-btn">✕</button>
@@ -1078,42 +1185,89 @@
       <div class="modal-body">
         <!-- 1. Store Brand Selector -->
         <div class="form-group">
-          <label class="form-label">1. Choose Store (Automatic Official Artwork)</label>
+          <label class="form-label">1. Choose Store Brand</label>
           <div class="store-picker-grid" id="store-picker-grid">
             <!-- Rendered via JS -->
           </div>
         </div>
 
-        <!-- 2. Barcode & Number Input with 'Scan Barcode' button -->
+        <!-- 2. Integrated Camera Viewfinder & Upload Actions -->
         <div class="form-group">
-          <label class="form-label" for="add-input-number">2. Membership / Barcode Number</label>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" id="add-input-number" class="form-input" style="flex: 1;" placeholder="e.g. 6340048291827401" value="6340048291827401" />
-            <button type="button" class="btn-scan-barcode" id="btn-scan-barcode" title="Scan card barcode with camera">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                <circle cx="12" cy="13" r="4"></circle>
-              </svg>
-              <span>Scan Barcode</span>
-            </button>
+          <label class="form-label">2. Card Camera & Photo Upload</label>
+          <div class="scanner-view-box">
+            <div class="copio-scanner-sim" id="scanner-viewfinder">
+              <!-- Live Video Element for real camera stream -->
+              <video id="scanner-live-video" playsinline muted autoplay style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+              <!-- Simulated Canvas feed -->
+              <canvas id="scanner-camera-canvas" width="600" height="340" style="width: 100%; height: 100%; object-fit: cover;"></canvas>
+
+              <!-- Card Frame Overlay -->
+              <div class="barcode-reticle-overlay" id="barcode-reticle">
+                <div class="reticle-corner r-tl"></div>
+                <div class="reticle-corner r-tr"></div>
+                <div class="reticle-corner r-bl"></div>
+                <div class="reticle-corner r-br"></div>
+                <span class="reticle-badge" id="reticle-status-text">Position card in frame</span>
+              </div>
+            </div>
+
+            <!-- Action buttons (Camera, Upload Photo, Filters - No Scan Barcode button) -->
+            <div class="scanner-action-bar">
+              <button type="button" class="btn-scan-action" id="btn-start-camera" title="Start live device camera">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+                <span id="camera-btn-text">Open Device Camera</span>
+              </button>
+
+              <label class="btn-scan-action" title="Upload card photo" style="cursor: pointer; margin: 0;">
+                <input type="file" id="modal-photo-upload-input" accept="image/*" style="display: none;" />
+                📁 <span>Upload Photo</span>
+              </label>
+
+              <label class="btn-scan-action" title="Take camera photo" style="cursor: pointer; margin: 0;">
+                <input type="file" id="modal-camera-snap-input" accept="image/*" capture="environment" style="display: none;" />
+                📸 <span>Snap Photo</span>
+              </label>
+            </div>
+
+            <div class="scanner-filter-bar">
+              <span style="font-size: 11px; color: var(--color-text-muted);">Copio Scanner Filter:</span>
+              <div class="filter-pills">
+                <button type="button" class="filter-pill-btn active" data-filter="normal">Natural</button>
+                <button type="button" class="filter-pill-btn" data-filter="sauvola">Sauvola B&W</button>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <!-- 3. Number Input -->
+        <div class="form-group">
+          <label class="form-label" for="add-input-number">3. Membership / Barcode Number</label>
+          <input type="text" id="add-input-number" class="form-input" placeholder="e.g. 6340048291827401" value="6340048291827401" />
           <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 2px;">
             High-contrast 1D/2D barcode is auto-generated instantly for till checkout.
           </div>
         </div>
 
-        <!-- 3. Live Card Artwork Preview -->
+        <!-- 4. Live Card Artwork Preview -->
         <div class="form-group">
-          <label class="form-label">3. Live Card Artwork Preview</label>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="form-label" style="margin: 0;">4. Live Card Artwork Preview</label>
+            <button type="button" id="btn-reset-artwork" style="display: none; background: none; border: none; color: var(--color-primary); font-size: 11px; cursor: pointer;">
+              ↺ Reset to Official Artwork
+            </button>
+          </div>
           <div class="modal-card-preview-container" id="modal-card-preview">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 2;">
               <div>
                 <div id="preview-store-name" style="font-size: 18px; font-weight: 800;">Tesco</div>
                 <div id="preview-card-tier" style="font-size: 11px; text-transform: uppercase; opacity: 0.9;">Clubcard</div>
               </div>
-              <div class="flip-pill-hint">Built-in Artwork ✓</div>
+              <div class="flip-pill-hint" id="preview-badge-status">Official Artwork ✓</div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 2;">
               <div style="font-size: 11px; opacity: 0.85;">ED WILLIAMS</div>
               <div id="preview-masked-num" style="font-family: var(--font-mono); font-size: 14px; font-weight: 700;">•••• 7401</div>
             </div>
@@ -1184,7 +1338,6 @@
 
       /* ----------------------------------------------------------------------
          1. STORE PRESETS & ARTWORK LIBRARY
-         (Automatic high-fidelity card image & styling without uploading)
          ---------------------------------------------------------------------- */
       const storePresets = [
         {
@@ -1289,6 +1442,8 @@
         colorEnd: p.colorEnd,
         symbol: p.symbol,
         holder: 'ED WILLIAMS',
+        frontImage: null,
+        backImage: null,
         isFlipped: false
       }));
 
@@ -1296,6 +1451,9 @@
       let searchQuery = '';
       let isBrightnessBoostActive = false;
       let selectedPresetKey = 'tesco';
+      let uploadedFrontDataUrl = null;
+      let currentFilterMode = 'normal';
+      let cameraStream = null;
 
       /* ----------------------------------------------------------------------
          2. DOM REFERENCES
@@ -1319,8 +1477,19 @@
       const previewStoreName = document.getElementById('preview-store-name');
       const previewCardTier = document.getElementById('preview-card-tier');
       const previewMaskedNum = document.getElementById('preview-masked-num');
+      const previewBadgeStatus = document.getElementById('preview-badge-status');
       const addInputNumber = document.getElementById('add-input-number');
-      const btnScanBarcode = document.getElementById('btn-scan-barcode');
+      const btnResetArtwork = document.getElementById('btn-reset-artwork');
+
+      // Scanner Viewfinder & Upload Controls
+      const scannerCameraCanvas = document.getElementById('scanner-camera-canvas');
+      const scannerLiveVideo = document.getElementById('scanner-live-video');
+      const btnStartCamera = document.getElementById('btn-start-camera');
+      const cameraBtnText = document.getElementById('camera-btn-text');
+      const modalPhotoUploadInput = document.getElementById('modal-photo-upload-input');
+      const modalCameraSnapInput = document.getElementById('modal-camera-snap-input');
+      const globalCardUploadInput = document.getElementById('global-card-upload-input');
+      const reticleStatusText = document.getElementById('reticle-status-text');
 
       // Sync Modal Elements
       const syncModal = document.getElementById('sync-modal');
@@ -1461,7 +1630,7 @@
             <div style="grid-column: 1 / -1; text-align: center; padding: 48px 16px; background: var(--color-surface); border-radius: var(--radius-lg); border: 2px dashed var(--color-border);">
               <div style="font-size: 36px; margin-bottom: 8px;">📇</div>
               <h3 style="font-size: 16px; font-weight: 700;">No cards found</h3>
-              <p style="font-size: 13px; color: var(--color-text-muted); margin-top: 4px;">Try searching for a different supermarket or add a card.</p>
+              <p style="font-size: 13px; color: var(--color-text-muted); margin-top: 4px;">Try searching for a different supermarket or upload a card photo.</p>
             </div>
           `;
           return;
@@ -1473,12 +1642,16 @@
             ? generateQRCode(card.number, 100)
             : generateBarcode1D(card.number);
 
+          const frontStyle = card.frontImage
+            ? `background-image: url('${card.frontImage}'); background-size: cover; background-position: center;`
+            : `background: linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color});`;
+
           return `
             <div class="card-3d-wrapper ${isFlipped ? 'is-flipped' : ''}" data-id="${card.id}">
               <div class="card-3d-flipper">
                 
-                <!-- FRONT FACE: Store Image & Branding -->
-                <div class="card-face card-face-front" style="background: linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color});">
+                <!-- FRONT FACE: Store Image & Branding or Uploaded Photo -->
+                <div class="card-face card-face-front" style="${frontStyle}">
                   <div class="front-top-row">
                     <div class="store-badge-group">
                       <span class="store-brand-title">${escapeHtml(card.store)}</span>
@@ -1575,7 +1748,131 @@
       }
 
       /* ----------------------------------------------------------------------
-         5. ADD CARD CONTROLLER
+         5. CAMERA & CANVAS RENDERING
+         ---------------------------------------------------------------------- */
+      function drawScannerCanvasFeed() {
+        const ctx = scannerCameraCanvas.getContext('2d');
+        const w = scannerCameraCanvas.width;
+        const h = scannerCameraCanvas.height;
+
+        ctx.fillStyle = '#06090e';
+        ctx.fillRect(0, 0, w, h);
+
+        const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
+
+        const cx = 100;
+        const cy = 40;
+        const cw = 400;
+        const ch = 240;
+
+        if (currentFilterMode === 'sauvola') {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(cx, cy, cw, ch);
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = 3;
+          ctx.strokeRect(cx + 10, cy + 10, cw - 20, ch - 20);
+
+          ctx.fillStyle = '#000000';
+          ctx.font = 'bold 16px Inter, sans-serif';
+          ctx.fillText(preset.store.toUpperCase() + ' REWARDS', cx + 24, cy + 44);
+
+          for (let i = 0; i < 34; i++) {
+            const bx = cx + 30 + i * 10;
+            const bw = (i % 3 === 0) ? 6 : 2;
+            ctx.fillRect(bx, cy + 70, bw, 80);
+          }
+          ctx.font = 'bold 14px monospace';
+          ctx.fillText(formatCardNumber(preset.sampleNumber), cx + 70, cy + 180);
+        } else {
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(cx, cy, cw, ch);
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(cx, cy, cw, 36);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(cx + 20, cy + 60, cw - 40, 110);
+
+          ctx.fillStyle = '#000000';
+          for (let i = 0; i < 30; i++) {
+            const bx = cx + 40 + i * 10.5;
+            const bw = (i % 2 === 0) ? 4 : 2;
+            ctx.fillRect(bx, cy + 75, bw, 60);
+          }
+
+          ctx.font = 'bold 13px monospace';
+          ctx.fillText(formatCardNumber(preset.sampleNumber), cx + 60, cy + 155);
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '11px Inter, sans-serif';
+          ctx.fillText(preset.store + ' • Camera ready', cx + 24, cy + 205);
+        }
+      }
+
+      async function startLiveCamera() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(t => t.stop());
+          cameraStream = null;
+          scannerLiveVideo.style.display = 'none';
+          scannerCameraCanvas.style.display = 'block';
+          cameraBtnText.textContent = 'Open Device Camera';
+          return;
+        }
+
+        try {
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+          });
+          scannerLiveVideo.srcObject = cameraStream;
+          scannerLiveVideo.style.display = 'block';
+          scannerCameraCanvas.style.display = 'none';
+          cameraBtnText.textContent = 'Stop Camera';
+          reticleStatusText.textContent = 'Live camera stream active';
+        } catch (err) {
+          showToast('Camera unavailable or permission denied; using simulation mode.');
+          drawScannerCanvasFeed();
+        }
+      }
+
+      function stopCameraStream() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(t => t.stop());
+          cameraStream = null;
+          scannerLiveVideo.style.display = 'none';
+          scannerCameraCanvas.style.display = 'block';
+          cameraBtnText.textContent = 'Open Device Camera';
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         6. FILE UPLOAD HANDLERS
+         ---------------------------------------------------------------------- */
+      function handleImageUpload(file) {
+        if (!file || !file.type.startsWith('image/')) {
+          showToast('Please select a valid image file');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          uploadedFrontDataUrl = e.target.result;
+          modalCardPreview.style.backgroundImage = `url('${uploadedFrontDataUrl}')`;
+          previewBadgeStatus.textContent = 'Custom Photo ✓';
+          btnResetArtwork.style.display = 'inline-block';
+          showToast('✓ Card photo uploaded successfully!');
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function resetArtwork() {
+        uploadedFrontDataUrl = null;
+        btnResetArtwork.style.display = 'none';
+        previewBadgeStatus.textContent = 'Official Artwork ✓';
+        updateSelectedPresetUI();
+        showToast('Reset to official store artwork');
+      }
+
+      /* ----------------------------------------------------------------------
+         7. ADD CARD CONTROLLER
          ---------------------------------------------------------------------- */
       function renderStorePicker() {
         storePickerGrid.innerHTML = storePresets.map(preset => {
@@ -1604,19 +1901,38 @@
         const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
         previewStoreName.textContent = preset.store;
         previewCardTier.textContent = preset.title;
-        modalCardPreview.style.background = `linear-gradient(135deg, ${preset.color}, ${preset.colorEnd})`;
+
+        if (uploadedFrontDataUrl) {
+          modalCardPreview.style.backgroundImage = `url('${uploadedFrontDataUrl}')`;
+        } else {
+          modalCardPreview.style.backgroundImage = 'none';
+          modalCardPreview.style.background = `linear-gradient(135deg, ${preset.color}, ${preset.colorEnd})`;
+        }
+
         addInputNumber.value = preset.sampleNumber;
         previewMaskedNum.textContent = maskCardNumber(preset.sampleNumber);
+        drawScannerCanvasFeed();
       }
 
-      function openAddModal() {
+      function openAddModal(preloadedFile = null) {
+        uploadedFrontDataUrl = null;
+        btnResetArtwork.style.display = 'none';
+        previewBadgeStatus.textContent = 'Official Artwork ✓';
+
         renderStorePicker();
         updateSelectedPresetUI();
+        drawScannerCanvasFeed();
+
+        if (preloadedFile) {
+          handleImageUpload(preloadedFile);
+        }
+
         addModal.classList.add('open');
         addInputNumber.focus();
       }
 
       function closeAddModal() {
+        stopCameraStream();
         addModal.classList.remove('open');
       }
 
@@ -1635,6 +1951,8 @@
           colorEnd: preset.colorEnd,
           symbol: preset.symbol,
           holder: 'ED WILLIAMS',
+          frontImage: uploadedFrontDataUrl,
+          backImage: null,
           isFlipped: false
         };
 
@@ -1646,7 +1964,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         6. TOAST NOTIFICATION
+         8. TOAST NOTIFICATION
          ---------------------------------------------------------------------- */
       let toastTimer = null;
       function showToast(msg) {
@@ -1659,7 +1977,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         7. P2P SYNC MODAL
+         9. P2P SYNC MODAL
          ---------------------------------------------------------------------- */
       function openSyncModal() {
         syncQrContainer.innerHTML = generateQRCode('copio-p2p://session/' + Math.random().toString(36).substring(2, 10), 160);
@@ -1671,7 +1989,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         8. EVENT LISTENERS
+         10. EVENT LISTENERS
          ---------------------------------------------------------------------- */
       // Search
       searchInput.addEventListener('input', (e) => {
@@ -1710,8 +2028,8 @@
         });
       });
 
-      // Add Modal & Scan Barcode Button
-      btnOpenAddCard.addEventListener('click', openAddModal);
+      // Add Modal
+      btnOpenAddCard.addEventListener('click', () => openAddModal());
       modalCloseBtn.addEventListener('click', closeAddModal);
       modalCancelBtn.addEventListener('click', closeAddModal);
       modalSaveBtn.addEventListener('click', saveNewCard);
@@ -1719,10 +2037,50 @@
         previewMaskedNum.textContent = maskCardNumber(e.target.value);
       });
 
-      // 'Scan Barcode' button: kept in place, currently does nothing as requested
-      btnScanBarcode.addEventListener('click', (e) => {
+      btnResetArtwork.addEventListener('click', resetArtwork);
+
+      // Camera Controls
+      btnStartCamera.addEventListener('click', startLiveCamera);
+
+      // File Upload Controls (Modal & Header)
+      modalPhotoUploadInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleImageUpload(e.target.files[0]);
+        }
+      });
+
+      modalCameraSnapInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleImageUpload(e.target.files[0]);
+        }
+      });
+
+      globalCardUploadInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          openAddModal(e.target.files[0]);
+        }
+      });
+
+      // Scanner Filter Buttons (Normal vs Sauvola)
+      document.querySelectorAll('.filter-pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-pill-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilterMode = btn.getAttribute('data-filter');
+          drawScannerCanvasFeed();
+        });
+      });
+
+      // Global window drag and drop to import card photo
+      window.addEventListener('dragover', (e) => e.preventDefault());
+      window.addEventListener('drop', (e) => {
         e.preventDefault();
-        // Does nothing for the time being
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          const file = e.dataTransfer.files[0];
+          if (file.type.startsWith('image/')) {
+            openAddModal(file);
+          }
+        }
       });
 
       addModal.addEventListener('click', (e) => {
@@ -1748,7 +2106,7 @@
       });
 
       /* ----------------------------------------------------------------------
-         9. INITIALIZE
+         11. INITIALIZE
          ---------------------------------------------------------------------- */
       updateCategoryCounts();
       renderCardsGrid();
