@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stow Cards — Consumer Loyalty & Pocket Wallet (CPO-047 Prototype)</title>
+  <title>Stow Cards — Consumer Loyalty & Pocket Wallet (CPO-047)</title>
   <style>
     /* ==========================================================================
-       1. STOW / COPIO CARDS DESIGN TOKENS (CPO-047 & CPO-038 Compatible)
+       1. STOW / COPIO CARDS DESIGN TOKENS
        ========================================================================== */
     :root {
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 
-      /* Dark Obsidian Canvas Theme */
+      /* Dark Obsidian Canvas */
       --color-canvas: #090c13;
       --color-surface: #111723;
       --color-surface-elevated: #1a2233;
@@ -32,26 +32,22 @@
       --color-primary-hover: #fbbf24;
       --color-primary-contrast: #090c13;
       --color-success: #10b981;
-      --color-warning: #f59e0b;
-      --color-danger: #ef4444;
       --color-info: #38bdf8;
 
       /* Geometry & Ergonomics */
       --radius-sm: 8px;
-      --radius-md: 12px;
+      --radius-md: 14px;
       --radius-lg: 18px;
       --radius-xl: 24px;
       --radius-pill: 9999px;
 
       --touch-target-min: 48px;
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
-      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.65);
-      --shadow-glow: 0 0 24px rgba(245, 158, 11, 0.35);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.7);
 
       --transition-fast: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
-      --transition-normal: 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
-      --transition-flip: 450ms cubic-bezier(0.34, 1.4, 0.64, 1);
+      --transition-flip: 500ms cubic-bezier(0.34, 1.25, 0.64, 1);
     }
 
     [data-theme="light"] {
@@ -66,12 +62,11 @@
       --color-text-muted: #64748b;
       --color-text-faint: #94a3b8;
       --color-text-inverse: #f8fafc;
-      --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.08);
-      --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.12);
-      --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.16);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.14);
+      --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.18);
     }
 
-    /* Reset & Base */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -92,7 +87,7 @@
     }
 
     /* ==========================================================================
-       2. TOP DEMO HARNESS BANNER (CPO-047 PROTOTYPE CHROME)
+       2. TOP HARNESS BANNER (CPO-047 SANDBOX CHROME)
        ========================================================================== */
     .prototype-banner {
       background: linear-gradient(90deg, #1e1b4b 0%, #172554 100%);
@@ -144,6 +139,7 @@
       align-items: center;
       gap: 6px;
       transition: background var(--transition-fast);
+      text-decoration: none;
     }
 
     .btn-harness:hover {
@@ -151,7 +147,7 @@
     }
 
     /* ==========================================================================
-       3. APP HEADER & NAVIGATION BAR
+       3. APP HEADER
        ========================================================================== */
     .app-header {
       background-color: var(--color-surface);
@@ -197,9 +193,6 @@
       font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .brand-sub {
@@ -268,25 +261,10 @@
 
     .btn-action-secondary:hover {
       background-color: var(--color-surface-hover);
-      border-color: var(--color-border-strong);
-    }
-
-    .btn-icon-only {
-      padding: 0;
-      width: var(--touch-target-min);
-      height: var(--touch-target-min);
-      border-radius: var(--radius-md);
-      background-color: var(--color-surface-elevated);
-      color: var(--color-text);
-      border: 1px solid var(--color-border);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
     }
 
     /* ==========================================================================
-       4. MAIN CONTAINER & SEARCH / FILTER TOOLBAR
+       4. MAIN CONTAINER & SEARCH / FILTERS
        ========================================================================== */
     .app-main {
       flex: 1;
@@ -296,7 +274,7 @@
       padding: 20px 16px 80px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
     .toolbar-section {
@@ -409,428 +387,53 @@
       border-radius: 10px;
     }
 
-    /* ==========================================================================
-       5. PINNED / FAVOURITES QUICK-SHELF (SUPERMARKET TILL ACCESS)
-       ========================================================================== */
-    .section-title {
-      font-size: 14px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .grid-info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       color: var(--color-text-muted);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .pinned-shelf {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      padding: 4px 2px 12px;
-      scrollbar-width: thin;
-    }
-
-    .pinned-shelf::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    .pinned-shelf::-webkit-scrollbar-thumb {
-      background: var(--color-surface-active);
-      border-radius: 3px;
-    }
-
-    .pinned-card-chip {
-      flex: 0 0 220px;
-      height: 110px;
-      border-radius: var(--radius-md);
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-    }
-
-    .pinned-card-chip:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .chip-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .chip-store-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    }
-
-    .chip-star {
-      color: #fbbf24;
-      font-size: 14px;
-    }
-
-    .chip-footer {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-    }
-
-    .chip-number {
-      font-family: var(--font-mono);
       font-size: 13px;
-      color: rgba(255, 255, 255, 0.95);
-      letter-spacing: 0.08em;
-      font-weight: 600;
     }
 
-    .chip-barcode-icon {
-      font-size: 18px;
-      opacity: 0.9;
-    }
-
-    /* ==========================================================================
-       6. CARDS GRID & CARD COMPONENT
-       ========================================================================== */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 20px;
-    }
-
-    .card-item {
-      background-color: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-sm);
-      transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
-      position: relative;
-    }
-
-    .card-item:hover {
-      border-color: var(--color-border-strong);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    /* Visual Card Preview */
-    .card-visual {
-      height: 170px;
-      position: relative;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      user-select: none;
-      overflow: hidden;
-      color: #ffffff;
-    }
-
-    .card-visual::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 70%);
-      pointer-events: none;
-    }
-
-    .card-visual-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      z-index: 2;
-    }
-
-    .card-store-badge {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .card-store-title {
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-    }
-
-    .card-store-sub {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      opacity: 0.85;
-      font-weight: 600;
-    }
-
-    .card-pin-btn {
-      background: rgba(0, 0, 0, 0.25);
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      color: rgba(255, 255, 255, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-      z-index: 3;
-    }
-
-    .card-pin-btn:hover {
-      background: rgba(0, 0, 0, 0.45);
-      color: #fbbf24;
-    }
-
-    .card-pin-btn.pinned {
-      color: #fbbf24;
-      background: rgba(0, 0, 0, 0.4);
-    }
-
-    .card-visual-center {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
-
-    .card-chip-art {
-      width: 36px;
-      height: 28px;
-      background: linear-gradient(135deg, #d4af37, #aa820a);
-      border-radius: 5px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      opacity: 0.75;
-      margin-right: auto;
-    }
-
-    .card-visual-bottom {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      z-index: 2;
-    }
-
-    .card-digits {
-      font-family: var(--font-mono);
-      font-size: 15px;
-      letter-spacing: 0.1em;
-      font-weight: 600;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-    }
-
-    .card-holder {
-      font-size: 11px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      opacity: 0.85;
-      font-weight: 500;
-    }
-
-    /* Card Details & Actions Footer */
-    .card-footer {
-      padding: 12px 16px;
-      background-color: var(--color-surface);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--color-border);
-      gap: 8px;
-    }
-
-    .card-meta-category {
-      font-size: 12px;
-      color: var(--color-text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .card-actions-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-card-action {
-      height: 36px;
-      padding: 0 12px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
+    .hint-chip {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      border: 1px solid var(--color-border);
-      background-color: var(--color-surface-elevated);
-      color: var(--color-text);
-      transition: all var(--transition-fast);
-    }
-
-    .btn-card-action:hover {
-      background-color: var(--color-surface-hover);
-      border-color: var(--color-border-strong);
-    }
-
-    .btn-card-till {
-      background-color: var(--color-primary);
-      color: var(--color-primary-contrast);
-      border-color: var(--color-primary);
-    }
-
-    .btn-card-till:hover {
-      background-color: var(--color-primary-hover);
-    }
-
-    /* Empty State */
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 60px 20px;
-      background-color: var(--color-surface);
-      border: 2px dashed var(--color-border);
-      border-radius: var(--radius-lg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .empty-icon {
-      font-size: 40px;
-      color: var(--color-text-faint);
-    }
-
-    .empty-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .empty-desc {
-      font-size: 14px;
-      color: var(--color-text-muted);
-      max-width: 400px;
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--color-primary);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
     }
 
     /* ==========================================================================
-       7. INSTANT TILL VIEW MODAL (SUPERMARKET CHECKOUT FULL-SCREEN)
+       5. 3D FLIP-IN-PLACE WALLET CARDS GRID
        ========================================================================== */
-    .till-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background-color: rgba(4, 7, 12, 0.92);
-      backdrop-filter: blur(16px);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity var(--transition-normal), visibility var(--transition-normal);
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
     }
 
-    .till-modal-overlay.open {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .till-sheet {
-      width: 100%;
-      max-width: 480px;
-      background-color: var(--color-surface);
-      border: 1px solid var(--color-border-strong);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-lg);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transform: scale(0.95);
-      transition: transform var(--transition-normal);
-    }
-
-    .till-modal-overlay.open .till-sheet {
-      transform: scale(1);
-    }
-
-    .till-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--color-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .till-header-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .till-store-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-    }
-
-    .till-header-title {
-      font-size: 17px;
-      font-weight: 700;
-    }
-
-    .till-close-btn {
-      background: none;
-      border: none;
-      color: var(--color-text-muted);
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .till-close-btn:hover {
-      color: var(--color-text);
-      background-color: var(--color-surface-hover);
-    }
-
-    /* 3D Flip Card Container */
-    .card-3d-stage {
+    /* 3D Flip Card Container (In-Place) */
+    .card-3d-wrapper {
       perspective: 1200px;
-      padding: 24px 20px;
-      display: flex;
-      justify-content: center;
-      background-color: var(--color-canvas);
-    }
-
-    .card-3d-card {
-      width: 100%;
-      max-width: 380px;
-      height: 230px;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform var(--transition-flip);
+      height: 220px;
       cursor: pointer;
       user-select: none;
     }
 
-    .card-3d-card.is-flipped {
+    .card-3d-flipper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform var(--transition-flip);
+      border-radius: var(--radius-lg);
+    }
+
+    .card-3d-wrapper.is-flipped .card-3d-flipper {
       transform: rotateY(180deg);
     }
 
@@ -838,239 +441,229 @@
       position: absolute;
       inset: 0;
       backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 18px 20px;
+      transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
     }
 
-    /* Front Face */
+    .card-3d-wrapper:hover .card-face {
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-border-strong);
+    }
+
+    /* FRONT FACE: Authentic Store Image & Card Artwork */
     .card-face-front {
       color: #ffffff;
+      background-size: cover;
+      background-position: center;
+      position: relative;
     }
 
-    .face-front-top {
+    .card-face-front::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 70%);
+      pointer-events: none;
+    }
+
+    .front-top-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      z-index: 2;
     }
 
-    .face-store-title {
-      font-size: 22px;
+    .store-badge-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .store-brand-title {
+      font-size: 20px;
       font-weight: 800;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     }
 
-    .face-store-tag {
+    .store-card-tier {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      opacity: 0.85;
+      letter-spacing: 0.06em;
+      opacity: 0.9;
       font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
 
-    .face-flip-hint {
-      font-size: 11px;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 4px 8px;
+    .flip-pill-hint {
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
       border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      color: rgba(255, 255, 255, 0.9);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .face-front-mid {
+    .front-mid-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      z-index: 2;
     }
 
-    .face-chip {
-      width: 44px;
-      height: 34px;
-      background: linear-gradient(135deg, #f6d365, #fda085);
+    .card-smart-chip {
+      width: 40px;
+      height: 30px;
+      background: linear-gradient(135deg, #e5c065, #b8860b);
       border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
     }
 
-    .face-front-bottom {
+    .store-logo-symbol {
+      font-size: 24px;
+      opacity: 0.9;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .front-bottom-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
+      z-index: 2;
     }
 
-    .face-card-number {
-      font-family: var(--font-mono);
-      font-size: 16px;
-      letter-spacing: 0.12em;
-      font-weight: 700;
-    }
-
-    .face-holder-name {
+    .card-holder-name {
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       opacity: 0.9;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     }
 
-    /* Back Face (Till & Barcode focus) */
+    .card-masked-number {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    }
+
+    /* BACK FACE: Instant Till Barcode & Max Brightness */
     .card-face-back {
       transform: rotateY(180deg);
-      background: #111723;
-      color: var(--color-text);
-      padding: 16px 20px;
-    }
-
-    .face-magstrip {
-      height: 34px;
-      background-color: #05070a;
-      margin: -16px -20px 12px -20px;
-    }
-
-    .face-barcode-preview {
-      background: #ffffff;
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Till Display Details (High Contrast Barcode Section) */
-    .till-display-body {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .barcode-plate {
-      width: 100%;
       background-color: #ffffff;
-      border-radius: var(--radius-md);
-      padding: 20px 16px;
+      color: #090c13;
+      padding: 14px 18px;
+    }
+
+    .back-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .back-store-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .back-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-max-bright {
+      background-color: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #b45309;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-max-bright:hover {
+      background-color: #fde68a;
+    }
+
+    .btn-max-bright.active {
+      background-color: #f59e0b;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-flip-back {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+    }
+
+    .btn-flip-back:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* High Contrast Barcode Surface */
+    .back-barcode-container {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-      position: relative;
-      overflow: hidden;
+      padding: 4px 0;
     }
 
-    .barcode-laser {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: #ef4444;
-      box-shadow: 0 0 8px #ef4444, 0 0 16px #ef4444;
-      opacity: 0;
-      transition: opacity var(--transition-fast);
-      pointer-events: none;
-    }
-
-    .barcode-plate.scanning .barcode-laser {
-      opacity: 1;
-      animation: laser-sweep 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes laser-sweep {
-      0% { top: 10%; }
-      100% { top: 90%; }
-    }
-
-    .barcode-svg-wrap {
+    .back-barcode-svg-wrap {
       width: 100%;
-      max-width: 320px;
-      height: 90px;
+      height: 82px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .barcode-svg-wrap svg {
+    .back-barcode-svg-wrap svg {
       width: 100%;
       height: 100%;
     }
 
-    .human-number-display {
-      margin-top: 10px;
+    .back-number-text {
       font-family: var(--font-mono);
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 800;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
       color: #090c13;
       text-align: center;
-      word-break: break-all;
-    }
-
-    .till-actions-strip {
-      width: 100%;
-      display: flex;
-      gap: 10px;
-    }
-
-    .till-btn-tool {
-      flex: 1;
-      height: 44px;
-      border-radius: var(--radius-md);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border: 1px solid var(--color-border);
-      background-color: var(--color-surface-elevated);
-      color: var(--color-text);
-      transition: all var(--transition-fast);
-    }
-
-    .till-btn-tool:hover {
-      background-color: var(--color-surface-hover);
-    }
-
-    .till-btn-tool.active {
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
-
-    .till-footer-nav {
-      padding: 12px 20px 16px;
-      border-top: 1px solid var(--color-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    .till-nav-btn {
-      background: none;
-      border: 1px solid var(--color-border);
-      color: var(--color-text-muted);
-      height: 38px;
-      padding: 0 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .till-nav-btn:hover {
-      color: var(--color-text);
-      border-color: var(--color-border-strong);
+      margin-top: 4px;
     }
 
     /* Screen Brightness Simulator Overlay */
@@ -1081,39 +674,39 @@
       opacity: 0;
       pointer-events: none;
       z-index: 99;
-      transition: opacity 300ms ease;
+      transition: opacity 250ms ease;
     }
 
     .brightness-boost-screen.active {
-      opacity: 0.25;
+      opacity: 0.35;
     }
 
     /* ==========================================================================
-       8. 2-STEP GUIDED CARD SCANNER MODAL (<copio-scanner> INTEGRATION)
+       6. ADD CARD MODAL (AUTO-STORE ARTWORK + BARCODE INPUT)
        ========================================================================== */
-    .scanner-modal-overlay {
+    .modal-overlay {
       position: fixed;
       inset: 0;
-      background-color: rgba(4, 7, 12, 0.94);
-      backdrop-filter: blur(16px);
-      z-index: 120;
+      background-color: rgba(4, 7, 12, 0.92);
+      backdrop-filter: blur(14px);
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
       opacity: 0;
       visibility: hidden;
-      transition: opacity var(--transition-normal), visibility var(--transition-normal);
+      transition: opacity var(--transition-fast), visibility var(--transition-fast);
     }
 
-    .scanner-modal-overlay.open {
+    .modal-overlay.open {
       opacity: 1;
       visibility: visible;
     }
 
-    .scanner-dialog {
+    .modal-sheet {
       width: 100%;
-      max-width: 580px;
+      max-width: 520px;
       background-color: var(--color-surface);
       border: 1px solid var(--color-border-strong);
       border-radius: var(--radius-xl);
@@ -1121,10 +714,10 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      max-height: 92vh;
+      max-height: 90vh;
     }
 
-    .scanner-dialog-header {
+    .modal-header {
       padding: 16px 20px;
       border-bottom: 1px solid var(--color-border);
       display: flex;
@@ -1132,176 +725,100 @@
       justify-content: space-between;
     }
 
-    .scanner-step-crumbs {
+    .modal-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
     }
 
-    .step-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--color-text-muted);
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      background-color: var(--color-surface-elevated);
+    .modal-close-btn:hover {
+      color: var(--color-text);
+      background-color: var(--color-surface-hover);
     }
 
-    .step-pill.active {
-      color: var(--color-primary-contrast);
-      background-color: var(--color-primary);
-    }
-
-    .step-pill.done {
-      color: var(--color-success);
-      background: rgba(16, 185, 129, 0.15);
-    }
-
-    .scanner-body {
+    .modal-body {
       padding: 20px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
-    /* Embedded Copio Scanner Simulation Host */
-    .copio-scanner-sim {
-      position: relative;
-      width: 100%;
-      height: 280px;
-      background-color: #03060a;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
+    .store-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .store-chip-option {
+      background-color: var(--color-surface-elevated);
       border: 1px solid var(--color-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .scanner-video-preview {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    /* Guided Reticle (ID-1 Card Aspect Ratio 85.60 x 53.98 ~ 1.586) */
-    .card-guide-reticle {
-      position: absolute;
-      width: 82%;
-      aspect-ratio: 1.586;
-      border: 2px dashed rgba(245, 158, 11, 0.8);
-      border-radius: 12px;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
-      pointer-events: none;
+      border-radius: var(--radius-md);
+      padding: 10px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: border-color var(--transition-fast);
-    }
-
-    .card-guide-reticle.detected {
-      border: 2px solid #10b981;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55), 0 0 16px rgba(16, 185, 129, 0.4);
-    }
-
-    .reticle-label {
-      background: rgba(0, 0, 0, 0.7);
-      color: #ffffff;
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    /* Barcode finder box in step 2 */
-    .barcode-reticle-box {
-      width: 75%;
-      height: 48px;
-      border: 2px solid #ef4444;
-      border-radius: 6px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(239, 68, 68, 0.1);
-    }
-
-    /* Non-destructive crop handles */
-    .crop-handle {
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      background: #f59e0b;
-      border: 2px solid #ffffff;
-      border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-    }
-
-    .crop-tl { top: -9px; left: -9px; }
-    .crop-tr { top: -9px; right: -9px; }
-    .crop-bl { bottom: -9px; left: -9px; }
-    .crop-br { bottom: -9px; right: -9px; }
-
-    /* Scanner controls & preset selector */
-    .scanner-controls-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .preset-selector-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-    }
-
-    .preset-select {
-      background-color: var(--color-surface-elevated);
-      color: var(--color-text);
-      border: 1px solid var(--color-border);
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      outline: none;
-    }
-
-    .filter-toggle-group {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .filter-btn {
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--color-border);
-      background-color: var(--color-surface-elevated);
-      color: var(--color-text-muted);
+      gap: 6px;
       cursor: pointer;
+      transition: all var(--transition-fast);
     }
 
-    .filter-btn.active {
-      background-color: var(--color-primary);
-      color: var(--color-primary-contrast);
+    .store-chip-option:hover {
+      border-color: var(--color-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .store-chip-option.selected {
       border-color: var(--color-primary);
+      background-color: var(--color-surface-hover);
+      box-shadow: 0 0 0 2px var(--color-primary);
     }
 
-    /* Form Fields in Scanner Modal */
+    .store-thumb-badge {
+      width: 32px;
+      height: 22px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .store-thumb-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    /* Auto-Card Preview in Add Modal */
+    .modal-card-preview-container {
+      width: 100%;
+      height: 150px;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
     .form-group {
       display: flex;
       flex-direction: column;
@@ -1315,74 +832,30 @@
     }
 
     .form-input {
-      height: 42px;
+      height: 44px;
       background-color: var(--color-surface-elevated);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
-      padding: 0 12px;
+      padding: 0 14px;
       color: var(--color-text);
-      font-size: 14px;
+      font-size: 15px;
       font-family: inherit;
+      outline: none;
     }
 
     .form-input:focus {
       border-color: var(--color-primary);
-      outline: none;
     }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .scanner-dialog-footer {
+    .modal-footer {
       padding: 16px 20px;
       border-top: 1px solid var(--color-border);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      justify-content: flex-end;
+      gap: 10px;
     }
 
-    /* ==========================================================================
-       9. P2P SYNC MODAL (ZERO-CLOUD DEVICE PAIRING)
-       ========================================================================== */
-    .sync-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background-color: rgba(4, 7, 12, 0.92);
-      backdrop-filter: blur(16px);
-      z-index: 110;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity var(--transition-normal), visibility var(--transition-normal);
-    }
-
-    .sync-modal-overlay.open {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .sync-sheet {
-      width: 100%;
-      max-width: 440px;
-      background-color: var(--color-surface);
-      border: 1px solid var(--color-border-strong);
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      box-shadow: var(--shadow-lg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 16px;
-    }
-
+    /* P2P Sync Sheet */
     .sync-qr-box {
       background-color: #ffffff;
       padding: 16px;
@@ -1391,76 +864,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      margin: 12px auto;
     }
 
-    .sync-status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
-      padding: 4px 12px;
-      border-radius: var(--radius-pill);
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    /* ==========================================================================
-       10. DEVELOPER / ARCHITECTURE DRAWER (SDK INSPECTOR)
-       ========================================================================== */
-    .inspector-drawer {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 420px;
-      max-width: 90vw;
-      background-color: var(--color-surface);
-      border-left: 1px solid var(--color-border-strong);
-      box-shadow: var(--shadow-lg);
-      z-index: 130;
-      transform: translateX(100%);
-      transition: transform var(--transition-normal);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .inspector-drawer.open {
-      transform: translateX(0);
-    }
-
-    .inspector-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--color-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .inspector-body {
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      font-size: 13px;
-    }
-
-    .code-block {
-      background-color: #070a0f;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: #38bdf8;
-      overflow-x: auto;
-      white-space: pre-wrap;
-    }
-
-    /* ==========================================================================
-       11. TOAST NOTIFICATION
-       ========================================================================== */
+    /* Toast */
     .toast-pill {
       position: fixed;
       bottom: 24px;
@@ -1488,23 +895,16 @@
       opacity: 1;
     }
 
-    /* ==========================================================================
-       12. RESPONSIVE BREAKPOINTS
-       ========================================================================== */
+    /* Responsive */
     @media (max-width: 640px) {
-      .app-header .brand-sub {
-        display: none;
-      }
       .cards-grid {
         grid-template-columns: 1fr;
       }
-      .till-sheet {
-        height: 100%;
-        max-height: 100%;
-        border-radius: 0;
+      .card-3d-wrapper {
+        height: 210px;
       }
-      .card-3d-card {
-        height: 200px;
+      .store-picker-grid {
+        grid-template-columns: repeat(3, 1fr);
       }
     }
   </style>
@@ -1516,15 +916,12 @@
        ======================================================================== -->
   <aside class="prototype-banner">
     <div class="prototype-banner-tag">
-      <span class="prototype-badge">CPO-047 Prototype</span>
-      <span><strong>Stow Cards</strong> (Supermarket Loyalty & Pocket Wallet)</span>
+      <span class="prototype-badge">CPO-047 Iteration 2</span>
+      <span><strong>Stow Cards</strong> (Direct In-Place Flip & Auto Store Artwork)</span>
     </div>
     <div class="prototype-controls">
       <button class="btn-harness" id="btn-theme-toggle" title="Toggle Light/Dark Theme">
         <span id="theme-icon">🌙</span> <span id="theme-label">Theme</span>
-      </button>
-      <button class="btn-harness" id="btn-inspector-toggle">
-        ⚙️ <span>SDK Inspector</span>
       </button>
       <a href="prototype-v1.html" class="btn-harness" title="View CPO-029 SDK Core Prototype">
         ↗ <span>SDK Core Prototype</span>
@@ -1567,7 +964,7 @@
           <span class="desktop-only">P2P Sync</span>
         </button>
 
-        <button class="btn-action btn-action-primary" id="btn-open-scanner" title="Add Card via Guided Scanner">
+        <button class="btn-action btn-action-primary" id="btn-open-add-card" title="Add Store Loyalty Card">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1613,24 +1010,16 @@
       </nav>
     </section>
 
-    <!-- Pinned Supermarket Shelf (Fast 1-tap Till Access) -->
-    <section id="pinned-section">
-      <div class="section-title">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="1">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-        <span>Pinned for Quick Till Checkout</span>
-      </div>
-      <div class="pinned-shelf" id="pinned-shelf">
-        <!-- Rendered via JS -->
-      </div>
-    </section>
+    <!-- Info & Ergonomics Bar -->
+    <div class="grid-info-bar">
+      <span>Pocket Deck</span>
+      <span class="hint-chip">
+        <span>↻ Tap any card to flip front / barcode</span>
+      </span>
+    </div>
 
-    <!-- Main Cards Grid -->
+    <!-- Main Cards Grid (Direct 3D Flip in place) -->
     <section>
-      <div class="section-title" style="margin-bottom: 14px;">
-        <span>All Pocket Cards</span>
-      </div>
       <div class="cards-grid" id="cards-grid">
         <!-- Rendered via JS -->
       </div>
@@ -1638,245 +1027,64 @@
 
   </main>
 
-  <!-- ========================================================================
-       SCREEN BRIGHTNESS BOOST SIMULATOR OVERLAY
-       ======================================================================== -->
+  <!-- Screen Brightness Boost Simulator Overlay -->
   <div class="brightness-boost-screen" id="brightness-overlay"></div>
 
   <!-- ========================================================================
-       INSTANT TILL VIEW MODAL (SUPERMARKET CHECKOUT FULL-SCREEN)
+       ADD CARD MODAL (AUTO-STORE ARTWORK + BARCODE INPUT)
        ======================================================================== -->
-  <div class="till-modal-overlay" id="till-modal" role="dialog" aria-modal="true">
-    <div class="till-sheet">
-      <!-- Till Header -->
-      <div class="till-header">
-        <div class="till-header-info">
-          <div class="till-store-dot" id="till-dot"></div>
-          <div>
-            <div class="till-header-title" id="till-title">Tesco Clubcard</div>
-            <div style="font-size: 11px; color: var(--color-text-muted);">1-Tap Checkout • Tap card to flip</div>
-          </div>
-        </div>
-        <button class="till-close-btn" id="till-close-btn" title="Close Checkout View (Esc)">✕</button>
+  <div class="modal-overlay" id="add-modal" role="dialog" aria-modal="true">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>Add Loyalty Card</h2>
+        <button class="modal-close-btn" id="modal-close-btn">✕</button>
       </div>
 
-      <!-- 3D Interactive Card Stage -->
-      <div class="card-3d-stage">
-        <div class="card-3d-card" id="till-card-3d" title="Click to Flip Card Front ↔ Back">
-          <!-- Card Front Face -->
-          <div class="card-face card-face-front" id="till-face-front">
-            <div class="face-front-top">
+      <div class="modal-body">
+        <!-- Store Picker Grid -->
+        <div class="form-group">
+          <label class="form-label">1. Choose Store (Automatic Card Artwork)</label>
+          <div class="store-picker-grid" id="store-picker-grid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Live Card Artwork Preview -->
+        <div class="form-group">
+          <label class="form-label">2. Card Artwork Preview</label>
+          <div class="modal-card-preview-container" id="modal-card-preview">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
               <div>
-                <div class="face-store-title" id="till-front-store">Tesco</div>
-                <div class="face-store-tag" id="till-front-tier">Clubcard</div>
+                <div id="preview-store-name" style="font-size: 18px; font-weight: 800;">Tesco</div>
+                <div id="preview-card-tier" style="font-size: 11px; text-transform: uppercase; opacity: 0.9;">Clubcard</div>
               </div>
-              <div class="face-flip-hint">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                </svg>
-                <span>Flip (Space)</span>
-              </div>
+              <div class="flip-pill-hint">Built-in Artwork ✓</div>
             </div>
-            <div class="face-front-mid">
-              <div class="face-chip"></div>
-            </div>
-            <div class="face-front-bottom">
-              <div>
-                <div class="face-holder-name" id="till-front-holder">ED WILLIAMS</div>
-                <div class="face-card-number" id="till-front-number">•••• •••• •••• 1827</div>
-              </div>
-              <div style="font-size: 11px; opacity: 0.8;">OFFLINE READY</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+              <div style="font-size: 11px; opacity: 0.85;">ED WILLIAMS</div>
+              <div id="preview-masked-num" style="font-family: var(--font-mono); font-size: 14px; font-weight: 700;">•••• 7401</div>
             </div>
           </div>
+        </div>
 
-          <!-- Card Back Face -->
-          <div class="card-face card-face-back" id="till-face-back">
-            <div class="face-magstrip"></div>
-            <div class="face-barcode-preview" id="till-back-barcode-mini">
-              <!-- Mini barcode preview -->
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px;">
-              <div>
-                <div style="font-size: 10px; color: var(--color-text-muted); text-transform: uppercase;">Membership No.</div>
-                <div class="face-card-number" id="till-back-number" style="font-size: 14px;">6340 0482 9182 7401</div>
-              </div>
-              <div class="face-flip-hint" style="background: rgba(255, 255, 255, 0.1);">
-                <span>Flip back</span>
-              </div>
-            </div>
+        <!-- Barcode / Number Input -->
+        <div class="form-group">
+          <label class="form-label" for="add-input-number">3. Membership / Barcode Number</label>
+          <input type="text" id="add-input-number" class="form-input" placeholder="e.g. 6340048291827401" value="6340048291827401" />
+          <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 2px;">
+            High-contrast 1D/2D barcode is auto-generated instantly for the till.
           </div>
+        </div>
+
+        <div class="form-group" id="custom-store-group" style="display: none;">
+          <label class="form-label" for="add-input-store-custom">Custom Store Name</label>
+          <input type="text" id="add-input-store-custom" class="form-input" placeholder="Store name" />
         </div>
       </div>
 
-      <!-- High Contrast Barcode Plate (Till Laser Readout) -->
-      <div class="till-display-body">
-        <div class="barcode-plate" id="barcode-plate">
-          <div class="barcode-laser"></div>
-          <div class="barcode-svg-wrap" id="till-barcode-svg-container">
-            <!-- Dynamic SVG Barcode Rendered Here -->
-          </div>
-          <div class="human-number-display" id="till-human-number">6340 0482 9182 7401</div>
-        </div>
-
-        <!-- Quick Till Controls -->
-        <div class="till-actions-strip">
-          <button class="till-btn-tool" id="btn-copy-card-num">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <span id="copy-btn-text">Copy Number</span>
-          </button>
-
-          <button class="till-btn-tool" id="btn-laser-scan">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-            <span>Laser Beam</span>
-          </button>
-
-          <button class="till-btn-tool" id="btn-brightness-boost">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-            </svg>
-            <span>Max Bright</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Till Footer Carousel Navigation -->
-      <div class="till-footer-nav">
-        <button class="till-nav-btn" id="till-prev-btn">
-          ← Previous Card
-        </button>
-        <span style="font-size: 12px; color: var(--color-text-muted);" id="till-card-index">1 / 8</span>
-        <button class="till-nav-btn" id="till-next-btn">
-          Next Card →
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================================
-       2-STEP GUIDED CARD SCANNER MODAL (<copio-scanner> INTEGRATION)
-       ======================================================================== -->
-  <div class="scanner-modal-overlay" id="scanner-modal" role="dialog" aria-modal="true">
-    <div class="scanner-dialog">
-      <div class="scanner-dialog-header">
-        <div class="scanner-step-crumbs">
-          <span class="step-pill active" id="pill-step-1">1. Capture Front</span>
-          <span>→</span>
-          <span class="step-pill" id="pill-step-2">2. Capture Back & Barcode</span>
-          <span>→</span>
-          <span class="step-pill" id="pill-step-3">3. Details</span>
-        </div>
-        <button class="till-close-btn" id="scanner-close-btn">✕</button>
-      </div>
-
-      <div class="scanner-body">
-        <!-- Embedded Simulated <copio-scanner> Viewfinder -->
-        <div class="copio-scanner-sim" id="scanner-viewfinder">
-          <div class="scanner-video-preview" id="scanner-preview-box">
-            <!-- Simulated Camera Feed Canvas -->
-            <canvas id="scanner-camera-canvas" width="640" height="400" style="width: 100%; height: 100%; object-fit: cover;"></canvas>
-
-            <!-- Card Aspect Ratio Reticle -->
-            <div class="card-guide-reticle" id="card-reticle">
-              <span class="reticle-label" id="reticle-instruction">Align Card Front (85.6 × 54mm)</span>
-              <div class="crop-handle crop-tl"></div>
-              <div class="crop-handle crop-tr"></div>
-              <div class="crop-handle crop-bl"></div>
-              <div class="crop-handle crop-br"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Scanner Simulation Controls -->
-        <div class="scanner-controls-row">
-          <div class="preset-selector-group">
-            <label for="sample-card-select" style="font-size: 12px; color: var(--color-text-muted);">Quick Sample Preset:</label>
-            <select id="sample-card-select" class="preset-select">
-              <option value="tesco">Tesco Clubcard</option>
-              <option value="sainsburys">Sainsbury's Nectar</option>
-              <option value="boots">Boots Advantage</option>
-              <option value="waitrose">Waitrose myWaitrose</option>
-              <option value="sparks">M&S Sparks</option>
-              <option value="costa">Costa Club</option>
-              <option value="morrisons">Morrisons More</option>
-              <option value="custom">Custom Loyalty Card</option>
-            </select>
-          </div>
-
-          <div class="filter-toggle-group">
-            <span style="font-size: 12px; color: var(--color-text-muted); margin-right: 4px;">Filter:</span>
-            <button class="filter-btn active" data-filter="normal">Color</button>
-            <button class="filter-btn" data-filter="sauvola">Sauvola B&W</button>
-            <button class="filter-btn" data-filter="contrast">High Contrast</button>
-          </div>
-        </div>
-
-        <!-- Metadata Form Fields -->
-        <div id="scanner-form-fields" style="display: flex; flex-direction: column; gap: 14px;">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="input-store-name">Store / Brand Name</label>
-              <input type="text" id="input-store-name" class="form-input" value="Tesco" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="input-card-title">Card Name</label>
-              <input type="text" id="input-card-title" class="form-input" value="Clubcard" />
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="input-card-number">Membership / Barcode Number</label>
-              <input type="text" id="input-card-number" class="form-input" value="6340048291827401" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="input-barcode-type">Barcode Format</label>
-              <select id="input-barcode-type" class="form-input">
-                <option value="ean13">EAN-13 (1D Barcode)</option>
-                <option value="code128" selected>Code 128 (1D Barcode)</option>
-                <option value="qr">QR Code (2D Barcode)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="input-category">Category</label>
-              <select id="input-category" class="form-input">
-                <option value="supermarket">🛒 Supermarket</option>
-                <option value="pharmacy">💊 Health & Pharmacy</option>
-                <option value="coffee">☕ Coffee & Dining</option>
-                <option value="home">🏡 Home & Retail</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="input-card-color">Card Brand Color</label>
-              <input type="color" id="input-card-color" class="form-input" value="#00539f" style="padding: 2px; height: 42px; cursor: pointer;" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="scanner-dialog-footer">
-        <button class="btn-action btn-action-secondary" id="scanner-back-btn" style="display: none;">
-          ← Back
-        </button>
-        <div style="flex: 1;"></div>
-        <button class="btn-action btn-action-primary" id="scanner-next-btn">
-          <span>Capture Front → Next</span>
-        </button>
+      <div class="modal-footer">
+        <button class="btn-action btn-action-secondary" id="modal-cancel-btn">Cancel</button>
+        <button class="btn-action btn-action-primary" id="modal-save-btn">Add to Wallet ✓</button>
       </div>
     </div>
   </div>
@@ -1884,295 +1092,192 @@
   <!-- ========================================================================
        PEER-TO-PEER SYNC MODAL (ZERO-CLOUD DEVICE PAIRING)
        ======================================================================== -->
-  <div class="sync-modal-overlay" id="sync-modal" role="dialog" aria-modal="true">
-    <div class="sync-sheet">
-      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-        <div class="sync-status-badge">
-          <span>●</span> Encrypted Direct P2P
-        </div>
-        <button class="till-close-btn" id="sync-close-btn">✕</button>
+  <div class="modal-overlay" id="sync-modal" role="dialog" aria-modal="true">
+    <div class="modal-sheet" style="max-width: 440px; text-align: center;">
+      <div class="modal-header">
+        <h2 style="font-size: 18px;">Direct Device Sync</h2>
+        <button class="modal-close-btn" id="sync-close-btn">✕</button>
       </div>
 
-      <h2 style="font-size: 20px; font-weight: 700;">Sync Devices Instantly</h2>
-      <p style="font-size: 13px; color: var(--color-text-muted);">
-        Scan this QR code from your second phone or tablet. Your loyalty cards and documents sync directly via local WebRTC with zero cloud servers.
-      </p>
+      <div class="modal-body" style="align-items: center;">
+        <p style="font-size: 13px; color: var(--color-text-muted);">
+          Scan this QR code from another device to sync your loyalty cards directly via encrypted P2P WebRTC. Zero cloud servers.
+        </p>
 
-      <div class="sync-qr-box" id="sync-qr-container">
-        <!-- Dynamic QR Code SVG rendered here -->
-      </div>
+        <div class="sync-qr-box" id="sync-qr-container">
+          <!-- Dynamic QR SVG -->
+        </div>
 
-      <div style="background-color: var(--color-surface-elevated); padding: 12px; border-radius: var(--radius-md); width: 100%; font-size: 12px; text-align: left; display: flex; flex-direction: column; gap: 6px;">
-        <div style="display: flex; justify-content: space-between;">
-          <span style="color: var(--color-text-muted);">Storage Engine:</span>
-          <strong>OPFS / IndexedDB (Local)</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span style="color: var(--color-text-muted);">Cloud Servers:</span>
-          <strong style="color: var(--color-success);">None (0 bytes sent)</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span style="color: var(--color-text-muted);">Pairing Channel:</span>
-          <strong>WebRTC DataChannel (AES-GCM)</strong>
+        <div style="background-color: var(--color-surface-elevated); padding: 12px; border-radius: var(--radius-md); width: 100%; font-size: 12px; text-align: left; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--color-text-muted);">Storage Engine:</span>
+            <strong>OPFS / IndexedDB (100% Local)</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--color-text-muted);">Cloud Servers:</span>
+            <strong style="color: var(--color-success);">0 bytes sent</strong>
+          </div>
         </div>
       </div>
 
-      <button class="btn-action btn-action-primary" style="width: 100%;" id="sync-done-btn">
-        Done
-      </button>
+      <div class="modal-footer">
+        <button class="btn-action btn-action-primary" style="width: 100%;" id="sync-done-btn">Done</button>
+      </div>
     </div>
   </div>
 
-  <!-- ========================================================================
-       DEVELOPER & ARCHITECTURE DRAWER (SDK INSPECTOR)
-       ======================================================================== -->
-  <aside class="inspector-drawer" id="inspector-drawer">
-    <div class="inspector-header">
-      <div>
-        <h3 style="font-size: 16px; font-weight: 700;">Copio SDK Inspector</h3>
-        <span style="font-size: 11px; color: var(--color-text-muted);">Live Component & Token Integration</span>
-      </div>
-      <button class="till-close-btn" id="inspector-close-btn">✕</button>
-    </div>
-
-    <div class="inspector-body">
-      <div>
-        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Component Invocation Contract</h4>
-        <div class="code-block">&lt;copio-scanner
-  mode="single"
-  aspect="card"
-  max-pages="2"
-  ocr="true"
-  threshold="sauvola"
-  container-type="size"&gt;
-&lt;/copio-scanner&gt;</div>
-      </div>
-
-      <div>
-        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Latest Emitted Event (`copio:scan-complete`)</h4>
-        <div class="code-block" id="inspector-event-log">{
-  "type": "copio:scan-complete",
-  "mode": "single",
-  "aspect": "card",
-  "pages": [
-    { "side": "front", "crop": { "x": 0.08, "y": 0.12, "w": 0.84, "h": 0.76 } },
-    { "side": "back", "filter": "sauvola", "barcodeFormat": "ean13" }
-  ],
-  "barcode": {
-    "format": "ean13",
-    "rawValue": "6340048291827401"
-  }
-}</div>
-      </div>
-
-      <div>
-        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Active CSS Custom Properties</h4>
-        <div class="code-block">--copio-font-family: var(--font-sans);
---copio-color-primary: #f59e0b;
---copio-touch-target-min: 48px;
---copio-crop-handle-hit: 48px;
---copio-radius-md: 12px;</div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Toast Notification Pill -->
+  <!-- Toast Notification -->
   <div class="toast-pill" id="toast-pill">
-    <span id="toast-icon">✓</span>
-    <span id="toast-msg">Card number copied to clipboard!</span>
+    <span id="toast-msg">Card added to wallet!</span>
   </div>
 
   <!-- ========================================================================
-       VANILLA JS INTERACTIVE ENGINE & BARCODE GENERATOR
+       VANILLA JS INTERACTIVE ENGINE & IN-PLACE 3D FLIP
        ======================================================================== -->
   <script>
     (() => {
       'use strict';
 
       /* ----------------------------------------------------------------------
-         1. INITIAL STATE & PRE-POPULATED STORE CARDS
+         1. STORE PRESETS & ARTWORK LIBRARY
+         (Automatic high-fidelity card image & styling without uploading)
          ---------------------------------------------------------------------- */
-      const initialCards = [
+      const storePresets = [
         {
-          id: 'card-1',
+          key: 'tesco',
           store: 'Tesco',
           title: 'Clubcard',
-          tier: 'Clubcard Plus',
-          number: '6340048291827401',
-          barcodeType: 'ean13',
           category: 'supermarket',
           color: '#00539f',
-          colorEnd: '#003366',
-          pinned: true,
-          holder: 'ED WILLIAMS',
-          notes: 'Standard UK Clubcard barcode'
+          colorEnd: '#002f6c',
+          barcodeType: 'ean13',
+          symbol: '🛒',
+          sampleNumber: '6340048291827401'
         },
         {
-          id: 'card-2',
+          key: 'sainsburys',
           store: "Sainsbury's",
           title: 'Nectar',
-          tier: 'Nectar Rewards',
-          number: '98263004827103',
-          barcodeType: 'code128',
           category: 'supermarket',
           color: '#e05a00',
           colorEnd: '#4e1e66',
-          pinned: true,
-          holder: 'ED WILLIAMS',
-          notes: 'Nectar loyalty points'
+          barcodeType: 'code128',
+          symbol: '🍇',
+          sampleNumber: '98263004827103'
         },
         {
-          id: 'card-3',
+          key: 'boots',
           store: 'Boots',
           title: 'Advantage Card',
-          tier: 'Advantage Club',
-          number: '704092817290',
-          barcodeType: 'code128',
           category: 'pharmacy',
           color: '#004b91',
-          colorEnd: '#002855',
-          pinned: true,
-          holder: 'ED WILLIAMS',
-          notes: 'Boots pharmacy & health points'
+          colorEnd: '#00254d',
+          barcodeType: 'code128',
+          symbol: '💊',
+          sampleNumber: '704092817290'
         },
         {
-          id: 'card-4',
+          key: 'waitrose',
           store: 'Waitrose',
           title: 'myWaitrose',
-          tier: 'myWaitrose Member',
-          number: '290184719284',
-          barcodeType: 'code128',
           category: 'supermarket',
           color: '#025826',
-          colorEnd: '#013818',
-          pinned: false,
-          holder: 'ED WILLIAMS',
-          notes: 'Free hot drink & newspaper vouchers'
+          colorEnd: '#013316',
+          barcodeType: 'code128',
+          symbol: '🌿',
+          sampleNumber: '290184719284'
         },
         {
-          id: 'card-5',
+          key: 'sparks',
           store: 'Marks & Spencer',
           title: 'Sparks',
-          tier: 'Sparks Rewards',
-          number: 'MS-SPARKS-91827402',
-          barcodeType: 'qr',
           category: 'supermarket',
           color: '#111111',
-          colorEnd: '#222222',
-          pinned: false,
-          holder: 'ED WILLIAMS',
-          notes: 'M&S Foodhall digital offers'
+          colorEnd: '#242424',
+          barcodeType: 'qr',
+          symbol: '✨',
+          sampleNumber: 'MS-SPARKS-91827402'
         },
         {
-          id: 'card-6',
+          key: 'costa',
           store: 'Costa Coffee',
           title: 'Costa Club',
-          tier: 'Bean Club',
-          number: 'COSTA-CLUB-55291039',
-          barcodeType: 'qr',
           category: 'coffee',
           color: '#70081d',
-          colorEnd: '#450411',
-          pinned: false,
-          holder: 'ED WILLIAMS',
-          notes: 'Free coffee beans rewards'
+          colorEnd: '#420410',
+          barcodeType: 'qr',
+          symbol: '☕',
+          sampleNumber: 'COSTA-CLUB-55291039'
         },
         {
-          id: 'card-7',
+          key: 'morrisons',
           store: 'Morrisons',
           title: 'Morrisons More',
-          tier: 'More Rewards',
-          number: '882019482719',
-          barcodeType: 'code128',
           category: 'supermarket',
           color: '#004f2f',
           colorEnd: '#ffbe00',
-          pinned: false,
-          holder: 'ED WILLIAMS',
-          notes: 'Fivers coupons & discounts'
+          barcodeType: 'code128',
+          symbol: '🌲',
+          sampleNumber: '882019482719'
         },
         {
-          id: 'card-8',
+          key: 'ikea',
           store: 'IKEA',
           title: 'IKEA Family',
-          tier: 'Family Member',
-          number: '192847102938',
-          barcodeType: 'code128',
           category: 'home',
           color: '#0058a3',
           colorEnd: '#ffcc00',
-          pinned: false,
-          holder: 'ED WILLIAMS',
-          notes: 'Free tea/coffee & member pricing'
+          barcodeType: 'code128',
+          symbol: '🏡',
+          sampleNumber: '192847102938'
         }
       ];
 
-      let walletCards = [...initialCards];
+      // Initial active wallet cards
+      let walletCards = storePresets.map((p, idx) => ({
+        id: 'card-' + (idx + 1),
+        store: p.store,
+        title: p.title,
+        category: p.category,
+        number: p.sampleNumber,
+        barcodeType: p.barcodeType,
+        color: p.color,
+        colorEnd: p.colorEnd,
+        symbol: p.symbol,
+        holder: 'ED WILLIAMS',
+        isFlipped: false
+      }));
+
       let activeCategory = 'all';
       let searchQuery = '';
-      let activeTillCardIndex = 0;
-      let isTillFlipped = false;
-      let isLaserActive = false;
       let isBrightnessBoostActive = false;
-
-      // Guided Scanner state
-      let scannerStep = 1;
-      let currentFilter = 'normal';
+      let selectedPresetKey = 'tesco';
 
       /* ----------------------------------------------------------------------
          2. DOM REFERENCES
          ---------------------------------------------------------------------- */
       const cardsGrid = document.getElementById('cards-grid');
-      const pinnedShelf = document.getElementById('pinned-shelf');
-      const pinnedSection = document.getElementById('pinned-section');
       const searchInput = document.getElementById('card-search-input');
       const searchClearBtn = document.getElementById('search-clear-btn');
       const categoryPills = document.getElementById('category-pills');
-
-      // Till Modal Elements
-      const tillModal = document.getElementById('till-modal');
-      const tillCard3D = document.getElementById('till-card-3d');
-      const tillCloseBtn = document.getElementById('till-close-btn');
-      const tillTitle = document.getElementById('till-title');
-      const tillDot = document.getElementById('till-dot');
-      const tillFrontStore = document.getElementById('till-front-store');
-      const tillFrontTier = document.getElementById('till-front-tier');
-      const tillFrontHolder = document.getElementById('till-front-holder');
-      const tillFrontNumber = document.getElementById('till-front-number');
-      const tillFaceFront = document.getElementById('till-face-front');
-      const tillBackNumber = document.getElementById('till-back-number');
-      const tillHumanNumber = document.getElementById('till-human-number');
-      const tillBarcodeSvgContainer = document.getElementById('till-barcode-svg-container');
-      const tillBackBarcodeMini = document.getElementById('till-back-barcode-mini');
-      const tillCardIndex = document.getElementById('till-card-index');
-      const tillPrevBtn = document.getElementById('till-prev-btn');
-      const tillNextBtn = document.getElementById('till-next-btn');
-      const btnCopyCardNum = document.getElementById('btn-copy-card-num');
-      const copyBtnText = document.getElementById('copy-btn-text');
-      const btnLaserScan = document.getElementById('btn-laser-scan');
-      const btnBrightnessBoost = document.getElementById('btn-brightness-boost');
-      const barcodePlate = document.getElementById('barcode-plate');
       const brightnessOverlay = document.getElementById('brightness-overlay');
+      const toastPill = document.getElementById('toast-pill');
+      const toastMsg = document.getElementById('toast-msg');
 
-      // Scanner Modal Elements
-      const scannerModal = document.getElementById('scanner-modal');
-      const btnOpenScanner = document.getElementById('btn-open-scanner');
-      const scannerCloseBtn = document.getElementById('scanner-close-btn');
-      const scannerNextBtn = document.getElementById('scanner-next-btn');
-      const scannerBackBtn = document.getElementById('scanner-back-btn');
-      const pillStep1 = document.getElementById('pill-step-1');
-      const pillStep2 = document.getElementById('pill-step-2');
-      const pillStep3 = document.getElementById('pill-step-3');
-      const reticleInstruction = document.getElementById('reticle-instruction');
-      const cardReticle = document.getElementById('card-reticle');
-      const scannerCameraCanvas = document.getElementById('scanner-camera-canvas');
-      const sampleCardSelect = document.getElementById('sample-card-select');
-      const inputStoreName = document.getElementById('input-store-name');
-      const inputCardTitle = document.getElementById('input-card-title');
-      const inputCardNumber = document.getElementById('input-card-number');
-      const inputBarcodeType = document.getElementById('input-barcode-type');
-      const inputCategory = document.getElementById('input-category');
-      const inputCardColor = document.getElementById('input-card-color');
+      // Add Modal Elements
+      const addModal = document.getElementById('add-modal');
+      const btnOpenAddCard = document.getElementById('btn-open-add-card');
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+      const modalCancelBtn = document.getElementById('modal-cancel-btn');
+      const modalSaveBtn = document.getElementById('modal-save-btn');
+      const storePickerGrid = document.getElementById('store-picker-grid');
+      const modalCardPreview = document.getElementById('modal-card-preview');
+      const previewStoreName = document.getElementById('preview-store-name');
+      const previewCardTier = document.getElementById('preview-card-tier');
+      const previewMaskedNum = document.getElementById('preview-masked-num');
+      const addInputNumber = document.getElementById('add-input-number');
+      const customStoreGroup = document.getElementById('custom-store-group');
+      const addInputStoreCustom = document.getElementById('add-input-store-custom');
 
       // Sync Modal Elements
       const syncModal = document.getElementById('sync-modal');
@@ -2181,71 +1286,53 @@
       const syncDoneBtn = document.getElementById('sync-done-btn');
       const syncQrContainer = document.getElementById('sync-qr-container');
 
-      // Inspector Elements
-      const inspectorDrawer = document.getElementById('inspector-drawer');
-      const btnInspectorToggle = document.getElementById('btn-inspector-toggle');
-      const inspectorCloseBtn = document.getElementById('inspector-close-btn');
-      const inspectorEventLog = document.getElementById('inspector-event-log');
-
-      // Toast Element
-      const toastPill = document.getElementById('toast-pill');
-      const toastMsg = document.getElementById('toast-msg');
-
       /* ----------------------------------------------------------------------
-         3. PURE SVG 1D & 2D BARCODE GENERATORS (NO EXTERNAL LIBS NEEDED)
+         3. PURE SVG BARCODE GENERATORS (NO LASER BEAM FLUFF)
          ---------------------------------------------------------------------- */
-
-      // Generate realistic Code 128 / EAN-13 style high contrast 1D Barcode SVG
-      function generateBarcode1D(text, isEan = false) {
+      function generateBarcode1D(text) {
         let hash = 0;
         for (let i = 0; i < text.length; i++) {
           hash = (hash << 5) - hash + text.charCodeAt(i);
           hash |= 0;
         }
 
-        // Generate deterministic bar widths (1, 2, 3, or 4 units)
         const bars = [];
         let curX = 14;
-        const totalUnits = 68;
-
-        // Start guard pattern
+        // Start guard
         bars.push({ x: curX, w: 2 }); curX += 4;
         bars.push({ x: curX, w: 2 }); curX += 4;
 
-        for (let i = 0; i < 42; i++) {
+        for (let i = 0; i < 44; i++) {
           const pseudoRand = Math.abs(Math.sin(hash + i * 3.7)) * 10;
           const barW = (Math.floor(pseudoRand) % 3) + 1;
           const gapW = (Math.floor(pseudoRand * 1.5) % 3) + 1;
           bars.push({ x: curX, w: barW });
           curX += barW + gapW;
-          if (curX > 290) break;
+          if (curX > 292) break;
         }
 
-        // End guard pattern
-        bars.push({ x: 296, w: 2 });
-        bars.push({ x: 300, w: 2 });
+        // End guard
+        bars.push({ x: 298, w: 2 });
+        bars.push({ x: 302, w: 2 });
 
-        const barRects = bars.map(b => `<rect x="${b.x}" y="6" width="${b.w}" height="76" fill="#000000" />`).join('');
+        const barRects = bars.map(b => `<rect x="${b.x}" y="4" width="${b.w}" height="72" fill="#000000" />`).join('');
 
-        return `<svg viewBox="0 0 320 88" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <rect width="320" height="88" fill="#ffffff" />
+        return `<svg viewBox="0 0 320 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <rect width="320" height="80" fill="#ffffff" />
           ${barRects}
         </svg>`;
       }
 
-      // Generate realistic 2D QR Code SVG
-      function generateQRCode(text, size = 180) {
+      function generateQRCode(text, size = 160) {
         let hash = 0;
         for (let i = 0; i < text.length; i++) {
           hash = (hash << 5) - hash + text.charCodeAt(i);
           hash |= 0;
         }
 
-        const grid = 21; // 21x21 standard QR grid
+        const grid = 21;
         const cellSize = size / grid;
-        const modules = [];
 
-        // Check if inside finder patterns (top-left, top-right, bottom-left)
         function isFinder(r, c) {
           if (r < 7 && c < 7) return true;
           if (r < 7 && c >= grid - 7) return true;
@@ -2253,7 +1340,6 @@
           return false;
         }
 
-        // Finder pattern generator helper
         function renderFinder(startR, startC) {
           return `
             <rect x="${startC * cellSize}" y="${startR * cellSize}" width="${7 * cellSize}" height="${7 * cellSize}" fill="#000000" rx="${cellSize * 0.8}" />
@@ -2270,14 +1356,12 @@
         for (let r = 0; r < grid; r++) {
           for (let c = 0; c < grid; c++) {
             if (isFinder(r, c)) continue;
-            // Timing patterns
             if (r === 6 || c === 6) {
               if ((r + c) % 2 === 0) {
                 rects += `<rect x="${c * cellSize}" y="${r * cellSize}" width="${cellSize}" height="${cellSize}" fill="#000000" />`;
               }
               continue;
             }
-            // Pseudorandom payload modules
             const v = Math.abs(Math.sin(hash + r * 13 + c * 29));
             if (v > 0.48) {
               rects += `<rect x="${c * cellSize}" y="${r * cellSize}" width="${cellSize * 0.94}" height="${cellSize * 0.94}" fill="#000000" rx="${cellSize * 0.2}" />`;
@@ -2292,11 +1376,10 @@
       }
 
       /* ----------------------------------------------------------------------
-         4. RENDERERS: CARDS GRID & PINNED SHELF
+         4. RENDERERS & IN-PLACE 3D FLIP LOGIC
          ---------------------------------------------------------------------- */
       function formatCardNumber(num) {
         if (!num) return '';
-        // Group by 4 digits for human legibility at till
         return num.replace(/(.{4})/g, '$1 ').trim();
       }
 
@@ -2321,37 +1404,6 @@
         });
       }
 
-      function renderPinnedShelf() {
-        const pinnedCards = walletCards.filter(c => c.pinned);
-        if (pinnedCards.length === 0) {
-          pinnedSection.style.display = 'none';
-          return;
-        }
-        pinnedSection.style.display = 'block';
-
-        pinnedShelf.innerHTML = pinnedCards.map(card => {
-          return `
-            <div class="pinned-card-chip" data-id="${card.id}" style="background: linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color});">
-              <div class="chip-header">
-                <span class="chip-store-name">${escapeHtml(card.store)}</span>
-                <span class="chip-star">★</span>
-              </div>
-              <div class="chip-footer">
-                <span class="chip-number">${maskCardNumber(card.number)}</span>
-                <span class="chip-barcode-icon">║▌║</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        pinnedShelf.querySelectorAll('.pinned-card-chip').forEach(chip => {
-          chip.addEventListener('click', () => {
-            const id = chip.getAttribute('data-id');
-            openTillModalById(id);
-          });
-        });
-      }
-
       function renderCardsGrid() {
         const filtered = walletCards.filter(card => {
           const matchesCategory = activeCategory === 'all' || card.category === activeCategory;
@@ -2365,102 +1417,110 @@
 
         if (filtered.length === 0) {
           cardsGrid.innerHTML = `
-            <div class="empty-state">
-              <div class="empty-icon">📇</div>
-              <div class="empty-title">No cards found</div>
-              <div class="empty-desc">No loyalty cards match your filter. Add a new card or clear your search query.</div>
-              <button class="btn-action btn-action-primary" id="btn-empty-add" style="margin-top: 8px;">
-                + Add Loyalty Card
-              </button>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 48px 16px; background: var(--color-surface); border-radius: var(--radius-lg); border: 2px dashed var(--color-border);">
+              <div style="font-size: 36px; margin-bottom: 8px;">📇</div>
+              <h3 style="font-size: 16px; font-weight: 700;">No cards found</h3>
+              <p style="font-size: 13px; color: var(--color-text-muted); margin-top: 4px;">Try searching for a different supermarket or add a card.</p>
             </div>
           `;
-          const emptyAdd = document.getElementById('btn-empty-add');
-          if (emptyAdd) emptyAdd.addEventListener('click', openScannerModal);
           return;
         }
 
         cardsGrid.innerHTML = filtered.map(card => {
+          const isFlipped = !!card.isFlipped;
+          const barcodeSvg = card.barcodeType === 'qr'
+            ? generateQRCode(card.number, 100)
+            : generateBarcode1D(card.number);
+
           return `
-            <article class="card-item" data-id="${card.id}">
-              <div class="card-visual" style="background: linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color});">
-                <div class="card-visual-top">
-                  <div class="card-store-badge">
-                    <span class="card-store-title">${escapeHtml(card.store)}</span>
-                    <span class="card-store-sub">${escapeHtml(card.title || card.tier)}</span>
+            <div class="card-3d-wrapper ${isFlipped ? 'is-flipped' : ''}" data-id="${card.id}">
+              <div class="card-3d-flipper">
+                
+                <!-- FRONT FACE: Store Image & Branding -->
+                <div class="card-face card-face-front" style="background: linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color});">
+                  <div class="front-top-row">
+                    <div class="store-badge-group">
+                      <span class="store-brand-title">${escapeHtml(card.store)}</span>
+                      <span class="store-card-tier">${escapeHtml(card.title)}</span>
+                    </div>
+                    <span class="flip-pill-hint">
+                      ↻ Tap to scan
+                    </span>
                   </div>
-                  <button class="card-pin-btn ${card.pinned ? 'pinned' : ''}" data-action="pin" data-id="${card.id}" title="${card.pinned ? 'Unpin from quick till' : 'Pin to top shelf'}">
-                    ★
-                  </button>
-                </div>
 
-                <div class="card-visual-center">
-                  <div class="card-chip-art"></div>
-                </div>
-
-                <div class="card-visual-bottom">
-                  <div>
-                    <div class="card-holder">${escapeHtml(card.holder || 'WALLET MEMBER')}</div>
-                    <div class="card-digits">${maskCardNumber(card.number)}</div>
+                  <div class="front-mid-row">
+                    <div class="card-smart-chip"></div>
+                    <div class="store-logo-symbol">${card.symbol || '🛒'}</div>
                   </div>
-                  <div style="font-size: 11px; opacity: 0.9; font-weight: 600;">1-TAP TILL</div>
-                </div>
-              </div>
 
-              <div class="card-footer">
-                <div class="card-meta-category">
-                  <span>${getCategoryIcon(card.category)}</span>
-                  <span style="text-transform: capitalize;">${card.category}</span>
+                  <div class="front-bottom-row">
+                    <span class="card-holder-name">${escapeHtml(card.holder || 'ED WILLIAMS')}</span>
+                    <span class="card-masked-number">${maskCardNumber(card.number)}</span>
+                  </div>
                 </div>
-                <div class="card-actions-row">
-                  <button class="btn-card-action" data-action="flip" data-id="${card.id}" title="Quick 3D Flip">
-                    ↻ Flip
-                  </button>
-                  <button class="btn-card-action btn-card-till" data-action="till" data-id="${card.id}">
-                    Scan Barcode
-                  </button>
+
+                <!-- BACK FACE: Instant Barcode for Checkout & Max Bright Toggle -->
+                <div class="card-face card-face-back">
+                  <div class="back-top-row">
+                    <span class="back-store-name">${escapeHtml(card.store)}</span>
+                    <div class="back-actions-group">
+                      <button class="btn-max-bright ${isBrightnessBoostActive ? 'active' : ''}" data-action="bright" title="Toggle Maximum Screen Brightness for checkout scanners">
+                        ☀ Max Bright
+                      </button>
+                      <button class="btn-flip-back" data-action="flip-back" title="Flip to front">
+                        ↻ Front
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="back-barcode-container">
+                    <div class="back-barcode-svg-wrap">
+                      ${barcodeSvg}
+                    </div>
+                    <div class="back-number-text">
+                      ${formatCardNumber(card.number)}
+                    </div>
+                  </div>
                 </div>
+
               </div>
-            </article>
+            </div>
           `;
         }).join('');
 
-        // Attach event listeners to card actions
-        cardsGrid.querySelectorAll('.card-visual').forEach(vis => {
-          vis.addEventListener('click', (e) => {
-            if (e.target.closest('.card-pin-btn')) return;
-            const cardEl = vis.closest('.card-item');
-            openTillModalById(cardEl.getAttribute('data-id'));
-          });
-        });
+        // Attach 3D Flip Handlers directly to each card
+        cardsGrid.querySelectorAll('.card-3d-wrapper').forEach(cardWrapper => {
+          cardWrapper.addEventListener('click', (e) => {
+            const cardId = cardWrapper.getAttribute('data-id');
+            const card = walletCards.find(c => c.id === cardId);
+            if (!card) return;
 
-        cardsGrid.querySelectorAll('button[data-action="till"]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            openTillModalById(btn.getAttribute('data-id'));
-          });
-        });
+            // Check if user clicked the Max Bright button
+            if (e.target.closest('button[data-action="bright"]')) {
+              e.stopPropagation();
+              toggleBrightnessBoost();
+              return;
+            }
 
-        cardsGrid.querySelectorAll('button[data-action="flip"]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            openTillModalById(btn.getAttribute('data-id'), true);
-          });
-        });
-
-        cardsGrid.querySelectorAll('button[data-action="pin"]').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = btn.getAttribute('data-id');
-            togglePinCard(id);
+            // Otherwise, execute smooth in-place 3D flip immediately!
+            card.isFlipped = !card.isFlipped;
+            cardWrapper.classList.toggle('is-flipped', card.isFlipped);
           });
         });
       }
 
-      function getCategoryIcon(cat) {
-        switch (cat) {
-          case 'supermarket': return '🛒';
-          case 'pharmacy': return '💊';
-          case 'coffee': return '☕';
-          case 'home': return '🏡';
-          default: return '📇';
+      function toggleBrightnessBoost() {
+        isBrightnessBoostActive = !isBrightnessBoostActive;
+        brightnessOverlay.classList.toggle('active', isBrightnessBoostActive);
+
+        document.querySelectorAll('button[data-action="bright"]').forEach(btn => {
+          btn.classList.toggle('active', isBrightnessBoostActive);
+        });
+
+        if (isBrightnessBoostActive) {
+          showToast('☀ Max Brightness active for optical till scanners');
+        } else {
+          showToast('Brightness restored');
         }
       }
 
@@ -2475,315 +1535,92 @@
         }[tag] || tag));
       }
 
-      function togglePinCard(id) {
-        const card = walletCards.find(c => c.id === id);
-        if (card) {
-          card.pinned = !card.pinned;
-          showToast(card.pinned ? `Pinned ${card.store} to Quick Till Shelf ★` : `Unpinned ${card.store}`);
-          renderPinnedShelf();
-          renderCardsGrid();
-        }
-      }
-
       /* ----------------------------------------------------------------------
-         5. INSTANT TILL VIEW CONTROLLER (SUPERMARKET ERGONOMICS)
+         5. ADD CARD CONTROLLER (AUTO STORE ARTWORK)
          ---------------------------------------------------------------------- */
-      function openTillModalById(id, startFlipped = false) {
-        const index = walletCards.findIndex(c => c.id === id);
-        if (index === -1) return;
-        activeTillCardIndex = index;
-        isTillFlipped = startFlipped;
-        isLaserActive = false;
-        renderTillModal();
-        tillModal.classList.add('open');
+      function renderStorePicker() {
+        storePickerGrid.innerHTML = storePresets.map(preset => {
+          const isSelected = preset.key === selectedPresetKey;
+          return `
+            <div class="store-chip-option ${isSelected ? 'selected' : ''}" data-key="${preset.key}">
+              <div class="store-thumb-badge" style="background: linear-gradient(135deg, ${preset.color}, ${preset.colorEnd});"></div>
+              <span class="store-thumb-label">${escapeHtml(preset.store)}</span>
+            </div>
+          `;
+        }).join('');
+
+        storePickerGrid.querySelectorAll('.store-chip-option').forEach(chip => {
+          chip.addEventListener('click', () => {
+            selectedPresetKey = chip.getAttribute('data-key');
+            updateSelectedPresetUI();
+          });
+        });
       }
 
-      function renderTillModal() {
-        const card = walletCards[activeTillCardIndex];
-        if (!card) return;
+      function updateSelectedPresetUI() {
+        storePickerGrid.querySelectorAll('.store-chip-option').forEach(chip => {
+          chip.classList.toggle('selected', chip.getAttribute('data-key') === selectedPresetKey);
+        });
 
-        tillTitle.textContent = `${card.store} ${card.title || ''}`;
-        tillDot.style.backgroundColor = card.color;
-
-        // Front Face
-        tillFrontStore.textContent = card.store;
-        tillFrontTier.textContent = card.title || card.tier || 'Member';
-        tillFrontHolder.textContent = card.holder || 'WALLET HOLDER';
-        tillFrontNumber.textContent = maskCardNumber(card.number);
-        tillFaceFront.style.background = `linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color})`;
-
-        // Back Face
-        tillBackNumber.textContent = formatCardNumber(card.number);
-        tillBackBarcodeMini.innerHTML = card.barcodeType === 'qr'
-          ? generateQRCode(card.number, 70)
-          : generateBarcode1D(card.number);
-
-        // Barcode Plate
-        tillHumanNumber.textContent = formatCardNumber(card.number);
-        if (card.barcodeType === 'qr') {
-          tillBarcodeSvgContainer.innerHTML = generateQRCode(card.number, 140);
-        } else {
-          tillBarcodeSvgContainer.innerHTML = generateBarcode1D(card.number);
-        }
-
-        // Navigation Counter
-        tillCardIndex.textContent = `${activeTillCardIndex + 1} / ${walletCards.length}`;
-
-        // Flip status
-        if (isTillFlipped) {
-          tillCard3D.classList.add('is-flipped');
-        } else {
-          tillCard3D.classList.remove('is-flipped');
-        }
-
-        // Reset laser button status
-        barcodePlate.classList.toggle('scanning', isLaserActive);
-        btnLaserScan.classList.toggle('active', isLaserActive);
+        const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
+        previewStoreName.textContent = preset.store;
+        previewCardTier.textContent = preset.title;
+        modalCardPreview.style.background = `linear-gradient(135deg, ${preset.color}, ${preset.colorEnd})`;
+        addInputNumber.value = preset.sampleNumber;
+        previewMaskedNum.textContent = maskCardNumber(preset.sampleNumber);
       }
 
-      function closeTillModal() {
-        tillModal.classList.remove('open');
-        isLaserActive = false;
-        if (isBrightnessBoostActive) toggleBrightnessBoost();
+      function openAddModal() {
+        renderStorePicker();
+        updateSelectedPresetUI();
+        addModal.classList.add('open');
+        addInputNumber.focus();
       }
 
-      function toggleCardFlip() {
-        isTillFlipped = !isTillFlipped;
-        tillCard3D.classList.toggle('is-flipped', isTillFlipped);
+      function closeAddModal() {
+        addModal.classList.remove('open');
       }
 
-      function toggleLaserScan() {
-        isLaserActive = !isLaserActive;
-        barcodePlate.classList.toggle('scanning', isLaserActive);
-        btnLaserScan.classList.toggle('active', isLaserActive);
-        if (isLaserActive) {
-          showToast('Laser scan beam active (optimizing optical readout)');
-        }
-      }
+      function saveNewCard() {
+        const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
+        const num = addInputNumber.value.trim() || preset.sampleNumber;
 
-      function toggleBrightnessBoost() {
-        isBrightnessBoostActive = !isBrightnessBoostActive;
-        brightnessOverlay.classList.toggle('active', isBrightnessBoostActive);
-        btnBrightnessBoost.classList.toggle('active', isBrightnessBoostActive);
-        if (isBrightnessBoostActive) {
-          showToast('Max Screen Brightness Simulated for Checkout');
-        }
-      }
-
-      function copyCardNumber() {
-        const card = walletCards[activeTillCardIndex];
-        if (!card) return;
-        const raw = card.number.replace(/\s+/g, '');
-        navigator.clipboard?.writeText(raw).catch(() => {});
-        copyBtnText.textContent = 'Copied!';
-        showToast(`Copied ${card.store} card number: ${raw}`);
-        setTimeout(() => {
-          copyBtnText.textContent = 'Copy Number';
-        }, 2000);
-      }
-
-      function navigateTill(delta) {
-        activeTillCardIndex = (activeTillCardIndex + delta + walletCards.length) % walletCards.length;
-        renderTillModal();
-      }
-
-      /* ----------------------------------------------------------------------
-         6. 2-STEP GUIDED SCANNER (<copio-scanner> INTEGRATION)
-         ---------------------------------------------------------------------- */
-      function openScannerModal() {
-        scannerStep = 1;
-        currentFilter = 'normal';
-        updateScannerStepUI();
-        drawSimulatedCameraFeed();
-        scannerModal.classList.add('open');
-      }
-
-      function closeScannerModal() {
-        scannerModal.classList.remove('open');
-      }
-
-      function updateScannerStepUI() {
-        pillStep1.className = 'step-pill' + (scannerStep === 1 ? ' active' : (scannerStep > 1 ? ' done' : ''));
-        pillStep2.className = 'step-pill' + (scannerStep === 2 ? ' active' : (scannerStep > 2 ? ' done' : ''));
-        pillStep3.className = 'step-pill' + (scannerStep === 3 ? ' active' : '');
-
-        if (scannerStep === 1) {
-          reticleInstruction.textContent = 'Step 1: Align Card Front (Store Logo)';
-          scannerNextBtn.querySelector('span').textContent = 'Capture Front → Step 2';
-          scannerBackBtn.style.display = 'none';
-          cardReticle.classList.remove('detected');
-        } else if (scannerStep === 2) {
-          reticleInstruction.textContent = 'Step 2: Turn Card Over (Barcode & Number)';
-          scannerNextBtn.querySelector('span').textContent = 'Capture Barcode → Step 3';
-          scannerBackBtn.style.display = 'inline-flex';
-          cardReticle.classList.add('detected');
-        } else {
-          reticleInstruction.textContent = 'Step 3: Review Details & Save to Wallet';
-          scannerNextBtn.querySelector('span').textContent = 'Save Card to Wallet ✓';
-          scannerBackBtn.style.display = 'inline-flex';
-        }
-
-        drawSimulatedCameraFeed();
-      }
-
-      function drawSimulatedCameraFeed() {
-        const ctx = scannerCameraCanvas.getContext('2d');
-        const w = scannerCameraCanvas.width;
-        const h = scannerCameraCanvas.height;
-
-        // Background dark simulation
-        ctx.fillStyle = '#06090e';
-        ctx.fillRect(0, 0, w, h);
-
-        const cardW = 380;
-        const cardH = 240;
-        const cx = (w - cardW) / 2;
-        const cy = (h - cardH) / 2;
-
-        const store = inputStoreName.value || 'Store';
-        const color = inputCardColor.value || '#00539f';
-
-        if (currentFilter === 'sauvola') {
-          // Simulated Sauvola B&W threshold
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(cx, cy, cardW, cardH);
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 4;
-          ctx.strokeRect(cx + 8, cy + 8, cardW - 16, cardH - 16);
-
-          ctx.fillStyle = '#000000';
-          ctx.font = 'bold 22px Inter, sans-serif';
-          ctx.fillText(store.toUpperCase(), cx + 30, cy + 50);
-
-          // Render simulated threshold barcode bars
-          for (let i = 0; i < 30; i++) {
-            const bx = cx + 30 + i * 10;
-            const bw = (i % 3 === 0) ? 5 : 2;
-            ctx.fillRect(bx, cy + 120, bw, 70);
-          }
-        } else if (currentFilter === 'contrast') {
-          // High contrast filter
-          ctx.fillStyle = color;
-          ctx.fillRect(cx, cy, cardW, cardH);
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 26px Inter, sans-serif';
-          ctx.fillText(store, cx + 30, cy + 60);
-
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(cx + 20, cy + 110, cardW - 40, 80);
-          ctx.fillStyle = '#000000';
-          for (let i = 0; i < 28; i++) {
-            ctx.fillRect(cx + 36 + i * 11, cy + 120, (i % 2 === 0 ? 4 : 2), 60);
-          }
-        } else {
-          // Standard full color photorealistic card mock
-          const grad = ctx.createLinearGradient(cx, cy, cx + cardW, cy + cardH);
-          grad.addColorStop(0, color);
-          grad.addColorStop(1, '#090d14');
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.roundRect(cx, cy, cardW, cardH, 16);
-          ctx.fill();
-
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 24px Inter, sans-serif';
-          ctx.fillText(store, cx + 24, cy + 46);
-
-          ctx.font = '13px Inter, sans-serif';
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-          ctx.fillText(inputCardTitle.value || 'Loyalty Card', cx + 24, cy + 68);
-
-          // Golden chip simulation
-          ctx.fillStyle = '#d4af37';
-          ctx.fillRect(cx + 24, cy + 90, 42, 32);
-
-          // Card number simulation
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 16px monospace';
-          ctx.fillText(formatCardNumber(inputCardNumber.value), cx + 24, cy + 200);
-        }
-      }
-
-      function handleScannerNext() {
-        if (scannerStep === 1) {
-          scannerStep = 2;
-          updateScannerStepUI();
-          showToast('Front captured! Now scanning card back & barcode...');
-        } else if (scannerStep === 2) {
-          scannerStep = 3;
-          updateScannerStepUI();
-          showToast('Barcode detected and verified! Review details.');
-        } else {
-          // Save Card to Prototype State
-          const newCard = {
-            id: 'card-' + Date.now(),
-            store: inputStoreName.value.trim() || 'New Store',
-            title: inputCardTitle.value.trim() || 'Membership Card',
-            tier: 'Member',
-            number: inputCardNumber.value.trim() || '1234567890',
-            barcodeType: inputBarcodeType.value,
-            category: inputCategory.value,
-            color: inputCardColor.value,
-            colorEnd: '#111723',
-            pinned: true,
-            holder: 'ED WILLIAMS',
-            notes: 'Captured via <copio-scanner>'
-          };
-
-          walletCards.unshift(newCard);
-          updateCategoryCounts();
-          renderPinnedShelf();
-          renderCardsGrid();
-          closeScannerModal();
-
-          // Update Inspector Log
-          inspectorEventLog.textContent = JSON.stringify({
-            event: 'copio:scan-complete',
-            timestamp: new Date().toISOString(),
-            mode: 'single',
-            aspect: 'card',
-            pages: [
-              { side: 'front', crop: { x: 0.08, y: 0.12, w: 0.84, h: 0.76 } },
-              { side: 'back', filter: currentFilter, barcodeFormat: newCard.barcodeType }
-            ],
-            metadata: {
-              store: newCard.store,
-              title: newCard.title,
-              cardNumber: newCard.number,
-              color: newCard.color
-            }
-          }, null, 2);
-
-          showToast(`Successfully saved ${newCard.store} card to wallet! ★`);
-          openTillModalById(newCard.id);
-        }
-      }
-
-      function handleSamplePresetChange() {
-        const val = sampleCardSelect.value;
-        const presets = {
-          tesco: { store: 'Tesco', title: 'Clubcard', number: '6340048291827401', color: '#00539f', type: 'ean13', cat: 'supermarket' },
-          sainsburys: { store: "Sainsbury's", title: 'Nectar', number: '98263004827103', color: '#e05a00', type: 'code128', cat: 'supermarket' },
-          boots: { store: 'Boots', title: 'Advantage Card', number: '704092817290', color: '#004b91', type: 'code128', cat: 'pharmacy' },
-          waitrose: { store: 'Waitrose', title: 'myWaitrose', number: '290184719284', color: '#025826', type: 'code128', cat: 'supermarket' },
-          sparks: { store: 'Marks & Spencer', title: 'Sparks', number: 'MS-SPARKS-91827402', color: '#111111', type: 'qr', cat: 'supermarket' },
-          costa: { store: 'Costa Coffee', title: 'Costa Club', number: 'COSTA-CLUB-55291039', color: '#70081d', type: 'qr', cat: 'coffee' },
-          morrisons: { store: 'Morrisons', title: 'Morrisons More', number: '882019482719', color: '#004f2f', type: 'code128', cat: 'supermarket' },
-          custom: { store: 'My Club', title: 'Loyalty Pass', number: '554433221100', color: '#8b5cf6', type: 'code128', cat: 'supermarket' }
+        const newCard = {
+          id: 'card-' + Date.now(),
+          store: preset.store,
+          title: preset.title,
+          category: preset.category,
+          number: num,
+          barcodeType: preset.barcodeType,
+          color: preset.color,
+          colorEnd: preset.colorEnd,
+          symbol: preset.symbol,
+          holder: 'ED WILLIAMS',
+          isFlipped: false
         };
 
-        const p = presets[val] || presets.custom;
-        inputStoreName.value = p.store;
-        inputCardTitle.value = p.title;
-        inputCardNumber.value = p.number;
-        inputCardColor.value = p.color;
-        inputBarcodeType.value = p.type;
-        inputCategory.value = p.cat;
-        drawSimulatedCameraFeed();
+        walletCards.unshift(newCard);
+        updateCategoryCounts();
+        renderCardsGrid();
+        closeAddModal();
+        showToast(`Added ${newCard.store} card to wallet! ↻ Tap to scan`);
       }
 
       /* ----------------------------------------------------------------------
-         7. P2P SYNC CONTROLLER
+         6. TOAST NOTIFICATION
+         ---------------------------------------------------------------------- */
+      let toastTimer = null;
+      function showToast(msg) {
+        toastMsg.textContent = msg;
+        toastPill.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastPill.classList.remove('show');
+        }, 2500);
+      }
+
+      /* ----------------------------------------------------------------------
+         7. P2P SYNC MODAL
          ---------------------------------------------------------------------- */
       function openSyncModal() {
         syncQrContainer.innerHTML = generateQRCode('copio-p2p://session/' + Math.random().toString(36).substring(2, 10), 160);
@@ -2795,22 +1632,9 @@
       }
 
       /* ----------------------------------------------------------------------
-         8. TOAST NOTIFICATION UTILITY
+         8. EVENT LISTENERS
          ---------------------------------------------------------------------- */
-      let toastTimer = null;
-      function showToast(msg) {
-        toastMsg.textContent = msg;
-        toastPill.classList.add('show');
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          toastPill.classList.remove('show');
-        }, 3000);
-      }
-
-      /* ----------------------------------------------------------------------
-         9. EVENT LISTENERS SETUP
-         ---------------------------------------------------------------------- */
-      // Search Box
+      // Search
       searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
         searchClearBtn.classList.toggle('visible', !!searchQuery);
@@ -2825,23 +1649,15 @@
         searchInput.focus();
       });
 
-      // Quick keyboard shortcut '/' to search
+      // Quick Keyboard Shortcuts
       window.addEventListener('keydown', (e) => {
-        if (e.key === '/' && document.activeElement !== searchInput && !tillModal.classList.contains('open') && !scannerModal.classList.contains('open')) {
+        if (e.key === '/' && document.activeElement !== searchInput && !addModal.classList.contains('open')) {
           e.preventDefault();
           searchInput.focus();
         } else if (e.key === 'Escape') {
-          if (tillModal.classList.contains('open')) closeTillModal();
-          if (scannerModal.classList.contains('open')) closeScannerModal();
+          if (addModal.classList.contains('open')) closeAddModal();
           if (syncModal.classList.contains('open')) closeSyncModal();
-          if (inspectorDrawer.classList.contains('open')) inspectorDrawer.classList.remove('open');
-        } else if (e.key === ' ' && tillModal.classList.contains('open')) {
-          e.preventDefault();
-          toggleCardFlip();
-        } else if (e.key === 'ArrowLeft' && tillModal.classList.contains('open')) {
-          navigateTill(-1);
-        } else if (e.key === 'ArrowRight' && tillModal.classList.contains('open')) {
-          navigateTill(1);
+          if (isBrightnessBoostActive) toggleBrightnessBoost();
         }
       });
 
@@ -2855,49 +1671,20 @@
         });
       });
 
-      // Till Modal Events
-      tillCloseBtn.addEventListener('click', closeTillModal);
-      tillCard3D.addEventListener('click', toggleCardFlip);
-      btnCopyCardNum.addEventListener('click', copyCardNumber);
-      btnLaserScan.addEventListener('click', toggleLaserScan);
-      btnBrightnessBoost.addEventListener('click', toggleBrightnessBoost);
-      tillPrevBtn.addEventListener('click', () => navigateTill(-1));
-      tillNextBtn.addEventListener('click', () => navigateTill(1));
-
-      tillModal.addEventListener('click', (e) => {
-        if (e.target === tillModal) closeTillModal();
+      // Add Modal
+      btnOpenAddCard.addEventListener('click', openAddModal);
+      modalCloseBtn.addEventListener('click', closeAddModal);
+      modalCancelBtn.addEventListener('click', closeAddModal);
+      modalSaveBtn.addEventListener('click', saveNewCard);
+      addInputNumber.addEventListener('input', (e) => {
+        previewMaskedNum.textContent = maskCardNumber(e.target.value);
       });
 
-      // Guided Scanner Modal Events
-      btnOpenScanner.addEventListener('click', openScannerModal);
-      scannerCloseBtn.addEventListener('click', closeScannerModal);
-      scannerNextBtn.addEventListener('click', handleScannerNext);
-      scannerBackBtn.addEventListener('click', () => {
-        if (scannerStep > 1) {
-          scannerStep--;
-          updateScannerStepUI();
-        }
+      addModal.addEventListener('click', (e) => {
+        if (e.target === addModal) closeAddModal();
       });
 
-      sampleCardSelect.addEventListener('change', handleSamplePresetChange);
-      inputCardColor.addEventListener('input', drawSimulatedCameraFeed);
-      inputStoreName.addEventListener('input', drawSimulatedCameraFeed);
-      inputCardTitle.addEventListener('input', drawSimulatedCameraFeed);
-
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentFilter = btn.getAttribute('data-filter');
-          drawSimulatedCameraFeed();
-        });
-      });
-
-      scannerModal.addEventListener('click', (e) => {
-        if (e.target === scannerModal) closeScannerModal();
-      });
-
-      // P2P Sync Modal Events
+      // Sync Modal
       btnOpenSync.addEventListener('click', openSyncModal);
       syncCloseBtn.addEventListener('click', closeSyncModal);
       syncDoneBtn.addEventListener('click', closeSyncModal);
@@ -2915,19 +1702,10 @@
         themeIcon.textContent = next === 'dark' ? '🌙' : '☀️';
       });
 
-      // Inspector Drawer
-      btnInspectorToggle.addEventListener('click', () => {
-        inspectorDrawer.classList.toggle('open');
-      });
-      inspectorCloseBtn.addEventListener('click', () => {
-        inspectorDrawer.classList.remove('open');
-      });
-
       /* ----------------------------------------------------------------------
-         10. BOOTSTRAP INITIALIZATION
+         9. INITIALIZE
          ---------------------------------------------------------------------- */
       updateCategoryCounts();
-      renderPinnedShelf();
       renderCardsGrid();
 
     })();
