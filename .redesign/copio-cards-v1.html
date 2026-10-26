@@ -149,7 +149,7 @@
 
     /* ==========================================================================
        3. APP HEADER
-       ========================================================================== */
+       ======================================================================== */
     .app-header {
       background-color: var(--color-surface);
       border-bottom: 1px solid var(--color-border);
@@ -683,7 +683,7 @@
     }
 
     /* ==========================================================================
-       6. ADD CARD MODAL WITH INTEGRATED SCANNING FACILITY
+       6. ADD CARD MODAL
        ========================================================================== */
     .modal-overlay {
       position: fixed;
@@ -707,7 +707,7 @@
 
     .modal-sheet {
       width: 100%;
-      max-width: 540px;
+      max-width: 520px;
       background-color: var(--color-surface);
       border: 1px solid var(--color-border-strong);
       border-radius: var(--radius-xl);
@@ -715,7 +715,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      max-height: 92vh;
+      max-height: 90vh;
     }
 
     .modal-header {
@@ -805,199 +805,6 @@
       width: 100%;
     }
 
-    /* Embedded Scanner Component Styles */
-    .scanner-view-box {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .scan-mode-tabs {
-      display: inline-flex;
-      background: var(--color-surface-elevated);
-      padding: 3px;
-      border-radius: var(--radius-pill);
-      border: 1px solid var(--color-border);
-      gap: 4px;
-    }
-
-    .scan-tab-btn {
-      background: none;
-      border: none;
-      color: var(--color-text-muted);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: var(--radius-pill);
-      cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-
-    .scan-tab-btn.active {
-      background-color: var(--color-primary);
-      color: var(--color-primary-contrast);
-      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
-    }
-
-    .copio-scanner-sim {
-      position: relative;
-      width: 100%;
-      height: 200px;
-      background-color: #03060a;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      border: 1px solid var(--color-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Targeting Reticle */
-    .barcode-reticle-overlay {
-      position: absolute;
-      width: 78%;
-      height: 80px;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .reticle-corner {
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      border-color: #f59e0b;
-      border-style: solid;
-      border-width: 0;
-    }
-
-    .r-tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 4px; }
-    .r-tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 4px; }
-    .r-bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 4px; }
-    .r-br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 4px; }
-
-    .reticle-aim-line {
-      position: absolute;
-      left: 8px;
-      right: 8px;
-      height: 2px;
-      background: #ef4444;
-      box-shadow: 0 0 6px #ef4444;
-      animation: aim-sweep 1.8s ease-in-out infinite alternate;
-    }
-
-    @keyframes aim-sweep {
-      0% { top: 15%; opacity: 0.6; }
-      100% { top: 85%; opacity: 1; }
-    }
-
-    .reticle-badge {
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      color: #ffffff;
-      padding: 3px 10px;
-      border-radius: var(--radius-pill);
-      font-size: 11px;
-      font-weight: 600;
-      position: absolute;
-      bottom: -28px;
-      white-space: nowrap;
-    }
-
-    /* Barcode Success Feedback Pill */
-    .barcode-success-pill {
-      position: absolute;
-      background: rgba(16, 185, 129, 0.95);
-      color: #ffffff;
-      padding: 8px 16px;
-      border-radius: var(--radius-pill);
-      font-size: 13px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
-      z-index: 10;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all var(--transition-fast);
-      pointer-events: none;
-    }
-
-    .barcode-success-pill.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .scanner-action-bar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn-scan-action {
-      flex: 1;
-      min-width: 140px;
-      height: 38px;
-      background-color: var(--color-surface-elevated);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      color: var(--color-text);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all var(--transition-fast);
-    }
-
-    .btn-scan-action:hover {
-      background-color: var(--color-surface-hover);
-      border-color: var(--color-border-strong);
-    }
-
-    .btn-scan-highlight {
-      background-color: rgba(245, 158, 11, 0.15);
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
-
-    .btn-scan-highlight:hover {
-      background-color: rgba(245, 158, 11, 0.25);
-    }
-
-    .scanner-filter-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 2px 4px;
-    }
-
-    .filter-pills {
-      display: flex;
-      gap: 4px;
-    }
-
-    .filter-pill-btn {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--color-border);
-      background-color: var(--color-surface-elevated);
-      color: var(--color-text-muted);
-      cursor: pointer;
-    }
-
-    .filter-pill-btn.active {
-      background-color: var(--color-primary);
-      color: var(--color-primary-contrast);
-      border-color: var(--color-primary);
-    }
-
     /* Auto-Card Preview in Add Modal */
     .modal-card-preview-container {
       width: 100%;
@@ -1039,6 +846,29 @@
 
     .form-input:focus {
       border-color: var(--color-primary);
+    }
+
+    .btn-scan-barcode {
+      height: 44px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      background-color: var(--color-surface-elevated);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-scan-barcode:hover {
+      background-color: var(--color-surface-hover);
+      border-color: var(--color-border-strong);
     }
 
     .modal-footer {
@@ -1111,7 +941,7 @@
   <aside class="prototype-banner">
     <div class="prototype-banner-tag">
       <span class="prototype-badge">CPO-047 Prototype</span>
-      <span><strong>Stow Cards</strong> (Direct In-Place Flip & Barcode Scanner)</span>
+      <span><strong>Stow Cards</strong> (Direct In-Place Flip & Auto Store Artwork)</span>
     </div>
     <div class="prototype-controls">
       <button class="btn-harness" id="btn-theme-toggle" title="Toggle Light/Dark Theme">
@@ -1225,7 +1055,7 @@
   <div class="brightness-boost-screen" id="brightness-overlay"></div>
 
   <!-- ========================================================================
-       ADD CARD MODAL WITH INTEGRATED SCANNING FACILITY (<copio-scanner>)
+       ADD CARD MODAL (AUTO STORE ARTWORK + SCAN BARCODE BUTTON)
        ======================================================================== -->
   <div class="modal-overlay" id="add-modal" role="dialog" aria-modal="true">
     <div class="modal-sheet">
@@ -1239,7 +1069,7 @@
           </div>
           <div>
             <h2>Add Loyalty Card</h2>
-            <div style="font-size: 11px; color: var(--color-text-muted);">Auto Store Artwork + Card Barcode Scanner</div>
+            <div style="font-size: 11px; color: var(--color-text-muted);">Auto Store Artwork + Card Barcode</div>
           </div>
         </div>
         <button class="modal-close-btn" id="modal-close-btn">✕</button>
@@ -1254,76 +1084,21 @@
           </div>
         </div>
 
-        <!-- 2. Integrated <copio-scanner> Viewfinder -->
+        <!-- 2. Barcode & Number Input with 'Scan Barcode' button -->
         <div class="form-group">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <label class="form-label" style="margin: 0;">2. Scan Card Barcode</label>
-            <div class="scan-mode-tabs">
-              <button class="scan-tab-btn active" id="tab-camera-btn">📷 Camera Scan</button>
-              <button class="scan-tab-btn" id="tab-manual-btn">⌨️ Manual</button>
-            </div>
+          <label class="form-label" for="add-input-number">2. Membership / Barcode Number</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="add-input-number" class="form-input" style="flex: 1;" placeholder="e.g. 6340048291827401" value="6340048291827401" />
+            <button type="button" class="btn-scan-barcode" id="btn-scan-barcode" title="Scan card barcode with camera">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span>Scan Barcode</span>
+            </button>
           </div>
-
-          <!-- Camera Scanner Viewfinder Section -->
-          <div id="scanner-view-container" class="scanner-view-box">
-            <div class="copio-scanner-sim" id="scanner-viewfinder">
-              <!-- Live Video Element for real camera stream -->
-              <video id="scanner-live-video" playsinline muted autoplay style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
-              <!-- Simulated Canvas feed -->
-              <canvas id="scanner-camera-canvas" width="600" height="340" style="width: 100%; height: 100%; object-fit: cover;"></canvas>
-
-              <!-- Barcode Reticle Finder Target -->
-              <div class="barcode-reticle-overlay" id="barcode-reticle">
-                <div class="reticle-corner r-tl"></div>
-                <div class="reticle-corner r-tr"></div>
-                <div class="reticle-corner r-bl"></div>
-                <div class="reticle-corner r-br"></div>
-                <div class="reticle-aim-line"></div>
-                <span class="reticle-badge" id="reticle-status-text">Point camera at card barcode</span>
-              </div>
-
-              <!-- Barcode Detected Success Pill -->
-              <div class="barcode-success-pill" id="barcode-success-pill">
-                <span style="color: #10b981; font-size: 16px;">✓</span>
-                <span id="detected-code-label">Barcode Scanned!</span>
-              </div>
-            </div>
-
-            <!-- Scanner Controls Strip -->
-            <div class="scanner-action-bar">
-              <button class="btn-scan-action" id="btn-start-camera" title="Start live device camera">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                  <circle cx="12" cy="13" r="4"></circle>
-                </svg>
-                <span id="camera-btn-text">Open Device Camera</span>
-              </button>
-
-              <button class="btn-scan-action btn-scan-highlight" id="btn-trigger-scan" title="Simulate scanning physical barcode">
-                ⚡ <span>Scan Sample Barcode</span>
-              </button>
-
-              <label class="btn-scan-action" title="Upload barcode photo" style="cursor: pointer; margin: 0;">
-                <input type="file" id="barcode-file-input" accept="image/*" style="display: none;" />
-                📁 <span>Upload Photo</span>
-              </label>
-            </div>
-
-            <div class="scanner-filter-bar">
-              <span style="font-size: 11px; color: var(--color-text-muted);">Copio Scanner Filter:</span>
-              <div class="filter-pills">
-                <button class="filter-pill-btn active" data-filter="normal">Natural</button>
-                <button class="filter-pill-btn" data-filter="sauvola">Sauvola B&W</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Manual Input Section -->
-          <div id="manual-view-container" style="display: none; flex-direction: column; gap: 8px;">
-            <input type="text" id="add-input-number" class="form-input" placeholder="e.g. 6340048291827401" value="6340048291827401" />
-            <div style="font-size: 11px; color: var(--color-text-muted);">
-              Enter the card number beneath your physical barcode.
-            </div>
+          <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 2px;">
+            High-contrast 1D/2D barcode is auto-generated instantly for till checkout.
           </div>
         </div>
 
@@ -1521,8 +1296,6 @@
       let searchQuery = '';
       let isBrightnessBoostActive = false;
       let selectedPresetKey = 'tesco';
-      let currentFilterMode = 'normal';
-      let cameraStream = null;
 
       /* ----------------------------------------------------------------------
          2. DOM REFERENCES
@@ -1547,21 +1320,7 @@
       const previewCardTier = document.getElementById('preview-card-tier');
       const previewMaskedNum = document.getElementById('preview-masked-num');
       const addInputNumber = document.getElementById('add-input-number');
-
-      // Scanner Viewfinder Elements
-      const scannerViewContainer = document.getElementById('scanner-view-container');
-      const manualViewContainer = document.getElementById('manual-view-container');
-      const tabCameraBtn = document.getElementById('tab-camera-btn');
-      const tabManualBtn = document.getElementById('tab-manual-btn');
-      const scannerCameraCanvas = document.getElementById('scanner-camera-canvas');
-      const scannerLiveVideo = document.getElementById('scanner-live-video');
-      const btnStartCamera = document.getElementById('btn-start-camera');
-      const cameraBtnText = document.getElementById('camera-btn-text');
-      const btnTriggerScan = document.getElementById('btn-trigger-scan');
-      const barcodeFileInput = document.getElementById('barcode-file-input');
-      const barcodeSuccessPill = document.getElementById('barcode-success-pill');
-      const detectedCodeLabel = document.getElementById('detected-code-label');
-      const reticleStatusText = document.getElementById('reticle-status-text');
+      const btnScanBarcode = document.getElementById('btn-scan-barcode');
 
       // Sync Modal Elements
       const syncModal = document.getElementById('sync-modal');
@@ -1816,147 +1575,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         5. CAMERA SCANNING FACILITY & CANVAS SIMULATION
-         ---------------------------------------------------------------------- */
-      function drawScannerCanvasFeed() {
-        const ctx = scannerCameraCanvas.getContext('2d');
-        const w = scannerCameraCanvas.width;
-        const h = scannerCameraCanvas.height;
-
-        ctx.fillStyle = '#06090e';
-        ctx.fillRect(0, 0, w, h);
-
-        const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
-
-        // Draw simulated card back being scanned by camera
-        const cx = 100;
-        const cy = 40;
-        const cw = 400;
-        const ch = 240;
-
-        if (currentFilterMode === 'sauvola') {
-          // B&W Sauvola threshold enhancement
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(cx, cy, cw, ch);
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 3;
-          ctx.strokeRect(cx + 10, cy + 10, cw - 20, ch - 20);
-
-          ctx.fillStyle = '#000000';
-          ctx.font = 'bold 16px Inter, sans-serif';
-          ctx.fillText(preset.store.toUpperCase() + ' REWARDS', cx + 24, cy + 44);
-
-          // Render crisp black barcode bars
-          for (let i = 0; i < 34; i++) {
-            const bx = cx + 30 + i * 10;
-            const bw = (i % 3 === 0) ? 6 : 2;
-            ctx.fillRect(bx, cy + 70, bw, 80);
-          }
-          ctx.font = 'bold 14px monospace';
-          ctx.fillText(formatCardNumber(preset.sampleNumber), cx + 70, cy + 180);
-        } else {
-          // Natural camera card view
-          ctx.fillStyle = '#1e293b';
-          ctx.fillRect(cx, cy, cw, ch);
-          ctx.fillStyle = '#0f172a';
-          ctx.fillRect(cx, cy, cw, 36);
-
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(cx + 20, cy + 60, cw - 40, 110);
-
-          // Barcode bars inside card
-          ctx.fillStyle = '#000000';
-          for (let i = 0; i < 30; i++) {
-            const bx = cx + 40 + i * 10.5;
-            const bw = (i % 2 === 0) ? 4 : 2;
-            ctx.fillRect(bx, cy + 75, bw, 60);
-          }
-
-          ctx.font = 'bold 13px monospace';
-          ctx.fillText(formatCardNumber(preset.sampleNumber), cx + 60, cy + 155);
-
-          ctx.fillStyle = '#94a3b8';
-          ctx.font = '11px Inter, sans-serif';
-          ctx.fillText(preset.store + ' • Keep card dry and safe', cx + 24, cy + 205);
-        }
-      }
-
-      function triggerBarcodeDetection(num, format = 'ean13') {
-        addInputNumber.value = num;
-        previewMaskedNum.textContent = maskCardNumber(num);
-
-        // Visual feedback on reticle
-        detectedCodeLabel.textContent = `Barcode Scanned: ${num}`;
-        barcodeSuccessPill.classList.add('show');
-        reticleStatusText.textContent = `✓ Barcode Verified: ${format.toUpperCase()}`;
-        reticleStatusText.style.background = '#10b981';
-
-        setTimeout(() => {
-          barcodeSuccessPill.classList.remove('show');
-          reticleStatusText.textContent = 'Point camera at card barcode';
-          reticleStatusText.style.background = 'rgba(0, 0, 0, 0.75)';
-        }, 3000);
-
-        showToast(`✓ Scanned barcode: ${num}`);
-      }
-
-      async function startLiveCamera() {
-        if (cameraStream) {
-          // Stop stream
-          cameraStream.getTracks().forEach(t => t.stop());
-          cameraStream = null;
-          scannerLiveVideo.style.display = 'none';
-          scannerCameraCanvas.style.display = 'block';
-          cameraBtnText.textContent = 'Open Device Camera';
-          return;
-        }
-
-        try {
-          cameraStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
-          });
-          scannerLiveVideo.srcObject = cameraStream;
-          scannerLiveVideo.style.display = 'block';
-          scannerCameraCanvas.style.display = 'none';
-          cameraBtnText.textContent = 'Stop Camera';
-          reticleStatusText.textContent = 'Live camera active • Scan barcode';
-
-          // Attempt barcode scanning if native API supported
-          if ('BarcodeDetector' in window) {
-            // Native BarcodeDetector loop
-            const detector = new window.BarcodeDetector({ formats: ['ean_13', 'code_128', 'qr_code'] });
-            const scanInterval = setInterval(async () => {
-              if (!cameraStream) {
-                clearInterval(scanInterval);
-                return;
-              }
-              try {
-                const barcodes = await detector.detect(scannerLiveVideo);
-                if (barcodes.length > 0) {
-                  triggerBarcodeDetection(barcodes[0].rawValue, barcodes[0].format);
-                  clearInterval(scanInterval);
-                }
-              } catch (_) {}
-            }, 500);
-          }
-        } catch (err) {
-          showToast('Camera unavailable or permission denied; using simulation mode.');
-          drawScannerCanvasFeed();
-        }
-      }
-
-      function stopCameraStream() {
-        if (cameraStream) {
-          cameraStream.getTracks().forEach(t => t.stop());
-          cameraStream = null;
-          scannerLiveVideo.style.display = 'none';
-          scannerCameraCanvas.style.display = 'block';
-          cameraBtnText.textContent = 'Open Device Camera';
-        }
-      }
-
-      /* ----------------------------------------------------------------------
-         6. ADD CARD CONTROLLER (STORE PICKER + SCANNER INTEGRATION)
+         5. ADD CARD CONTROLLER
          ---------------------------------------------------------------------- */
       function renderStorePicker() {
         storePickerGrid.innerHTML = storePresets.map(preset => {
@@ -1988,19 +1607,16 @@
         modalCardPreview.style.background = `linear-gradient(135deg, ${preset.color}, ${preset.colorEnd})`;
         addInputNumber.value = preset.sampleNumber;
         previewMaskedNum.textContent = maskCardNumber(preset.sampleNumber);
-
-        drawScannerCanvasFeed();
       }
 
       function openAddModal() {
         renderStorePicker();
         updateSelectedPresetUI();
-        drawScannerCanvasFeed();
         addModal.classList.add('open');
+        addInputNumber.focus();
       }
 
       function closeAddModal() {
-        stopCameraStream();
         addModal.classList.remove('open');
       }
 
@@ -2030,7 +1646,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         7. TOAST NOTIFICATION
+         6. TOAST NOTIFICATION
          ---------------------------------------------------------------------- */
       let toastTimer = null;
       function showToast(msg) {
@@ -2043,7 +1659,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         8. P2P SYNC MODAL
+         7. P2P SYNC MODAL
          ---------------------------------------------------------------------- */
       function openSyncModal() {
         syncQrContainer.innerHTML = generateQRCode('copio-p2p://session/' + Math.random().toString(36).substring(2, 10), 160);
@@ -2055,7 +1671,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         9. EVENT LISTENERS
+         8. EVENT LISTENERS
          ---------------------------------------------------------------------- */
       // Search
       searchInput.addEventListener('input', (e) => {
@@ -2094,7 +1710,7 @@
         });
       });
 
-      // Add Modal & Scanner Events
+      // Add Modal & Scan Barcode Button
       btnOpenAddCard.addEventListener('click', openAddModal);
       modalCloseBtn.addEventListener('click', closeAddModal);
       modalCancelBtn.addEventListener('click', closeAddModal);
@@ -2103,44 +1719,10 @@
         previewMaskedNum.textContent = maskCardNumber(e.target.value);
       });
 
-      // Scan Mode Tabs (Camera vs Manual)
-      tabCameraBtn.addEventListener('click', () => {
-        tabCameraBtn.classList.add('active');
-        tabManualBtn.classList.remove('active');
-        scannerViewContainer.style.display = 'flex';
-        manualViewContainer.style.display = 'none';
-      });
-
-      tabManualBtn.addEventListener('click', () => {
-        tabManualBtn.classList.add('active');
-        tabCameraBtn.classList.remove('active');
-        scannerViewContainer.style.display = 'none';
-        manualViewContainer.style.display = 'flex';
-        addInputNumber.focus();
-      });
-
-      // Camera Scanner Controls
-      btnStartCamera.addEventListener('click', startLiveCamera);
-      btnTriggerScan.addEventListener('click', () => {
-        const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
-        triggerBarcodeDetection(preset.sampleNumber, preset.barcodeType);
-      });
-
-      barcodeFileInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-          const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
-          triggerBarcodeDetection(preset.sampleNumber, preset.barcodeType);
-        }
-      });
-
-      // Scanner Filter Buttons (Normal vs Sauvola)
-      document.querySelectorAll('.filter-pill-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.filter-pill-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentFilterMode = btn.getAttribute('data-filter');
-          drawScannerCanvasFeed();
-        });
+      // 'Scan Barcode' button: kept in place, currently does nothing as requested
+      btnScanBarcode.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Does nothing for the time being
       });
 
       addModal.addEventListener('click', (e) => {
@@ -2166,7 +1748,7 @@
       });
 
       /* ----------------------------------------------------------------------
-         10. INITIALIZE
+         9. INITIALIZE
          ---------------------------------------------------------------------- */
       updateCategoryCounts();
       renderCardsGrid();
