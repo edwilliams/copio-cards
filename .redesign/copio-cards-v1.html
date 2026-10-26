@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stow Cards — Consumer Loyalty & Pocket Wallet (CPO-047)</title>
+  <style>
+    /* ==========================================================================
+       1. STOW / COPIO CARDS DESIGN TOKENS
+       ========================================================================== */
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+
+      /* Dark Obsidian Canvas */
+      --color-canvas: #090c13;
+      --color-surface: #111723;
+      --color-surface-elevated: #1a2233;
+      --color-surface-hover: #222d42;
+      --color-surface-active: #29364f;
+      --color-border: rgba(148, 163, 184, 0.16);
+      --color-border-strong: rgba(148, 163, 184, 0.32);
+
+      /* Typography */
+      --color-text: #f8fafc;
+      --color-text-muted: #94a3b8;
+      --color-text-faint: #64748b;
+      --color-text-inverse: #090c13;
+
+      /* Warm Amber & Checkout Accents */
+      --color-primary: #f59e0b;
+      --color-primary-hover: #fbbf24;
+      --color-primary-contrast: #090c13;
+      --color-success: #10b981;
+      --color-info: #38bdf8;
+      --color-danger: #ef4444;
+
+      /* Geometry & Ergonomics */
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --radius-pill: 9999px;
+
+      --touch-target-min: 48px;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.7);
+
+      --transition-fast: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      --transition-flip: 500ms cubic-bezier(0.34, 1.25, 0.64, 1);
+    }
+
+    [data-theme="light"] {
+      --color-canvas: #f1f5f9;
+      --color-surface: #ffffff;
+      --color-surface-elevated: #f8fafc;
+      --color-surface-hover: #f1f5f9;
+      --color-surface-active: #e2e8f0;
+      --color-border: rgba(15, 23, 42, 0.12);
+      --color-border-strong: rgba(15, 23, 42, 0.24);
+      --color-text: #0f172a;
+      --color-text-muted: #64748b;
+      --color-text-faint: #94a3b8;
+      --color-text-inverse: #f8fafc;
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.14);
+      --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.18);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-canvas);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ==========================================================================
+       2. TOP HARNESS BANNER (CPO-047 SANDBOX CHROME)
+       ========================================================================== */
+    .prototype-banner {
+      background: linear-gradient(90deg, #1e1b4b 0%, #172554 100%);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 8px 16px;
+      font-size: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .prototype-banner-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: #93c5fd;
+    }
+
+    .prototype-badge {
+      background: rgba(147, 197, 253, 0.18);
+      color: #bfdbfe;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .prototype-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-harness {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .btn-harness:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ==========================================================================
+       3. APP HEADER
+       ========================================================================== */
+    .app-header {
+      background-color: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+      color: #090c13;
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--color-success);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background-color: var(--color-success);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--color-success);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      height: var(--touch-target-min);
+      min-width: var(--touch-target-min);
+      padding: 0 16px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-action-primary {
+      background-color: var(--color-primary);
+      color: var(--color-primary-contrast);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-action-primary:hover {
+      background-color: var(--color-primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-action-secondary {
+      background-color: var(--color-surface-elevated);
+      color: var(--color-text);
+      border-color: var(--color-border);
+    }
+
+    .btn-action-secondary:hover {
+      background-color: var(--color-surface-hover);
+    }
+
+    /* ==========================================================================
+       4. MAIN CONTAINER & SEARCH / FILTERS
+       ========================================================================== */
+    .app-main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 16px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .toolbar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-faint);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 48px;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 0 48px 0 46px;
+      color: var(--color-text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .search-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-faint);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--color-text-faint);
+      cursor: pointer;
+      display: none;
+      padding: 4px;
+    }
+
+    .search-clear.visible {
+      display: block;
+    }
+
+    .category-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .category-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pill-btn {
+      height: 38px;
+      padding: 0 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      color: var(--color-text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition-fast);
+    }
+
+    .pill-btn:hover {
+      background-color: var(--color-surface-hover);
+      color: var(--color-text);
+    }
+
+    .pill-btn.active {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-primary-contrast);
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+
+    .pill-count {
+      font-size: 11px;
+      opacity: 0.8;
+      background: rgba(0, 0, 0, 0.15);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    .grid-info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--color-text-muted);
+      font-size: 13px;
+    }
+
+    .hint-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--color-primary);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       5. 3D FLIP-IN-PLACE WALLET CARDS GRID
+       ========================================================================== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    /* 3D Flip Card Container (In-Place) */
+    .card-3d-wrapper {
+      perspective: 1200px;
+      height: 220px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .card-3d-flipper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform var(--transition-flip);
+      border-radius: var(--radius-lg);
+    }
+
+    .card-3d-wrapper.is-flipped .card-3d-flipper {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 20px;
+      transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .card-3d-wrapper:hover .card-face {
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-border-strong);
+    }
+
+    /* FRONT FACE */
+    .card-face-front {
+      color: #ffffff;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .card-face-front::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 70%);
+      pointer-events: none;
+    }
+
+    .front-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 2;
+    }
+
+    .store-badge-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .store-brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    .store-card-tier {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.9;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .flip-pill-hint {
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .front-mid-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .card-smart-chip {
+      width: 40px;
+      height: 30px;
+      background: linear-gradient(135deg, #e5c065, #b8860b);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .store-logo-symbol {
+      font-size: 24px;
+      opacity: 0.9;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .front-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      z-index: 2;
+    }
+
+    .card-holder-name {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.9;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-masked-number {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    }
+
+    /* BACK FACE: Barcode & Max Bright */
+    .card-face-back {
+      transform: rotateY(180deg);
+      background-color: #ffffff;
+      color: #090c13;
+      padding: 14px 18px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .back-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .back-store-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .back-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-max-bright {
+      background-color: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #b45309;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-max-bright:hover {
+      background-color: #fde68a;
+    }
+
+    .btn-max-bright.active {
+      background-color: #f59e0b;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-flip-back {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+    }
+
+    .btn-flip-back:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* High Contrast Barcode Surface */
+    .back-barcode-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 0;
+    }
+
+    .back-barcode-svg-wrap {
+      width: 100%;
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-barcode-svg-wrap svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .back-number-text {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: #090c13;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* Screen Brightness Simulator Overlay */
+    .brightness-boost-screen {
+      position: fixed;
+      inset: 0;
+      background-color: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 99;
+      transition: opacity 250ms ease;
+    }
+
+    .brightness-boost-screen.active {
+      opacity: 0.35;
+    }
+
+    /* ==========================================================================
+       6. ADD CARD MODAL WITH VIEWFINDER & UPLOAD SUITE
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(4, 7, 12, 0.92);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition-fast), visibility var(--transition-fast);
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 560px;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      max-height: 92vh;
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--color-text);
+      background-color: var(--color-surface-hover);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .store-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .store-chip-option {
+      background-color: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .store-chip-option:hover {
+      border-color: var(--color-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .store-chip-option.selected {
+      border-color: var(--color-primary);
+      background-color: var(--color-surface-hover);
+      box-shadow: 0 0 0 2px var(--color-primary);
+    }
+
+    .store-thumb-badge {
+      width: 32px;
+      height: 22px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .store-thumb-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    /* Embedded Scanner Viewfinder */
+    .scanner-view-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .copio-scanner-sim {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background-color: #03060a;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .barcode-reticle-overlay {
+      position: absolute;
+      width: 78%;
+      height: 80px;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reticle-corner {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: #f59e0b;
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .r-tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 4px; }
+    .r-tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 4px; }
+    .r-bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 4px; }
+    .r-br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 4px; }
+
+    .reticle-badge {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      position: absolute;
+      bottom: -28px;
+      white-space: nowrap;
+    }
+
+    .scanner-action-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-scan-action {
+      flex: 1;
+      min-width: 140px;
+      height: 38px;
+      background-color: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-scan-action:hover {
+      background-color: var(--color-surface-hover);
+      border-color: var(--color-border-strong);
+    }
+
+    .scanner-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 4px;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 4px;
+    }
+
+    .filter-pill-btn {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface-elevated);
+      color: var(--color-text-muted);
+      cursor: pointer;
+    }
+
+    .filter-pill-btn.active {
+      background-color: var(--color-primary);
+      color: var(--color-primary-contrast);
+      border-color: var(--color-primary);
+    }
+
+    /* Live Card Artwork Preview */
+    .modal-card-preview-container {
+      width: 100%;
+      height: 140px;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .form-input {
+      height: 44px;
+      background-color: var(--color-surface-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0 14px;
+      color: var(--color-text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--color-primary);
+    }
+
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* P2P Sync Sheet */
+    .sync-qr-box {
+      background-color: #ffffff;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 12px auto;
+    }
+
+    /* Toast */
+    .toast-pill {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background-color: var(--color-surface-elevated);
+      color: var(--color-text);
+      border: 1px solid var(--color-primary);
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-lg);
+      z-index: 200;
+      opacity: 0;
+      transition: all var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .toast-pill.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .card-3d-wrapper {
+        height: 210px;
+      }
+      .store-picker-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- ========================================================================
+       TOP DEMO HARNESS BANNER (CPO-047 SANDBOX CHROME)
+       ======================================================================== -->
+  <aside class="prototype-banner">
+    <div class="prototype-banner-tag">
+      <span class="prototype-badge">CPO-047 Prototype</span>
+      <span><strong>Stow Cards</strong> (Direct In-Place Flip & Card Photo Upload)</span>
+    </div>
+    <div class="prototype-controls">
+      <button class="btn-harness" id="btn-theme-toggle" title="Toggle Light/Dark Theme">
+        <span id="theme-icon">🌙</span> <span id="theme-label">Theme</span>
+      </button>
+      <a href="prototype-v1.html" class="btn-harness" title="View CPO-029 SDK Core Prototype">
+        ↗ <span>SDK Core Prototype</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       APP HEADER & BRANDING
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="#" class="brand-group">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+            <circle cx="6" cy="15" r="1"></circle>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Stow <span style="font-weight: 400; opacity: 0.7;">Cards</span></h1>
+          <div class="brand-sub">
+            <span>The Private Loyalty & Pocket Wallet</span>
+            <span>•</span>
+            <span class="status-indicator">
+              <span class="status-dot"></span> 100% Offline
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- Direct Quick Photo Upload Input -->
+        <label class="btn-action btn-action-secondary" title="Upload Card Photo" style="cursor: pointer; margin: 0;">
+          <input type="file" id="global-card-upload-input" accept="image/*" style="display: none;" />
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span class="desktop-only">Upload Photo</span>
+        </label>
+
+        <button class="btn-action btn-action-secondary" id="btn-open-sync" title="Peer-to-Peer Device Sync">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <polyline points="16 6 12 2 8 6"></polyline>
+            <line x1="12" y1="2" x2="12" y2="15"></line>
+          </svg>
+          <span class="desktop-only">P2P Sync</span>
+        </button>
+
+        <button class="btn-action btn-action-primary" id="btn-open-add-card" title="Add Store Loyalty Card">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Add Card</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN APP CONTAINER
+       ======================================================================== -->
+  <main class="app-main">
+
+    <!-- Search & Category Filters -->
+    <section class="toolbar-section">
+      <div class="search-box">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="card-search-input" class="search-input" placeholder="Search cards, stores, or card numbers... (Press '/' to focus)" />
+        <button id="search-clear-btn" class="search-clear" title="Clear search">✕</button>
+      </div>
+
+      <nav class="category-pills" id="category-pills">
+        <button class="pill-btn active" data-category="all">
+          All Cards <span class="pill-count" id="count-all">8</span>
+        </button>
+        <button class="pill-btn" data-category="supermarket">
+          🛒 Supermarkets <span class="pill-count" id="count-supermarket">5</span>
+        </button>
+        <button class="pill-btn" data-category="pharmacy">
+          💊 Health & Pharmacy <span class="pill-count" id="count-pharmacy">1</span>
+        </button>
+        <button class="pill-btn" data-category="coffee">
+          ☕ Coffee & Dining <span class="pill-count" id="count-coffee">1</span>
+        </button>
+        <button class="pill-btn" data-category="home">
+          🏡 Home & Retail <span class="pill-count" id="count-home">1</span>
+        </button>
+      </nav>
+    </section>
+
+    <!-- Info & Ergonomics Bar -->
+    <div class="grid-info-bar">
+      <span>Pocket Deck</span>
+      <span class="hint-chip">
+        <span>↻ Tap any card to flip front / barcode</span>
+      </span>
+    </div>
+
+    <!-- Main Cards Grid (Direct 3D Flip in place) -->
+    <section>
+      <div class="cards-grid" id="cards-grid">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Screen Brightness Boost Simulator Overlay -->
+  <div class="brightness-boost-screen" id="brightness-overlay"></div>
+
+  <!-- ========================================================================
+       ADD CARD MODAL (CAMERA & UPLOAD SUITE)
+       ======================================================================== -->
+  <div class="modal-overlay" id="add-modal" role="dialog" aria-modal="true">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="brand-icon" style="width: 32px; height: 32px; border-radius: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          </div>
+          <div>
+            <h2>Add Loyalty Card</h2>
+            <div style="font-size: 11px; color: var(--color-text-muted);">Auto Store Artwork or Upload Card Photos</div>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="modal-close-btn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 1. Store Brand Selector -->
+        <div class="form-group">
+          <label class="form-label">1. Choose Store Brand</label>
+          <div class="store-picker-grid" id="store-picker-grid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- 2. Integrated Camera Viewfinder & Upload Actions -->
+        <div class="form-group">
+          <label class="form-label">2. Card Camera & Photo Upload</label>
+          <div class="scanner-view-box">
+            <div class="copio-scanner-sim" id="scanner-viewfinder">
+              <!-- Live Video Element for real camera stream -->
+              <video id="scanner-live-video" playsinline muted autoplay style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+              <!-- Simulated Canvas feed -->
+              <canvas id="scanner-camera-canvas" width="600" height="340" style="width: 100%; height: 100%; object-fit: cover;"></canvas>
+
+              <!-- Card Frame Overlay -->
+              <div class="barcode-reticle-overlay" id="barcode-reticle">
+                <div class="reticle-corner r-tl"></div>
+                <div class="reticle-corner r-tr"></div>
+                <div class="reticle-corner r-bl"></div>
+                <div class="reticle-corner r-br"></div>
+                <span class="reticle-badge" id="reticle-status-text">Position card in frame</span>
+              </div>
+            </div>
+
+            <!-- Action buttons (Camera, Upload Photo, Filters - No Scan Barcode button) -->
+            <div class="scanner-action-bar">
+              <button type="button" class="btn-scan-action" id="btn-start-camera" title="Start live device camera">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+                <span id="camera-btn-text">Open Device Camera</span>
+              </button>
+
+              <label class="btn-scan-action" title="Upload card photo" style="cursor: pointer; margin: 0;">
+                <input type="file" id="modal-photo-upload-input" accept="image/*" style="display: none;" />
+                📁 <span>Upload Photo</span>
+              </label>
+
+              <label class="btn-scan-action" title="Take camera photo" style="cursor: pointer; margin: 0;">
+                <input type="file" id="modal-camera-snap-input" accept="image/*" capture="environment" style="display: none;" />
+                📸 <span>Snap Photo</span>
+              </label>
+            </div>
+
+            <div class="scanner-filter-bar">
+              <span style="font-size: 11px; color: var(--color-text-muted);">Copio Scanner Filter:</span>
+              <div class="filter-pills">
+                <button type="button" class="filter-pill-btn active" data-filter="normal">Natural</button>
+                <button type="button" class="filter-pill-btn" data-filter="sauvola">Sauvola B&W</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Number Input -->
+        <div class="form-group">
+          <label class="form-label" for="add-input-number">3. Membership / Barcode Number</label>
+          <input type="text" id="add-input-number" class="form-input" placeholder="e.g. 6340048291827401" value="6340048291827401" />
+          <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 2px;">
+            High-contrast 1D/2D barcode is auto-generated instantly for till checkout.
+          </div>
+        </div>
+
+        <!-- 4. Live Card Artwork Preview -->
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="form-label" style="margin: 0;">4. Live Card Artwork Preview</label>
+            <button type="button" id="btn-reset-artwork" style="display: none; background: none; border: none; color: var(--color-primary); font-size: 11px; cursor: pointer;">
+              ↺ Reset to Official Artwork
+            </button>
+          </div>
+          <div class="modal-card-preview-container" id="modal-card-preview">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 2;">
+              <div>
+                <div id="preview-store-name" style="font-size: 18px; font-weight: 800;">Tesco</div>
+                <div id="preview-card-tier" style="font-size: 11px; text-transform: uppercase; opacity: 0.9;">Clubcard</div>
+              </div>
+              <div class="flip-pill-hint" id="preview-badge-status">Official Artwork ✓</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 2;">
+              <div style="font-size: 11px; opacity: 0.85;">ED WILLIAMS</div>
+              <div id="preview-masked-num" style="font-family: var(--font-mono); font-size: 14px; font-weight: 700;">•••• 7401</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" id="custom-store-group" style="display: none;">
+          <label class="form-label" for="add-input-store-custom">Custom Store Name</label>
+          <input type="text" id="add-input-store-custom" class="form-input" placeholder="Store name" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-action btn-action-secondary" id="modal-cancel-btn">Cancel</button>
+        <button class="btn-action btn-action-primary" id="modal-save-btn">Add to Wallet ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       PEER-TO-PEER SYNC MODAL (ZERO-CLOUD DEVICE PAIRING)
+       ======================================================================== -->
+  <div class="modal-overlay" id="sync-modal" role="dialog" aria-modal="true">
+    <div class="modal-sheet" style="max-width: 440px; text-align: center;">
+      <div class="modal-header">
+        <h2 style="font-size: 18px;">Direct Device Sync</h2>
+        <button class="modal-close-btn" id="sync-close-btn">✕</button>
+      </div>
+
+      <div class="modal-body" style="align-items: center;">
+        <p style="font-size: 13px; color: var(--color-text-muted);">
+          Scan this QR code from another device to sync your loyalty cards directly via encrypted P2P WebRTC. Zero cloud servers.
+        </p>
+
+        <div class="sync-qr-box" id="sync-qr-container">
+          <!-- Dynamic QR SVG -->
+        </div>
+
+        <div style="background-color: var(--color-surface-elevated); padding: 12px; border-radius: var(--radius-md); width: 100%; font-size: 12px; text-align: left; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--color-text-muted);">Storage Engine:</span>
+            <strong>OPFS / IndexedDB (100% Local)</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--color-text-muted);">Cloud Servers:</span>
+            <strong style="color: var(--color-success);">0 bytes sent</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-action btn-action-primary" style="width: 100%;" id="sync-done-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-pill" id="toast-pill">
+    <span id="toast-msg">Card added to wallet!</span>
+  </div>
+
+  <!-- ========================================================================
+       VANILLA JS INTERACTIVE ENGINE & IN-PLACE 3D FLIP
+       ======================================================================== -->
+  <script>
+    (() => {
+      'use strict';
+
+      /* ----------------------------------------------------------------------
+         1. STORE PRESETS & ARTWORK LIBRARY
+         ---------------------------------------------------------------------- */
+      const storePresets = [
+        {
+          key: 'tesco',
+          store: 'Tesco',
+          title: 'Clubcard',
+          category: 'supermarket',
+          color: '#00539f',
+          colorEnd: '#002f6c',
+          barcodeType: 'ean13',
+          symbol: '🛒',
+          sampleNumber: '6340048291827401'
+        },
+        {
+          key: 'sainsburys',
+          store: "Sainsbury's",
+          title: 'Nectar',
+          category: 'supermarket',
+          color: '#e05a00',
+          colorEnd: '#4e1e66',
+          barcodeType: 'code128',
+          symbol: '🍇',
+          sampleNumber: '98263004827103'
+        },
+        {
+          key: 'boots',
+          store: 'Boots',
+          title: 'Advantage Card',
+          category: 'pharmacy',
+          color: '#004b91',
+          colorEnd: '#00254d',
+          barcodeType: 'code128',
+          symbol: '💊',
+          sampleNumber: '704092817290'
+        },
+        {
+          key: 'waitrose',
+          store: 'Waitrose',
+          title: 'myWaitrose',
+          category: 'supermarket',
+          color: '#025826',
+          colorEnd: '#013316',
+          barcodeType: 'code128',
+          symbol: '🌿',
+          sampleNumber: '290184719284'
+        },
+        {
+          key: 'sparks',
+          store: 'Marks & Spencer',
+          title: 'Sparks',
+          category: 'supermarket',
+          color: '#111111',
+          colorEnd: '#242424',
+          barcodeType: 'qr',
+          symbol: '✨',
+          sampleNumber: 'MS-SPARKS-91827402'
+        },
+        {
+          key: 'costa',
+          store: 'Costa Coffee',
+          title: 'Costa Club',
+          category: 'coffee',
+          color: '#70081d',
+          colorEnd: '#420410',
+          barcodeType: 'qr',
+          symbol: '☕',
+          sampleNumber: 'COSTA-CLUB-55291039'
+        },
+        {
+          key: 'morrisons',
+          store: 'Morrisons',
+          title: 'Morrisons More',
+          category: 'supermarket',
+          color: '#004f2f',
+          colorEnd: '#ffbe00',
+          barcodeType: 'code128',
+          symbol: '🌲',
+          sampleNumber: '882019482719'
+        },
+        {
+          key: 'ikea',
+          store: 'IKEA',
+          title: 'IKEA Family',
+          category: 'home',
+          color: '#0058a3',
+          colorEnd: '#ffcc00',
+          barcodeType: 'code128',
+          symbol: '🏡',
+          sampleNumber: '192847102938'
+        }
+      ];
+
+      // Initial active wallet cards
+      let walletCards = storePresets.map((p, idx) => ({
+        id: 'card-' + (idx + 1),
+        store: p.store,
+        title: p.title,
+        category: p.category,
+        number: p.sampleNumber,
+        barcodeType: p.barcodeType,
+        color: p.color,
+        colorEnd: p.colorEnd,
+        symbol: p.symbol,
+        holder: 'ED WILLIAMS',
+        frontImage: null,
+        backImage: null,
+        isFlipped: false
+      }));
+
+      let activeCategory = 'all';
+      let searchQuery = '';
+      let isBrightnessBoostActive = false;
+      let selectedPresetKey = 'tesco';
+      let uploadedFrontDataUrl = null;
+      let currentFilterMode = 'normal';
+      let cameraStream = null;
+
+      /* ----------------------------------------------------------------------
+         2. DOM REFERENCES
+         ---------------------------------------------------------------------- */
+      const cardsGrid = document.getElementById('cards-grid');
+      const searchInput = document.getElementById('card-search-input');
+      const searchClearBtn = document.getElementById('search-clear-btn');
+      const categoryPills = document.getElementById('category-pills');
+      const brightnessOverlay = document.getElementById('brightness-overlay');
+      const toastPill = document.getElementById('toast-pill');
+      const toastMsg = document.getElementById('toast-msg');
+
+      // Add Modal Elements
+      const addModal = document.getElementById('add-modal');
+      const btnOpenAddCard = document.getElementById('btn-open-add-card');
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+      const modalCancelBtn = document.getElementById('modal-cancel-btn');
+      const modalSaveBtn = document.getElementById('modal-save-btn');
+      const storePickerGrid = document.getElementById('store-picker-grid');
+      const modalCardPreview = document.getElementById('modal-card-preview');
+      const previewStoreName = document.getElementById('preview-store-name');
+      const previewCardTier = document.getElementById('preview-card-tier');
+      const previewMaskedNum = document.getElementById('preview-masked-num');
+      const previewBadgeStatus = document.getElementById('preview-badge-status');
+      const addInputNumber = document.getElementById('add-input-number');
+      const btnResetArtwork = document.getElementById('btn-reset-artwork');
+
+      // Scanner Viewfinder & Upload Controls
+      const scannerCameraCanvas = document.getElementById('scanner-camera-canvas');
+      const scannerLiveVideo = document.getElementById('scanner-live-video');
+      const btnStartCamera = document.getElementById('btn-start-camera');
+      const cameraBtnText = document.getElementById('camera-btn-text');
+      const modalPhotoUploadInput = document.getElementById('modal-photo-upload-input');
+      const modalCameraSnapInput = document.getElementById('modal-camera-snap-input');
+      const globalCardUploadInput = document.getElementById('global-card-upload-input');
+      const reticleStatusText = document.getElementById('reticle-status-text');
+
+      // Sync Modal Elements
+      const syncModal = document.getElementById('sync-modal');
+      const btnOpenSync = document.getElementById('btn-open-sync');
+      const syncCloseBtn = document.getElementById('sync-close-btn');
+      const syncDoneBtn = document.getElementById('sync-done-btn');
+      const syncQrContainer = document.getElementById('sync-qr-container');
+
+      /* ----------------------------------------------------------------------
+         3. PURE SVG BARCODE GENERATORS
+         ---------------------------------------------------------------------- */
+      function generateBarcode1D(text) {
+        let hash = 0;
+        for (let i = 0; i < text.length; i++) {
+          hash = (hash << 5) - hash + text.charCodeAt(i);
+          hash |= 0;
+        }
+
+        const bars = [];
+        let curX = 14;
+        bars.push({ x: curX, w: 2 }); curX += 4;
+        bars.push({ x: curX, w: 2 }); curX += 4;
+
+        for (let i = 0; i < 44; i++) {
+          const pseudoRand = Math.abs(Math.sin(hash + i * 3.7)) * 10;
+          const barW = (Math.floor(pseudoRand) % 3) + 1;
+          const gapW = (Math.floor(pseudoRand * 1.5) % 3) + 1;
+          bars.push({ x: curX, w: barW });
+          curX += barW + gapW;
+          if (curX > 292) break;
+        }
+
+        bars.push({ x: 298, w: 2 });
+        bars.push({ x: 302, w: 2 });
+
+        const barRects = bars.map(b => `<rect x="${b.x}" y="4" width="${b.w}" height="72" fill="#000000" />`).join('');
+
+        return `<svg viewBox="0 0 320 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <rect width="320" height="80" fill="#ffffff" />
+          ${barRects}
+        </svg>`;
+      }
+
+      function generateQRCode(text, size = 160) {
+        let hash = 0;
+        for (let i = 0; i < text.length; i++) {
+          hash = (hash << 5) - hash + text.charCodeAt(i);
+          hash |= 0;
+        }
+
+        const grid = 21;
+        const cellSize = size / grid;
+
+        function isFinder(r, c) {
+          if (r < 7 && c < 7) return true;
+          if (r < 7 && c >= grid - 7) return true;
+          if (r >= grid - 7 && c < 7) return true;
+          return false;
+        }
+
+        function renderFinder(startR, startC) {
+          return `
+            <rect x="${startC * cellSize}" y="${startR * cellSize}" width="${7 * cellSize}" height="${7 * cellSize}" fill="#000000" rx="${cellSize * 0.8}" />
+            <rect x="${(startC + 1) * cellSize}" y="${(startR + 1) * cellSize}" width="${5 * cellSize}" height="${5 * cellSize}" fill="#ffffff" rx="${cellSize * 0.5}" />
+            <rect x="${(startC + 2) * cellSize}" y="${(startR + 2) * cellSize}" width="${3 * cellSize}" height="${3 * cellSize}" fill="#000000" rx="${cellSize * 0.3}" />
+          `;
+        }
+
+        let rects = '';
+        rects += renderFinder(0, 0);
+        rects += renderFinder(0, grid - 7);
+        rects += renderFinder(grid - 7, 0);
+
+        for (let r = 0; r < grid; r++) {
+          for (let c = 0; c < grid; c++) {
+            if (isFinder(r, c)) continue;
+            if (r === 6 || c === 6) {
+              if ((r + c) % 2 === 0) {
+                rects += `<rect x="${c * cellSize}" y="${r * cellSize}" width="${cellSize}" height="${cellSize}" fill="#000000" />`;
+              }
+              continue;
+            }
+            const v = Math.abs(Math.sin(hash + r * 13 + c * 29));
+            if (v > 0.48) {
+              rects += `<rect x="${c * cellSize}" y="${r * cellSize}" width="${cellSize * 0.94}" height="${cellSize * 0.94}" fill="#000000" rx="${cellSize * 0.2}" />`;
+            }
+          }
+        }
+
+        return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+          <rect width="${size}" height="${size}" fill="#ffffff" />
+          ${rects}
+        </svg>`;
+      }
+
+      /* ----------------------------------------------------------------------
+         4. RENDERERS & IN-PLACE 3D FLIP LOGIC
+         ---------------------------------------------------------------------- */
+      function formatCardNumber(num) {
+        if (!num) return '';
+        return num.replace(/(.{4})/g, '$1 ').trim();
+      }
+
+      function maskCardNumber(num) {
+        if (!num) return '•••• 0000';
+        const clean = num.replace(/\s+/g, '');
+        const last4 = clean.slice(-4);
+        return `•••• ${last4}`;
+      }
+
+      function updateCategoryCounts() {
+        const categories = ['all', 'supermarket', 'pharmacy', 'coffee', 'home'];
+        categories.forEach(cat => {
+          const el = document.getElementById(`count-${cat}`);
+          if (!el) return;
+          if (cat === 'all') {
+            el.textContent = walletCards.length;
+          } else {
+            const count = walletCards.filter(c => c.category === cat).length;
+            el.textContent = count;
+          }
+        });
+      }
+
+      function renderCardsGrid() {
+        const filtered = walletCards.filter(card => {
+          const matchesCategory = activeCategory === 'all' || card.category === activeCategory;
+          const q = searchQuery.toLowerCase().trim();
+          const matchesSearch = !q ||
+            card.store.toLowerCase().includes(q) ||
+            card.title.toLowerCase().includes(q) ||
+            card.number.toLowerCase().includes(q);
+          return matchesCategory && matchesSearch;
+        });
+
+        if (filtered.length === 0) {
+          cardsGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 48px 16px; background: var(--color-surface); border-radius: var(--radius-lg); border: 2px dashed var(--color-border);">
+              <div style="font-size: 36px; margin-bottom: 8px;">📇</div>
+              <h3 style="font-size: 16px; font-weight: 700;">No cards found</h3>
+              <p style="font-size: 13px; color: var(--color-text-muted); margin-top: 4px;">Try searching for a different supermarket or upload a card photo.</p>
+            </div>
+          `;
+          return;
+        }
+
+        cardsGrid.innerHTML = filtered.map(card => {
+          const isFlipped = !!card.isFlipped;
+          const barcodeSvg = card.barcodeType === 'qr'
+            ? generateQRCode(card.number, 100)
+            : generateBarcode1D(card.number);
+
+          const frontStyle = card.frontImage
+            ? `background-image: url('${card.frontImage}'); background-size: cover; background-position: center;`
+            : `background: linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color});`;
+
+          return `
+            <div class="card-3d-wrapper ${isFlipped ? 'is-flipped' : ''}" data-id="${card.id}">
+              <div class="card-3d-flipper">
+                
+                <!-- FRONT FACE: Store Image & Branding or Uploaded Photo -->
+                <div class="card-face card-face-front" style="${frontStyle}">
+                  <div class="front-top-row">
+                    <div class="store-badge-group">
+                      <span class="store-brand-title">${escapeHtml(card.store)}</span>
+                      <span class="store-card-tier">${escapeHtml(card.title)}</span>
+                    </div>
+                    <span class="flip-pill-hint">
+                      ↻ Tap to scan
+                    </span>
+                  </div>
+
+                  <div class="front-mid-row">
+                    <div class="card-smart-chip"></div>
+                    <div class="store-logo-symbol">${card.symbol || '🛒'}</div>
+                  </div>
+
+                  <div class="front-bottom-row">
+                    <span class="card-holder-name">${escapeHtml(card.holder || 'ED WILLIAMS')}</span>
+                    <span class="card-masked-number">${maskCardNumber(card.number)}</span>
+                  </div>
+                </div>
+
+                <!-- BACK FACE: Instant Barcode for Checkout & Max Bright Toggle -->
+                <div class="card-face card-face-back">
+                  <div class="back-top-row">
+                    <span class="back-store-name">${escapeHtml(card.store)}</span>
+                    <div class="back-actions-group">
+                      <button class="btn-max-bright ${isBrightnessBoostActive ? 'active' : ''}" data-action="bright" title="Toggle Maximum Screen Brightness for checkout scanners">
+                        ☀ Max Bright
+                      </button>
+                      <button class="btn-flip-back" data-action="flip-back" title="Flip to front">
+                        ↻ Front
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="back-barcode-container">
+                    <div class="back-barcode-svg-wrap">
+                      ${barcodeSvg}
+                    </div>
+                    <div class="back-number-text">
+                      ${formatCardNumber(card.number)}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Attach 3D Flip Handlers directly to each card
+        cardsGrid.querySelectorAll('.card-3d-wrapper').forEach(cardWrapper => {
+          cardWrapper.addEventListener('click', (e) => {
+            const cardId = cardWrapper.getAttribute('data-id');
+            const card = walletCards.find(c => c.id === cardId);
+            if (!card) return;
+
+            if (e.target.closest('button[data-action="bright"]')) {
+              e.stopPropagation();
+              toggleBrightnessBoost();
+              return;
+            }
+
+            card.isFlipped = !card.isFlipped;
+            cardWrapper.classList.toggle('is-flipped', card.isFlipped);
+          });
+        });
+      }
+
+      function toggleBrightnessBoost() {
+        isBrightnessBoostActive = !isBrightnessBoostActive;
+        brightnessOverlay.classList.toggle('active', isBrightnessBoostActive);
+
+        document.querySelectorAll('button[data-action="bright"]').forEach(btn => {
+          btn.classList.toggle('active', isBrightnessBoostActive);
+        });
+
+        if (isBrightnessBoostActive) {
+          showToast('☀ Max Brightness active for optical till scanners');
+        } else {
+          showToast('Brightness restored');
+        }
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>'"]/g, tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag));
+      }
+
+      /* ----------------------------------------------------------------------
+         5. CAMERA & CANVAS RENDERING
+         ---------------------------------------------------------------------- */
+      function drawScannerCanvasFeed() {
+        const ctx = scannerCameraCanvas.getContext('2d');
+        const w = scannerCameraCanvas.width;
+        const h = scannerCameraCanvas.height;
+
+        ctx.fillStyle = '#06090e';
+        ctx.fillRect(0, 0, w, h);
+
+        const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
+
+        const cx = 100;
+        const cy = 40;
+        const cw = 400;
+        const ch = 240;
+
+        if (currentFilterMode === 'sauvola') {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(cx, cy, cw, ch);
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = 3;
+          ctx.strokeRect(cx + 10, cy + 10, cw - 20, ch - 20);
+
+          ctx.fillStyle = '#000000';
+          ctx.font = 'bold 16px Inter, sans-serif';
+          ctx.fillText(preset.store.toUpperCase() + ' REWARDS', cx + 24, cy + 44);
+
+          for (let i = 0; i < 34; i++) {
+            const bx = cx + 30 + i * 10;
+            const bw = (i % 3 === 0) ? 6 : 2;
+            ctx.fillRect(bx, cy + 70, bw, 80);
+          }
+          ctx.font = 'bold 14px monospace';
+          ctx.fillText(formatCardNumber(preset.sampleNumber), cx + 70, cy + 180);
+        } else {
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(cx, cy, cw, ch);
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(cx, cy, cw, 36);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(cx + 20, cy + 60, cw - 40, 110);
+
+          ctx.fillStyle = '#000000';
+          for (let i = 0; i < 30; i++) {
+            const bx = cx + 40 + i * 10.5;
+            const bw = (i % 2 === 0) ? 4 : 2;
+            ctx.fillRect(bx, cy + 75, bw, 60);
+          }
+
+          ctx.font = 'bold 13px monospace';
+          ctx.fillText(formatCardNumber(preset.sampleNumber), cx + 60, cy + 155);
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '11px Inter, sans-serif';
+          ctx.fillText(preset.store + ' • Camera ready', cx + 24, cy + 205);
+        }
+      }
+
+      async function startLiveCamera() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(t => t.stop());
+          cameraStream = null;
+          scannerLiveVideo.style.display = 'none';
+          scannerCameraCanvas.style.display = 'block';
+          cameraBtnText.textContent = 'Open Device Camera';
+          return;
+        }
+
+        try {
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+          });
+          scannerLiveVideo.srcObject = cameraStream;
+          scannerLiveVideo.style.display = 'block';
+          scannerCameraCanvas.style.display = 'none';
+          cameraBtnText.textContent = 'Stop Camera';
+          reticleStatusText.textContent = 'Live camera stream active';
+        } catch (err) {
+          showToast('Camera unavailable or permission denied; using simulation mode.');
+          drawScannerCanvasFeed();
+        }
+      }
+
+      function stopCameraStream() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(t => t.stop());
+          cameraStream = null;
+          scannerLiveVideo.style.display = 'none';
+          scannerCameraCanvas.style.display = 'block';
+          cameraBtnText.textContent = 'Open Device Camera';
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         6. FILE UPLOAD HANDLERS
+         ---------------------------------------------------------------------- */
+      function handleImageUpload(file) {
+        if (!file || !file.type.startsWith('image/')) {
+          showToast('Please select a valid image file');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          uploadedFrontDataUrl = e.target.result;
+          modalCardPreview.style.backgroundImage = `url('${uploadedFrontDataUrl}')`;
+          previewBadgeStatus.textContent = 'Custom Photo ✓';
+          btnResetArtwork.style.display = 'inline-block';
+          showToast('✓ Card photo uploaded successfully!');
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function resetArtwork() {
+        uploadedFrontDataUrl = null;
+        btnResetArtwork.style.display = 'none';
+        previewBadgeStatus.textContent = 'Official Artwork ✓';
+        updateSelectedPresetUI();
+        showToast('Reset to official store artwork');
+      }
+
+      /* ----------------------------------------------------------------------
+         7. ADD CARD CONTROLLER
+         ---------------------------------------------------------------------- */
+      function renderStorePicker() {
+        storePickerGrid.innerHTML = storePresets.map(preset => {
+          const isSelected = preset.key === selectedPresetKey;
+          return `
+            <div class="store-chip-option ${isSelected ? 'selected' : ''}" data-key="${preset.key}">
+              <div class="store-thumb-badge" style="background: linear-gradient(135deg, ${preset.color}, ${preset.colorEnd});"></div>
+              <span class="store-thumb-label">${escapeHtml(preset.store)}</span>
+            </div>
+          `;
+        }).join('');
+
+        storePickerGrid.querySelectorAll('.store-chip-option').forEach(chip => {
+          chip.addEventListener('click', () => {
+            selectedPresetKey = chip.getAttribute('data-key');
+            updateSelectedPresetUI();
+          });
+        });
+      }
+
+      function updateSelectedPresetUI() {
+        storePickerGrid.querySelectorAll('.store-chip-option').forEach(chip => {
+          chip.classList.toggle('selected', chip.getAttribute('data-key') === selectedPresetKey);
+        });
+
+        const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
+        previewStoreName.textContent = preset.store;
+        previewCardTier.textContent = preset.title;
+
+        if (uploadedFrontDataUrl) {
+          modalCardPreview.style.backgroundImage = `url('${uploadedFrontDataUrl}')`;
+        } else {
+          modalCardPreview.style.backgroundImage = 'none';
+          modalCardPreview.style.background = `linear-gradient(135deg, ${preset.color}, ${preset.colorEnd})`;
+        }
+
+        addInputNumber.value = preset.sampleNumber;
+        previewMaskedNum.textContent = maskCardNumber(preset.sampleNumber);
+        drawScannerCanvasFeed();
+      }
+
+      function openAddModal(preloadedFile = null) {
+        uploadedFrontDataUrl = null;
+        btnResetArtwork.style.display = 'none';
+        previewBadgeStatus.textContent = 'Official Artwork ✓';
+
+        renderStorePicker();
+        updateSelectedPresetUI();
+        drawScannerCanvasFeed();
+
+        if (preloadedFile) {
+          handleImageUpload(preloadedFile);
+        }
+
+        addModal.classList.add('open');
+        addInputNumber.focus();
+      }
+
+      function closeAddModal() {
+        stopCameraStream();
+        addModal.classList.remove('open');
+      }
+
+      function saveNewCard() {
+        const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
+        const num = addInputNumber.value.trim() || preset.sampleNumber;
+
+        const newCard = {
+          id: 'card-' + Date.now(),
+          store: preset.store,
+          title: preset.title,
+          category: preset.category,
+          number: num,
+          barcodeType: preset.barcodeType,
+          color: preset.color,
+          colorEnd: preset.colorEnd,
+          symbol: preset.symbol,
+          holder: 'ED WILLIAMS',
+          frontImage: uploadedFrontDataUrl,
+          backImage: null,
+          isFlipped: false
+        };
+
+        walletCards.unshift(newCard);
+        updateCategoryCounts();
+        renderCardsGrid();
+        closeAddModal();
+        showToast(`Added ${newCard.store} card to wallet! ↻ Tap to scan`);
+      }
+
+      /* ----------------------------------------------------------------------
+         8. TOAST NOTIFICATION
+         ---------------------------------------------------------------------- */
+      let toastTimer = null;
+      function showToast(msg) {
+        toastMsg.textContent = msg;
+        toastPill.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastPill.classList.remove('show');
+        }, 2500);
+      }
+
+      /* ----------------------------------------------------------------------
+         9. P2P SYNC MODAL
+         ---------------------------------------------------------------------- */
+      function openSyncModal() {
+        syncQrContainer.innerHTML = generateQRCode('copio-p2p://session/' + Math.random().toString(36).substring(2, 10), 160);
+        syncModal.classList.add('open');
+      }
+
+      function closeSyncModal() {
+        syncModal.classList.remove('open');
+      }
+
+      /* ----------------------------------------------------------------------
+         10. EVENT LISTENERS
+         ---------------------------------------------------------------------- */
+      // Search
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        searchClearBtn.classList.toggle('visible', !!searchQuery);
+        renderCardsGrid();
+      });
+
+      searchClearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchQuery = '';
+        searchClearBtn.classList.remove('visible');
+        renderCardsGrid();
+        searchInput.focus();
+      });
+
+      // Quick Keyboard Shortcuts
+      window.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== searchInput && !addModal.classList.contains('open')) {
+          e.preventDefault();
+          searchInput.focus();
+        } else if (e.key === 'Escape') {
+          if (addModal.classList.contains('open')) closeAddModal();
+          if (syncModal.classList.contains('open')) closeSyncModal();
+          if (isBrightnessBoostActive) toggleBrightnessBoost();
+        }
+      });
+
+      // Category Pills
+      categoryPills.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          categoryPills.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeCategory = btn.getAttribute('data-category');
+          renderCardsGrid();
+        });
+      });
+
+      // Add Modal
+      btnOpenAddCard.addEventListener('click', () => openAddModal());
+      modalCloseBtn.addEventListener('click', closeAddModal);
+      modalCancelBtn.addEventListener('click', closeAddModal);
+      modalSaveBtn.addEventListener('click', saveNewCard);
+      addInputNumber.addEventListener('input', (e) => {
+        previewMaskedNum.textContent = maskCardNumber(e.target.value);
+      });
+
+      btnResetArtwork.addEventListener('click', resetArtwork);
+
+      // Camera Controls
+      btnStartCamera.addEventListener('click', startLiveCamera);
+
+      // File Upload Controls (Modal & Header)
+      modalPhotoUploadInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleImageUpload(e.target.files[0]);
+        }
+      });
+
+      modalCameraSnapInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleImageUpload(e.target.files[0]);
+        }
+      });
+
+      globalCardUploadInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          openAddModal(e.target.files[0]);
+        }
+      });
+
+      // Scanner Filter Buttons (Normal vs Sauvola)
+      document.querySelectorAll('.filter-pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-pill-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilterMode = btn.getAttribute('data-filter');
+          drawScannerCanvasFeed();
+        });
+      });
+
+      // Global window drag and drop to import card photo
+      window.addEventListener('dragover', (e) => e.preventDefault());
+      window.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          const file = e.dataTransfer.files[0];
+          if (file.type.startsWith('image/')) {
+            openAddModal(file);
+          }
+        }
+      });
+
+      addModal.addEventListener('click', (e) => {
+        if (e.target === addModal) closeAddModal();
+      });
+
+      // Sync Modal
+      btnOpenSync.addEventListener('click', openSyncModal);
+      syncCloseBtn.addEventListener('click', closeSyncModal);
+      syncDoneBtn.addEventListener('click', closeSyncModal);
+      syncModal.addEventListener('click', (e) => {
+        if (e.target === syncModal) closeSyncModal();
+      });
+
+      // Theme Toggle
+      const btnThemeToggle = document.getElementById('btn-theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      btnThemeToggle.addEventListener('click', () => {
+        const cur = document.body.getAttribute('data-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', next);
+        themeIcon.textContent = next === 'dark' ? '🌙' : '☀️';
+      });
+
+      /* ----------------------------------------------------------------------
+         11. INITIALIZE
+         ---------------------------------------------------------------------- */
+      updateCategoryCounts();
+      renderCardsGrid();
+
+    })();
+  </script>
+</body>
+</html>
