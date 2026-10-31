@@ -7,7 +7,7 @@
   "icon-192.png",
   "icon-512.png",
   "copio.svg",
-  "css/stow-cards.css",
-  "js/stow-cards-app.js",
+  "css/copio-cards.css",
+  "js/copio-cards-app.js",
   "vendor/copio/scanner.js"
 ]

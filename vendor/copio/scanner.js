@@ -4752,7 +4752,8 @@ var scannerCss = `
   color: var(--copio-color-primary-contrast);
 }
 
-.copio-stage-figure {
+.copio-stage-figure,
+.copio-canvas-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -4762,7 +4763,8 @@ var scannerCss = `
 }
 
 .copio-stage-canvas img,
-.copio-stage-img {
+.copio-stage-img,
+.copio-stage-image {
   display: block;
   max-width: 100%;
   max-height: 100%;
@@ -4924,6 +4926,53 @@ var scannerCss = `
   flex-shrink: 0;
 }
 
+.copio-filmstrip-scroll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.copio-filmstrip-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.copio-thumb-container {
+  position: relative;
+  width: 56px;
+  height: 44px;
+  border-radius: var(--copio-radius-sm);
+  overflow: hidden;
+  border: 2px solid var(--copio-color-border);
+  background: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copio-filmstrip-item.is-active .copio-thumb-container {
+  border-color: var(--copio-color-primary);
+}
+
+.copio-thumb-num {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
 .copio-thumb-card {
   position: relative;
   display: flex;
@@ -5024,6 +5073,20 @@ var scannerCss = `
   min-height: 56px;
   flex-shrink: 0;
   z-index: 6;
+}
+
+.copio-toolbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.copio-toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .copio-edit-toolbar {
@@ -5738,20 +5801,29 @@ var CopioScanner = class extends BaseElement {
           source: "file"
         });
       }
-      const allPages = await this.getPages();
-      this.dispatch(COPIO_EVENTS.PAGES_CHANGED, {
-        pages: allPages,
-        docId: this.docId
-      });
-      if (this.mode === "single" && newPages.length > 0 && this.maxPages <= 1) {
-        this.dispatch(COPIO_EVENTS.SCAN_COMPLETE, {
-          mode: this.mode,
-          aspect: this.aspect,
-          docId: this.docId,
+      if (newPages.length > 0) {
+        const allPages = await this.getPages();
+        __privateSet(this, _activePageIndex, Math.max(0, allPages.length - 1));
+        if (this.mode === "single") {
+          __privateSet(this, _stage, "workbench");
+          if (typeof this.setAttribute === "function" && this.getAttribute("stage") !== "workbench") {
+            this.setAttribute("stage", "workbench");
+          }
+        }
+        this.dispatch(COPIO_EVENTS.PAGES_CHANGED, {
           pages: allPages,
-          page: allPages[0] || null,
-          pageCount: allPages.length
+          docId: this.docId
         });
+        if (this.mode === "single" && this.maxPages <= 1) {
+          this.dispatch(COPIO_EVENTS.SCAN_COMPLETE, {
+            mode: this.mode,
+            aspect: this.aspect,
+            docId: this.docId,
+            pages: allPages,
+            page: allPages[allPages.length - 1] || null,
+            pageCount: allPages.length
+          });
+        }
       }
       await __privateMethod(this, _CopioScanner_instances, syncView_fn).call(this);
       return newPages;
@@ -6122,7 +6194,6 @@ bindEventListeners_fn = function() {
     if (input.files && input.files.length > 0) {
       await this.addFiles(input.files);
       input.value = "";
-      this.stage = "workbench";
     }
   });
   shadow.getElementById("btn-shutter")?.addEventListener("click", async () => {
@@ -6477,7 +6548,6 @@ handleShutterClick_fn = async function() {
       if (blob) {
         const file = new File([blob], `card-scan-${Date.now()}.png`, { type: "image/png" });
         await this.addFiles([file]);
-        this.stage = "workbench";
         return;
       }
     }
