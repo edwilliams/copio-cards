@@ -1,0 +1,4625 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "sdk/cdn.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "sdk/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "Copio",
+            "module": "sdk/cdn.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/core.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "DEFAULT_FEATURES",
+          "type": {
+            "text": "array"
+          },
+          "default": "['crop', 'rotate', 'filter', 'ocr', 'export', 'sync']"
+        },
+        {
+          "kind": "variable",
+          "name": "DEFAULT_EXPORT_FORMATS",
+          "type": {
+            "text": "array"
+          },
+          "default": "['pdf', 'zip', 'png', 'jpg']"
+        },
+        {
+          "kind": "variable",
+          "name": "DEFAULT_OCR_LANGUAGES",
+          "type": {
+            "text": "array"
+          },
+          "default": "['eng']"
+        },
+        {
+          "kind": "function",
+          "name": "registerService",
+          "parameters": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "service",
+              "type": {
+                "text": "any"
+              }
+            }
+          ],
+          "description": "Register a pluggable service adapter for headless ports (export, ocr, sync, pdf)."
+        },
+        {
+          "kind": "function",
+          "name": "getRegisteredService",
+          "parameters": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              }
+            }
+          ],
+          "description": "Retrieve a registered service adapter.",
+          "return": {
+            "type": {
+              "text": "any"
+            }
+          }
+        },
+        {
+          "kind": "class",
+          "description": "Headless Copio Engine driving port.",
+          "name": "CopioEngine",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#features",
+              "privacy": "private",
+              "default": "new Set(DEFAULT_FEATURES)"
+            },
+            {
+              "kind": "field",
+              "name": "#exportFormats",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[...DEFAULT_EXPORT_FORMATS]"
+            },
+            {
+              "kind": "field",
+              "name": "#ocrLanguages",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[...DEFAULT_OCR_LANGUAGES]"
+            },
+            {
+              "kind": "field",
+              "name": "#maxPages",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#licenseKey",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "''"
+            },
+            {
+              "kind": "field",
+              "name": "#storage",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#repository",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#services",
+              "privacy": "private",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "#ocr",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "#pdf",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "#imageProcessor",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#undoStack",
+              "privacy": "private",
+              "default": "new Map()"
+            },
+            {
+              "kind": "field",
+              "name": "#redoStack",
+              "privacy": "private",
+              "default": "new Map()"
+            },
+            {
+              "kind": "method",
+              "name": "init",
+              "description": "Initializes the underlying storage adapter.",
+              "return": {
+                "type": {
+                  "text": "Promise<{ kind: string, persistent: boolean }>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setService",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "service",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ],
+              "description": "Register or override an adapter service for this engine instance."
+            },
+            {
+              "kind": "method",
+              "name": "getService",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Retrieve an adapter service instance.",
+              "return": {
+                "type": {
+                  "text": "any"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hasFeature",
+              "parameters": [
+                {
+                  "name": "featureName",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Check if a specific feature is enabled.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "features",
+              "description": "Returns list of currently enabled features.",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "setFeatures",
+              "parameters": [
+                {
+                  "name": "features",
+                  "type": {
+                    "text": "string|string[]|Set<string>"
+                  }
+                }
+              ],
+              "description": "Set enabled features."
+            },
+            {
+              "kind": "method",
+              "name": "enableFeature",
+              "parameters": [
+                {
+                  "name": "featureName",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Enable a specific feature."
+            },
+            {
+              "kind": "method",
+              "name": "disableFeature",
+              "parameters": [
+                {
+                  "name": "featureName",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Disable a specific feature."
+            },
+            {
+              "kind": "field",
+              "name": "ocr",
+              "description": "Developer opt-in status for OCR heavy module (CPO-042).",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "pdf",
+              "description": "Developer opt-in status for PDF heavy module (CPO-042).",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "exportFormats",
+              "description": "Set supported export formats.",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "formats",
+                  "type": {
+                    "text": "string|string[]"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "ocrLanguages",
+              "description": "Set configured OCR languages.",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "langs",
+                  "type": {
+                    "text": "string|string[]"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "maxPages",
+              "description": "Set maximum page limit.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "limit",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "assetBase",
+              "description": "Set asset base path for lazy worker/WASM loading.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "base",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "licenseKey",
+              "description": "Set license key.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "storage",
+              "description": "Underlying StoragePort adapter.",
+              "return": {
+                "type": {
+                  "text": "StoragePort"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "setStorage",
+              "parameters": [
+                {
+                  "name": "newStorage",
+                  "type": {
+                    "text": "StoragePort"
+                  }
+                }
+              ],
+              "description": "Switch the underlying storage adapter."
+            },
+            {
+              "kind": "method",
+              "name": "#pushUndo",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "docId"
+                },
+                {
+                  "name": "action"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "imageProcessor",
+              "description": "Current ImageProcessorPort adapter.",
+              "type": {
+                "text": "ImageProcessorPort"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "setImageProcessor",
+              "parameters": [
+                {
+                  "name": "processor"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "docs",
+              "description": "Underlying document repository.",
+              "return": {
+                "type": {
+                  "text": "DocRepository"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "listDocuments"
+            },
+            {
+              "kind": "method",
+              "name": "getDocument",
+              "parameters": [
+                {
+                  "name": "id"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "createDocument",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "pages"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "deleteDocument",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "options",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "undoDeleteDocument",
+              "parameters": [
+                {
+                  "name": "id"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renameDocument",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addPages",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "pages"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "deletePage",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "pageId"
+                },
+                {
+                  "name": "options",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "undoDeletePage",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "pageId"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "updatePage",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "pageId"
+                },
+                {
+                  "name": "updates"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "reorderPages",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "pageIds"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#resolveDocId",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "docId"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "applyEdit",
+              "parameters": [
+                {
+                  "name": "docId",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "pageId",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "edits",
+                  "type": {
+                    "text": "Object"
+                  }
+                }
+              ],
+              "description": "Applies non-destructive edits to a document page (CPO-011, CPO-045).\nGenerates derived src via ImageProcessorPort while keeping originalSrc intact.",
+              "return": {
+                "type": {
+                  "text": "Promise<Object>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "undo",
+              "parameters": [
+                {
+                  "name": "docId",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Reverts the most recent operation on a document (CPO-016, CPO-045).",
+              "return": {
+                "type": {
+                  "text": "Promise<Object|null>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "redo",
+              "parameters": [
+                {
+                  "name": "docId",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Re-applies the most recently reverted operation on a document (CPO-045).",
+              "return": {
+                "type": {
+                  "text": "Promise<Object|null>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "subscribe",
+              "parameters": [
+                {
+                  "name": "callback"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addFiles",
+              "parameters": [
+                {
+                  "name": "files",
+                  "type": {
+                    "text": "FileList|File[]|Blob[]"
+                  }
+                },
+                {
+                  "name": "docId",
+                  "default": "null",
+                  "description": "Target document ID (if omitted, attaches to latest or creates new doc)",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Ingest and process an array of File or Blob objects, converting them to document pages.\nHandles images (with EXIF extraction) and PDF files (rendering pages to data URLs).",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Object>>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getPages",
+              "parameters": [
+                {
+                  "name": "docId",
+                  "default": "null",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Get all pages for a document.",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Object>>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "clear",
+              "parameters": [
+                {
+                  "name": "docId",
+                  "default": "null",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Clear all pages from a document.",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#resolveDocAndPages",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "docIdOrPages"
+                }
+              ],
+              "description": "Resolve pages and document name from either doc ID, array of pages, or latest doc."
+            },
+            {
+              "kind": "method",
+              "name": "exportPdf",
+              "parameters": [
+                {
+                  "name": "docIdOrPages",
+                  "optional": true,
+                  "type": {
+                    "text": "string|Array<Object>"
+                  }
+                },
+                {
+                  "name": "options",
+                  "default": "{}",
+                  "optional": true,
+                  "type": {
+                    "text": "@param {boolean} [options.download=false] - Whether to trigger browser download\n   * @param {Function} [options.onProgress] - Progress callback (done, total)\n   * "
+                  }
+                }
+              ],
+              "description": "Export document pages as a PDF Blob.\nDoes NOT trigger automatic browser download unless options.download === true.",
+              "return": {
+                "type": {
+                  "text": "Promise<Blob>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "exportZip",
+              "parameters": [
+                {
+                  "name": "docIdOrPages",
+                  "optional": true,
+                  "type": {
+                    "text": "string|Array<Object>"
+                  }
+                },
+                {
+                  "name": "options",
+                  "default": "{}",
+                  "optional": true,
+                  "type": {
+                    "text": "@param {boolean} [options.download=false] - Whether to trigger browser download\n   * @param {Function} [options.onProgress] - Progress callback (done, total)\n   * "
+                  }
+                }
+              ],
+              "description": "Export document pages as a ZIP (or single image) Blob.\nDoes NOT trigger automatic browser download unless options.download === true.",
+              "return": {
+                "type": {
+                  "text": "Promise<Blob>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "runOcr",
+              "parameters": [
+                {
+                  "name": "docIdOrPages",
+                  "optional": true,
+                  "type": {
+                    "text": "string|Array<Object>"
+                  }
+                },
+                {
+                  "name": "pageId",
+                  "default": "null",
+                  "description": "Optional specific page ID to recognize",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "options",
+                  "default": "{}",
+                  "optional": true,
+                  "type": {
+                    "text": "@param {string} [options.lang] - OCR language (defaults to first configured language or 'eng')\n   * @param {Function} [options.onPageProgress]\n   * "
+                  }
+                }
+              ],
+              "description": "Run optical character recognition on document pages.",
+              "return": {
+                "type": {
+                  "text": "Promise<{ combinedText: string, text: string, pagesResults: Array<Object>, averageConfidence: number }>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "sync",
+              "parameters": [
+                {
+                  "name": "options",
+                  "default": "{}",
+                  "optional": true,
+                  "type": {
+                    "text": "@param {Function} [options.onStateChange]\n   * "
+                  }
+                }
+              ],
+              "description": "Initialize P2P synchronization session.",
+              "return": {
+                "type": {
+                  "text": "Promise<any>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DEFAULT_FEATURES",
+          "declaration": {
+            "name": "DEFAULT_FEATURES",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "DEFAULT_EXPORT_FORMATS",
+          "declaration": {
+            "name": "DEFAULT_EXPORT_FORMATS",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "DEFAULT_OCR_LANGUAGES",
+          "declaration": {
+            "name": "DEFAULT_OCR_LANGUAGES",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "registerService",
+          "declaration": {
+            "name": "registerService",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getRegisteredService",
+          "declaration": {
+            "name": "getRegisteredService",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioEngine",
+          "declaration": {
+            "name": "CopioEngine",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "DocRepository",
+          "declaration": {
+            "name": "DocRepository",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "docRepository",
+          "declaration": {
+            "name": "docRepository",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "StoragePort",
+          "declaration": {
+            "name": "StoragePort",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MemoryStorageAdapter",
+          "declaration": {
+            "name": "MemoryStorageAdapter",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "IndexedDbStorageAdapter",
+          "declaration": {
+            "name": "IndexedDbStorageAdapter",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "createDefaultAdapter",
+          "declaration": {
+            "name": "createDefaultAdapter",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ImageProcessorPort",
+          "declaration": {
+            "name": "ImageProcessorPort",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Canvas2DAdapter",
+          "declaration": {
+            "name": "Canvas2DAdapter",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "NullImageProcessorAdapter",
+          "declaration": {
+            "name": "NullImageProcessorAdapter",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "NullOcrAdapter",
+          "declaration": {
+            "name": "NullOcrAdapter",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "NullPdfAdapter",
+          "declaration": {
+            "name": "NullPdfAdapter",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Document",
+          "declaration": {
+            "name": "Document",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Page",
+          "declaration": {
+            "name": "Page",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ScanSession",
+          "declaration": {
+            "name": "ScanSession",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "normalizeEditStack",
+          "declaration": {
+            "name": "normalizeEditStack",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "hasActiveEdits",
+          "declaration": {
+            "name": "hasActiveEdits",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "randomId",
+          "declaration": {
+            "name": "randomId",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "fileToBase64",
+          "declaration": {
+            "name": "fileToBase64",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "thresholdSrc",
+          "declaration": {
+            "name": "thresholdSrc",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "rotateSrc",
+          "declaration": {
+            "name": "rotateSrc",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getCroppedSrc",
+          "declaration": {
+            "name": "getCroppedSrc",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "extractExif",
+          "declaration": {
+            "name": "extractExif",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "applyEdits",
+          "declaration": {
+            "name": "applyEdits",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "normalizeEdits",
+          "declaration": {
+            "name": "normalizeEdits",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "renderEditsToCanvas",
+          "declaration": {
+            "name": "renderEditsToCanvas",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "applySauvolaToImageData",
+          "declaration": {
+            "name": "applySauvolaToImageData",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "BUILD_DATE",
+          "declaration": {
+            "name": "BUILD_DATE",
+            "module": "sdk/core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "VERSION",
+          "declaration": {
+            "name": "VERSION",
+            "module": "sdk/core.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/events.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "COPIO_EVENTS",
+          "type": {
+            "text": "object"
+          },
+          "default": "{ PAGE_ADDED: 'copio:page-added', PAGE_REMOVED: 'copio:page-removed', PAGES_CHANGED: 'copio:pages-changed', SCAN_COMPLETE: 'copio:scan-complete', EXPORT_PROGRESS: 'copio:export-progress', EXPORT_COMPLETE: 'copio:export-complete', OCR_COMPLETE: 'copio:ocr-complete', SYNC_CONNECTED: 'copio:sync-connected', ERROR: 'copio:error', }",
+          "description": "Public event name constants.",
+          "readonly": true
+        },
+        {
+          "kind": "function",
+          "name": "dispatchCopioEvent",
+          "parameters": [
+            {
+              "name": "target",
+              "description": "Element or target dispatching the event",
+              "type": {
+                "text": "EventTarget"
+              }
+            },
+            {
+              "name": "eventName",
+              "description": "One of COPIO_EVENTS or a custom copio:* event string",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "detail",
+              "default": "{}",
+              "description": "Event payload data",
+              "optional": true,
+              "type": {
+                "text": "Object"
+              }
+            }
+          ],
+          "description": "Dispatch a standard public Copio CustomEvent.\nConfigured with bubbles: true and composed: true so it crosses shadow boundaries.",
+          "return": {
+            "type": {
+              "text": "CustomEvent"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "COPIO_EVENTS",
+          "declaration": {
+            "name": "COPIO_EVENTS",
+            "module": "sdk/events.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "dispatchCopioEvent",
+          "declaration": {
+            "name": "dispatchCopioEvent",
+            "module": "sdk/events.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/index.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioScanner",
+          "declaration": {
+            "name": "CopioScanner",
+            "module": "./scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "scannerCss",
+          "declaration": {
+            "name": "scannerCss",
+            "module": "./scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getScannerStyleSheet",
+          "declaration": {
+            "name": "getScannerStyleSheet",
+            "module": "./scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "adoptScannerStyles",
+          "declaration": {
+            "name": "adoptScannerStyles",
+            "module": "./scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioImages",
+          "declaration": {
+            "name": "CopioImages",
+            "module": "../js/routes/doc/copio-images.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioCarousel",
+          "declaration": {
+            "name": "CopioCarousel",
+            "module": "../js/routes/doc/copio-carousel.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioDocOcrDialog",
+          "declaration": {
+            "name": "CopioDocOcrDialog",
+            "module": "../js/routes/ocr/copio-doc-ocr-dialog.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioSyncDialog",
+          "declaration": {
+            "name": "CopioSyncDialog",
+            "module": "../js/routes/sync/copio-sync-dialog.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioAddEditDialog",
+          "declaration": {
+            "name": "CopioAddEditDialog",
+            "module": "../js/routes/add-edit/copio-add-edit-dialog.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioRow",
+          "declaration": {
+            "name": "CopioRow",
+            "module": "../js/routes/home/copio-row.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioHeader",
+          "declaration": {
+            "name": "CopioHeader",
+            "module": "../js/components/copio-header.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioLoader",
+          "declaration": {
+            "name": "CopioLoader",
+            "module": "../js/components/copio-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioEngine",
+          "declaration": {
+            "name": "CopioEngine",
+            "module": "./core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "COPIO_EVENTS",
+          "declaration": {
+            "name": "COPIO_EVENTS",
+            "module": "./events.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "dispatchCopioEvent",
+          "declaration": {
+            "name": "dispatchCopioEvent",
+            "module": "./events.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "LicenseManager",
+          "declaration": {
+            "name": "LicenseManager",
+            "module": "./license.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "BUILD_DATE",
+          "declaration": {
+            "name": "BUILD_DATE",
+            "module": "./version.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "VERSION",
+          "declaration": {
+            "name": "VERSION",
+            "module": "./version.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "recognizeImageText",
+          "declaration": {
+            "name": "recognizeImageText",
+            "module": "../js/services/ocr-service.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "recognizeDocumentPages",
+          "declaration": {
+            "name": "recognizeDocumentPages",
+            "module": "../js/services/ocr-service.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getOcrWorker",
+          "declaration": {
+            "name": "getOcrWorker",
+            "module": "../js/services/ocr-service.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "terminateOcrWorker",
+          "declaration": {
+            "name": "terminateOcrWorker",
+            "module": "../js/services/ocr-service.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SUPPORTED_LANGUAGES",
+          "declaration": {
+            "name": "SUPPORTED_LANGUAGES",
+            "module": "../js/services/ocr-service.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SyncManager",
+          "declaration": {
+            "name": "SyncManager",
+            "module": "../js/services/sync-service.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "exportDocumentAsPdf",
+          "declaration": {
+            "name": "exportDocumentAsPdf",
+            "module": "../js/services/export-utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "exportDocumentAsImages",
+          "declaration": {
+            "name": "exportDocumentAsImages",
+            "module": "../js/services/export-utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "exportDocumentAsMarkdown",
+          "declaration": {
+            "name": "exportDocumentAsMarkdown",
+            "module": "../js/services/export-utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "notify",
+          "declaration": {
+            "name": "notify",
+            "module": "../js/services/notify.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "setContainer",
+          "declaration": {
+            "name": "setContainer",
+            "module": "../js/services/notify.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getContainer",
+          "declaration": {
+            "name": "getContainer",
+            "module": "../js/services/notify.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "clearNotifications",
+          "declaration": {
+            "name": "clear",
+            "module": "../js/services/notify.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "randomId",
+          "declaration": {
+            "name": "randomId",
+            "module": "../js/utils/utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "fileToBase64",
+          "declaration": {
+            "name": "fileToBase64",
+            "module": "../js/utils/utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "thresholdSrc",
+          "declaration": {
+            "name": "thresholdSrc",
+            "module": "../js/utils/utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "rotateSrc",
+          "declaration": {
+            "name": "rotateSrc",
+            "module": "../js/utils/utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getCroppedSrc",
+          "declaration": {
+            "name": "getCroppedSrc",
+            "module": "../js/utils/utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "extractExif",
+          "declaration": {
+            "name": "extractExif",
+            "module": "../js/utils/utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "renderPdfPagesToDataUrls",
+          "declaration": {
+            "name": "renderPdfPagesToDataUrls",
+            "module": "../js/utils/pdf-utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getAssetBase",
+          "declaration": {
+            "name": "getAssetBase",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "setAssetBase",
+          "declaration": {
+            "name": "setAssetBase",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "resolveAssetUrl",
+          "declaration": {
+            "name": "resolveAssetUrl",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "loadScript",
+          "declaration": {
+            "name": "loadScript",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "loadCropper",
+          "declaration": {
+            "name": "loadCropper",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "loadPdfKit",
+          "declaration": {
+            "name": "loadPdfKit",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "loadJsZip",
+          "declaration": {
+            "name": "loadJsZip",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "loadMarked",
+          "declaration": {
+            "name": "loadMarked",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "loadPeerJs",
+          "declaration": {
+            "name": "loadPeerJs",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "loadQrCode",
+          "declaration": {
+            "name": "loadQrCode",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "loadTesseract",
+          "declaration": {
+            "name": "loadTesseract",
+            "module": "../js/utils/module-loader.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "DocRepository",
+          "declaration": {
+            "name": "DocRepository",
+            "module": "../js/services/doc-repository.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "docRepository",
+          "declaration": {
+            "name": "docRepository",
+            "module": "../js/services/doc-repository.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "StoragePort",
+          "declaration": {
+            "name": "StoragePort",
+            "module": "../js/adapters/storage/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MemoryStorageAdapter",
+          "declaration": {
+            "name": "MemoryStorageAdapter",
+            "module": "../js/adapters/storage/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "IndexedDbStorageAdapter",
+          "declaration": {
+            "name": "IndexedDbStorageAdapter",
+            "module": "../js/adapters/storage/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "createDefaultAdapter",
+          "declaration": {
+            "name": "createDefaultAdapter",
+            "module": "../js/adapters/storage/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "OcrPort",
+          "declaration": {
+            "name": "OcrPort",
+            "module": "../js/adapters/ocr/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "NullOcrAdapter",
+          "declaration": {
+            "name": "NullOcrAdapter",
+            "module": "../js/adapters/ocr/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TesseractWasmAdapter",
+          "declaration": {
+            "name": "TesseractWasmAdapter",
+            "module": "../js/adapters/ocr/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PdfPort",
+          "declaration": {
+            "name": "PdfPort",
+            "module": "../js/adapters/pdf/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "NullPdfAdapter",
+          "declaration": {
+            "name": "NullPdfAdapter",
+            "module": "../js/adapters/pdf/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PdfKitAdapter",
+          "declaration": {
+            "name": "PdfKitAdapter",
+            "module": "../js/adapters/pdf/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ImageProcessorPort",
+          "declaration": {
+            "name": "ImageProcessorPort",
+            "module": "../js/adapters/image/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Canvas2DAdapter",
+          "declaration": {
+            "name": "Canvas2DAdapter",
+            "module": "../js/adapters/image/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "NullImageProcessorAdapter",
+          "declaration": {
+            "name": "NullImageProcessorAdapter",
+            "module": "../js/adapters/image/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "SyncPort",
+          "declaration": {
+            "name": "SyncPort",
+            "module": "../js/adapters/sync/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PeerJsAdapter",
+          "declaration": {
+            "name": "PeerJsAdapter",
+            "module": "../js/adapters/sync/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "NullSyncAdapter",
+          "declaration": {
+            "name": "NullSyncAdapter",
+            "module": "../js/adapters/sync/index.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Document",
+          "declaration": {
+            "name": "Document",
+            "module": "./models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Page",
+          "declaration": {
+            "name": "Page",
+            "module": "./models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ScanSession",
+          "declaration": {
+            "name": "ScanSession",
+            "module": "./models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "normalizeEditStack",
+          "declaration": {
+            "name": "normalizeEditStack",
+            "module": "./models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "hasActiveEdits",
+          "declaration": {
+            "name": "hasActiveEdits",
+            "module": "./models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "registerService",
+          "declaration": {
+            "name": "registerService",
+            "module": "./core.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getRegisteredService",
+          "declaration": {
+            "name": "getRegisteredService",
+            "module": "./core.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/license.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "License Manager (CPO-053 / CPO-061)\nClient-side verification and key handling for Copio SDK tiers.",
+          "name": "LicenseManager",
+          "members": [
+            {
+              "kind": "method",
+              "name": "setKey",
+              "parameters": [
+                {
+                  "name": "key"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getKey"
+            },
+            {
+              "kind": "method",
+              "name": "isValid"
+            },
+            {
+              "kind": "method",
+              "name": "getTier"
+            },
+            {
+              "kind": "field",
+              "name": "key",
+              "default": "licenseKey"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "LicenseManager",
+          "declaration": {
+            "name": "LicenseManager",
+            "module": "sdk/license.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/models.js",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "normalizeEditStack",
+          "parameters": [
+            {
+              "name": "edits",
+              "default": "{}",
+              "optional": true,
+              "type": {
+                "text": "Object"
+              }
+            }
+          ],
+          "description": "Normalizes an edit stack object with safe defaults.",
+          "return": {
+            "type": {
+              "text": "{ crop: { x: number, y: number, w: number, h: number } | null, rotate: 0|90|180|270, filter: 'none'|'bw' }"
+            }
+          }
+        },
+        {
+          "kind": "function",
+          "name": "hasActiveEdits",
+          "parameters": [
+            {
+              "name": "edits",
+              "optional": true,
+              "type": {
+                "text": "Object"
+              }
+            }
+          ],
+          "description": "Checks whether an edit stack contains any non-default modifications.",
+          "return": {
+            "type": {
+              "text": "boolean"
+            }
+          }
+        },
+        {
+          "kind": "class",
+          "description": "Page domain entity.",
+          "name": "Page",
+          "members": [
+            {
+              "kind": "field",
+              "name": "isModified",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "toJSON"
+            },
+            {
+              "kind": "field",
+              "name": "id"
+            },
+            {
+              "kind": "field",
+              "name": "src"
+            },
+            {
+              "kind": "field",
+              "name": "originalSrc"
+            },
+            {
+              "kind": "field",
+              "name": "edits"
+            },
+            {
+              "kind": "field",
+              "name": "name"
+            },
+            {
+              "kind": "field",
+              "name": "type"
+            },
+            {
+              "kind": "field",
+              "name": "orientation"
+            },
+            {
+              "kind": "field",
+              "name": "ocrText"
+            },
+            {
+              "kind": "field",
+              "name": "ocrConfidence"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "Document domain entity.",
+          "name": "Document",
+          "members": [
+            {
+              "kind": "field",
+              "name": "pageCount",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "toJSON"
+            },
+            {
+              "kind": "field",
+              "name": "id"
+            },
+            {
+              "kind": "field",
+              "name": "name"
+            },
+            {
+              "kind": "field",
+              "name": "pages"
+            },
+            {
+              "kind": "field",
+              "name": "createdAt"
+            },
+            {
+              "kind": "field",
+              "name": "updatedAt"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "ScanSession domain model for ongoing capture workflows (CPO-034).",
+          "name": "ScanSession",
+          "members": [
+            {
+              "kind": "method",
+              "name": "pushHistory",
+              "parameters": [
+                {
+                  "name": "entry"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "undo"
+            },
+            {
+              "kind": "method",
+              "name": "redo"
+            },
+            {
+              "kind": "field",
+              "name": "mode"
+            },
+            {
+              "kind": "field",
+              "name": "aspect"
+            },
+            {
+              "kind": "field",
+              "name": "docId"
+            },
+            {
+              "kind": "field",
+              "name": "maxPages"
+            },
+            {
+              "kind": "field",
+              "name": "stage",
+              "type": {
+                "text": "string"
+              },
+              "default": "'viewfinder'"
+            },
+            {
+              "kind": "field",
+              "name": "activePageIndex",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "history",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "future",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "normalizeEditStack",
+          "declaration": {
+            "name": "normalizeEditStack",
+            "module": "sdk/models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "hasActiveEdits",
+          "declaration": {
+            "name": "hasActiveEdits",
+            "module": "sdk/models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Page",
+          "declaration": {
+            "name": "Page",
+            "module": "sdk/models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Document",
+          "declaration": {
+            "name": "Document",
+            "module": "sdk/models.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ScanSession",
+          "declaration": {
+            "name": "ScanSession",
+            "module": "sdk/models.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/scanner.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioScanner",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#engine",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#storage",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#unsubscribeRepo",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#isOpen",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#stage",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "'viewfinder'"
+            },
+            {
+              "kind": "field",
+              "name": "#activePageIndex",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#cropMode",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#draftCrop",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#undoTimer",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#undoRemaining",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#renderPromise",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#sessionDocId",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#targetDocId",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#initEngine",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#updateChildViews",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#buildInitialDom",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#bindEventListeners",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#bindCropHandles",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#updateCropBoxUi",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#syncView",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#doSyncView",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#renderFilmstrip",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "pages"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#movePage",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "fromIdx"
+                },
+                {
+                  "name": "toIdx"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#handleShutterClick",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#rotateActivePage",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#toggleActivePageBw",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#toggleCropMode",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#deleteActivePageWithUndo",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#showUndoToast",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#openOcrSheet",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#closeOcrSheet",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#handlePrimaryCtaClick",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "theme"
+            },
+            {
+              "kind": "field",
+              "name": "mode"
+            },
+            {
+              "kind": "field",
+              "name": "aspect"
+            },
+            {
+              "kind": "field",
+              "name": "stage"
+            },
+            {
+              "kind": "field",
+              "name": "docId"
+            },
+            {
+              "kind": "method",
+              "name": "rotateActivePage"
+            },
+            {
+              "kind": "method",
+              "name": "toggleActivePageBw"
+            },
+            {
+              "kind": "method",
+              "name": "toggleCropMode"
+            },
+            {
+              "kind": "method",
+              "name": "deleteActivePageWithUndo"
+            },
+            {
+              "kind": "field",
+              "name": "features"
+            },
+            {
+              "kind": "method",
+              "name": "hasFeature",
+              "parameters": [
+                {
+                  "name": "featureName"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "ocrEnabled"
+            },
+            {
+              "kind": "field",
+              "name": "pdf"
+            },
+            {
+              "kind": "field",
+              "name": "exportFormats"
+            },
+            {
+              "kind": "field",
+              "name": "ocrLanguages"
+            },
+            {
+              "kind": "field",
+              "name": "maxPages"
+            },
+            {
+              "kind": "field",
+              "name": "assetBase"
+            },
+            {
+              "kind": "field",
+              "name": "licenseKey"
+            },
+            {
+              "kind": "field",
+              "name": "storage"
+            },
+            {
+              "kind": "field",
+              "name": "engine"
+            },
+            {
+              "kind": "method",
+              "name": "dispatch",
+              "parameters": [
+                {
+                  "name": "eventName"
+                },
+                {
+                  "name": "detail",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "open"
+            },
+            {
+              "kind": "method",
+              "name": "close"
+            },
+            {
+              "kind": "field",
+              "name": "isOpen",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "capture"
+            },
+            {
+              "kind": "method",
+              "name": "addFiles",
+              "parameters": [
+                {
+                  "name": "files"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getPages"
+            },
+            {
+              "kind": "method",
+              "name": "clear"
+            },
+            {
+              "kind": "method",
+              "name": "exportPdf",
+              "parameters": [
+                {
+                  "name": "opts",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "exportZip",
+              "parameters": [
+                {
+                  "name": "opts",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "ocr",
+              "parameters": [
+                {
+                  "name": "pageId",
+                  "default": "null"
+                },
+                {
+                  "name": "opts",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "runOcr",
+              "parameters": [
+                {
+                  "name": "pageId",
+                  "default": "null"
+                },
+                {
+                  "name": "opts",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "sync",
+              "parameters": [
+                {
+                  "name": "opts",
+                  "default": "{}"
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "mode"
+            },
+            {
+              "name": "aspect"
+            },
+            {
+              "name": "stage"
+            },
+            {
+              "name": "doc-id"
+            },
+            {
+              "name": "features"
+            },
+            {
+              "name": "export-formats"
+            },
+            {
+              "name": "ocr-languages"
+            },
+            {
+              "name": "max-pages"
+            },
+            {
+              "name": "asset-base"
+            },
+            {
+              "name": "license-key"
+            },
+            {
+              "name": "theme"
+            },
+            {
+              "name": "ocr"
+            },
+            {
+              "name": "pdf"
+            }
+          ],
+          "superclass": {
+            "name": "BaseElement",
+            "module": "sdk/scanner.js"
+          },
+          "tagName": "copio-scanner",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioScanner",
+          "declaration": {
+            "name": "CopioScanner",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-scanner",
+          "declaration": {
+            "name": "CopioScanner",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioImages",
+          "declaration": {
+            "name": "CopioImages",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioCarousel",
+          "declaration": {
+            "name": "CopioCarousel",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioAddEditDialog",
+          "declaration": {
+            "name": "CopioAddEditDialog",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioRow",
+          "declaration": {
+            "name": "CopioRow",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioHeader",
+          "declaration": {
+            "name": "CopioHeader",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioLoader",
+          "declaration": {
+            "name": "CopioLoader",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "COPIO_EVENTS",
+          "declaration": {
+            "name": "COPIO_EVENTS",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "dispatchCopioEvent",
+          "declaration": {
+            "name": "dispatchCopioEvent",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "scannerCss",
+          "declaration": {
+            "name": "scannerCss",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getScannerStyleSheet",
+          "declaration": {
+            "name": "getScannerStyleSheet",
+            "module": "sdk/scanner.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "adoptScannerStyles",
+          "declaration": {
+            "name": "adoptScannerStyles",
+            "module": "sdk/scanner.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/styles.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "scannerCss",
+          "default": "` /* ========================================================================== 1. HOST RESET & BOUNDARY ENCAPSULATION all: initial isolates inherited typography, line-height, text-align, etc. ========================================================================== */ :host { all: initial; display: block; position: relative; width: 100%; height: 100%; min-height: 200px; container-type: size; container-name: copio-scanner; overflow: hidden; contain: layout; box-sizing: border-box; text-align: left; direction: ltr; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; /* Typography Design Tokens */ --copio-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; --copio-font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; /* Surface & Background Tokens (Default Dark) */ --copio-color-bg: #0b0f17; --copio-color-surface: #131b26; --copio-color-surface-elevated: #1c2736; --copio-color-surface-overlay: rgba(15, 22, 32, 0.88); --copio-color-stage-bg: #070a0f; /* Text & Iconography Tokens */ --copio-color-text: #f1f5f9; --copio-color-text-muted: #94a3b8; --copio-color-text-inverse: #090d14; /* Brand & Semantic Accent Tokens */ --copio-color-primary: #38bdf8; --copio-color-primary-hover: #7dd3fc; --copio-color-primary-contrast: #06131f; --copio-color-success: #22c55e; --copio-color-warning: #f59e0b; --copio-color-danger: #ef4444; /* Borders, Dividers & Focus Rings */ --copio-color-border: rgba(148, 163, 184, 0.18); --copio-color-border-strong: rgba(148, 163, 184, 0.34); --copio-focus-ring: 0 0 0 2px #0b0f17, 0 0 0 4px #38bdf8; /* Geometry, Spacing & Touch Ergonomics (>=44px touch targets) */ --copio-radius-sm: 6px; --copio-radius-md: 10px; --copio-radius-lg: 14px; --copio-radius-pill: 9999px; --copio-spacing-xs: 4px; --copio-spacing-sm: 8px; --copio-spacing-md: 12px; --copio-spacing-lg: 16px; --copio-spacing-xl: 24px; --copio-touch-target-min: 44px; --copio-crop-handle-hit: 48px; --copio-crop-handle-visual: 16px; --copio-shadow-elevated: 0 12px 32px -4px rgba(0, 0, 0, 0.55); --copio-transition-fast: 150ms cubic-bezier(0.22, 1, 0.36, 1); --copio-transition-normal: 240ms cubic-bezier(0.22, 1, 0.36, 1); /* Shoelace Theme Mapping */ --sl-font-sans: var(--copio-font-family); --sl-font-mono: var(--copio-font-mono); --sl-color-primary-50: #f0f9ff; --sl-color-primary-100: #e0f2fe; --sl-color-primary-200: #bae6fd; --sl-color-primary-300: #7dd3fc; --sl-color-primary-400: #38bdf8; --sl-color-primary-500: #0ea5e9; --sl-color-primary-600: var(--copio-color-primary); --sl-color-primary-700: #0369a1; --sl-color-primary-800: #075985; --sl-color-primary-900: #0c4a6e; --sl-color-primary-950: #082f49; font-family: var(--copio-font-family); font-size: 14px; line-height: 1.5; color: var(--copio-color-text); background-color: var(--copio-color-bg); color-scheme: dark; } /* Explicit Dark Theme Override */ :host([theme=\"dark\"]), :host(.copio-theme-dark), :host-context([data-theme=\"dark\"]), :host-context(.sl-theme-dark), :host-context(.theme-dark) { --copio-color-bg: #0b0f17; --copio-color-surface: #131b26; --copio-color-surface-elevated: #1c2736; --copio-color-surface-overlay: rgba(15, 22, 32, 0.88); --copio-color-stage-bg: #070a0f; --copio-color-text: #f1f5f9; --copio-color-text-muted: #94a3b8; --copio-color-text-inverse: #090d14; --copio-color-primary: #38bdf8; --copio-color-primary-hover: #7dd3fc; --copio-color-primary-contrast: #06131f; --copio-color-success: #22c55e; --copio-color-warning: #f59e0b; --copio-color-danger: #ef4444; --copio-color-border: rgba(148, 163, 184, 0.18); --copio-color-border-strong: rgba(148, 163, 184, 0.34); --copio-focus-ring: 0 0 0 2px #0b0f17, 0 0 0 4px #38bdf8; --copio-radius-sm: 6px; --copio-radius-md: 10px; --copio-radius-lg: 14px; --copio-shadow-elevated: 0 12px 32px -4px rgba(0, 0, 0, 0.55); color-scheme: dark; } /* Light Theme Override */ :host([theme=\"light\"]), :host(.copio-theme-light), :host-context([data-theme=\"light\"]), :host-context(.sl-theme-light), :host-context(.theme-light) { --copio-color-bg: #f8fafc; --copio-color-surface: #ffffff; --copio-color-surface-elevated: #f1f5f9; --copio-color-surface-overlay: rgba(255, 255, 255, 0.92); --copio-color-stage-bg: #1e293b; --copio-color-text: #0f172a; --copio-color-text-muted: #475569; --copio-color-text-inverse: #ffffff; --copio-color-primary: #0284c7; --copio-color-primary-hover: #0369a1; --copio-color-primary-contrast: #ffffff; --copio-color-success: #16a34a; --copio-color-warning: #d97706; --copio-color-danger: #dc2626; --copio-color-border: rgba(15, 23, 42, 0.12); --copio-color-border-strong: rgba(15, 23, 42, 0.26); --copio-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #0284c7; --copio-radius-sm: 6px; --copio-radius-md: 10px; --copio-radius-lg: 14px; --copio-shadow-elevated: 0 12px 28px -4px rgba(15, 23, 42, 0.18); color-scheme: light; } /* Brand Theme Override (Emerald) */ :host([theme=\"brand\"]), :host(.copio-theme-brand), :host-context([data-theme=\"brand\"]), :host-context(.theme-brand) { --copio-color-bg: #0f111a; --copio-color-surface: #181b28; --copio-color-surface-elevated: #23273a; --copio-color-surface-overlay: rgba(24, 27, 40, 0.90); --copio-color-stage-bg: #090a10; --copio-color-text: #f8fafc; --copio-color-text-muted: #9ca3af; --copio-color-text-inverse: #ffffff; --copio-color-primary: #10b981; --copio-color-primary-hover: #34d399; --copio-color-primary-contrast: #042f2e; --copio-color-success: #10b981; --copio-color-warning: #f59e0b; --copio-color-danger: #ef4444; --copio-color-border: rgba(16, 185, 129, 0.22); --copio-color-border-strong: rgba(16, 185, 129, 0.42); --copio-focus-ring: 0 0 0 2px #0f111a, 0 0 0 4px #10b981; --copio-radius-sm: 4px; --copio-radius-md: 8px; --copio-radius-lg: 12px; --copio-shadow-elevated: 0 12px 32px -4px rgba(0, 0, 0, 0.65); color-scheme: dark; } /* Auto Theme: follows prefers-color-scheme when theme is auto */ @media (prefers-color-scheme: light) { :host([theme=\"auto\"]), :host(.copio-theme-auto) { --copio-color-bg: #f8fafc; --copio-color-surface: #ffffff; --copio-color-surface-elevated: #f1f5f9; --copio-color-surface-overlay: rgba(255, 255, 255, 0.92); --copio-color-stage-bg: #1e293b; --copio-color-text: #0f172a; --copio-color-text-muted: #475569; --copio-color-text-inverse: #ffffff; --copio-color-primary: #0284c7; --copio-color-primary-hover: #0369a1; --copio-color-primary-contrast: #ffffff; --copio-color-success: #16a34a; --copio-color-warning: #d97706; --copio-color-danger: #dc2626; --copio-color-border: rgba(15, 23, 42, 0.12); --copio-color-border-strong: rgba(15, 23, 42, 0.26); --copio-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #0284c7; --copio-radius-sm: 6px; --copio-radius-md: 10px; --copio-radius-lg: 14px; --copio-shadow-elevated: 0 12px 28px -4px rgba(15, 23, 42, 0.18); color-scheme: light; } } /* ========================================================================== 2. INTERNAL ELEMENT RESET (Scoped to Shadow DOM) ========================================================================== */ *, *::before, *::after { box-sizing: border-box; } ::slotted(*) { box-sizing: border-box; } /* ========================================================================== 3. ROOT CONTAINER & COMPONENT SHELL ========================================================================== */ .copio-scanner-container { width: 100%; height: 100%; position: relative; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; container-type: size; container-name: copio-scanner; contain: layout; background: var(--copio-color-bg); color: var(--copio-color-text); font-family: var(--copio-font-family); font-size: 14px; line-height: 1.5; text-align: left; direction: ltr; user-select: none; } /* Header (Shadow Part: header) */ .copio-header { display: flex; align-items: center; justify-content: space-between; gap: var(--copio-spacing-sm); padding: var(--copio-spacing-sm) var(--copio-spacing-md); background: var(--copio-color-surface); border-bottom: 1px solid var(--copio-color-border); min-height: 52px; flex-shrink: 0; z-index: 5; box-sizing: border-box; } .copio-header-left { display: flex; align-items: center; gap: var(--copio-spacing-sm); min-width: 0; } .copio-mode-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: var(--copio-radius-pill); background: var(--copio-color-surface-elevated); color: var(--copio-color-primary); border: 1px solid var(--copio-color-border); white-space: nowrap; } .copio-title-group { display: flex; flex-direction: column; min-width: 0; } .copio-title { font-size: 13px; font-weight: 600; color: var(--copio-color-text); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .copio-subtitle { font-size: 11px; color: var(--copio-color-text-muted); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .copio-header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; } /* Interactive Stage Switcher Pill (Viewfinder vs Workbench) */ .copio-stage-tabs { display: inline-flex; background: var(--copio-color-bg); padding: 2px; border-radius: var(--copio-radius-md); border: 1px solid var(--copio-color-border); } .copio-stage-tab { appearance: none; border: none; background: transparent; color: var(--copio-color-text-muted); font-family: inherit; font-size: 11px; font-weight: 600; padding: 6px 10px; min-height: var(--copio-touch-target-min); min-width: var(--copio-touch-target-min); border-radius: var(--copio-radius-sm); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background var(--copio-transition-fast), color var(--copio-transition-fast); } .copio-stage-tab[aria-selected=\"true\"] { background: var(--copio-color-surface-elevated); color: var(--copio-color-text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); } /* Touch-Safe Interactive Buttons (>=44px touch invariant) */ .copio-btn { appearance: none; border: 1px solid var(--copio-color-border); background: var(--copio-color-surface-elevated); color: var(--copio-color-text); font-family: inherit; font-size: 13px; font-weight: 600; min-height: var(--copio-touch-target-min); min-width: var(--copio-touch-target-min); padding: 0 12px; border-radius: var(--copio-radius-md); display: inline-flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer; transition: all var(--copio-transition-fast); white-space: nowrap; text-decoration: none; box-sizing: border-box; } .copio-btn:hover { background: var(--copio-color-primary-hover); color: var(--copio-color-primary-contrast); border-color: var(--copio-color-primary); } .copio-btn-primary { background: var(--copio-color-primary); color: var(--copio-color-primary-contrast); border-color: var(--copio-color-primary); } .copio-btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--copio-color-danger); border-color: rgba(239, 68, 68, 0.35); } .copio-btn-danger:hover { background: var(--copio-color-danger); color: #fff; } /* Viewfinder (Shadow Part: viewfinder) */ .copio-viewfinder, .copio-viewfinder-stage { position: relative; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-between; background: var(--copio-color-stage-bg); overflow: hidden; min-height: 0; width: 100%; } .copio-viewfinder-feed, .copio-camera-feed { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 56px 20px 104px 20px; background: radial-gradient(circle at 50% 45%, #1e293b 0%, #090d14 75%); } /* Framing Guide Overlay (receipt | card | a4 | auto) */ .copio-framing-guide { position: relative; display: flex; align-items: center; justify-content: center; max-width: 100%; max-height: 100%; border: 1.5px dashed rgba(56, 189, 248, 0.55); border-radius: 12px; box-shadow: 0 0 0 9999px rgba(4, 7, 12, 0.52); transition: all var(--copio-transition-normal); overflow: hidden; } .copio-framing-guide[data-aspect=\"receipt\"] { aspect-ratio: 1 / 2.1; height: 100%; } .copio-framing-guide[data-aspect=\"card\"] { aspect-ratio: 1.586 / 1; width: 92%; max-height: 82%; } .copio-framing-guide[data-aspect=\"a4\"] { aspect-ratio: 1 / 1.414; height: 96%; } .copio-framing-guide[data-aspect=\"auto\"] { width: 94%; height: 94%; } /* Corner Targeting Brackets */ .copio-corner { position: absolute; width: 22px; height: 22px; border-color: var(--copio-color-primary); border-style: solid; border-width: 0; pointer-events: none; z-index: 2; } .copio-corner.tl { top: 6px; left: 6px; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 6px; } .copio-corner.tr { top: 6px; right: 6px; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 6px; } .copio-corner.bl { bottom: 6px; left: 6px; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 6px; } .copio-corner.br { bottom: 6px; right: 6px; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 6px; } /* Top Viewfinder HUD Overlay (Step Pill + Privacy Assurance Badge) */ .copio-viewfinder-hud-top { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; background: linear-gradient(to bottom, rgba(7, 10, 15, 0.85), transparent); } .copio-step-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: var(--copio-radius-pill); background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(56, 189, 248, 0.45); color: #f8fafc; font-size: 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); } .copio-privacy-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: var(--copio-radius-pill); background: rgba(22, 101, 52, 0.35); border: 1px solid rgba(34, 197, 94, 0.4); color: #86efac; font-size: 11px; font-weight: 500; } /* Shutter Dock (Shadow Part: shutter-dock) */ .copio-shutter-dock { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; background: var(--copio-color-surface); border-top: 1px solid var(--copio-color-border); min-height: 84px; flex-shrink: 0; } .copio-shutter-side { flex: 1; display: flex; align-items: center; } .copio-shutter-side.right { justify-content: flex-end; } .copio-shutter-btn { appearance: none; width: 64px; height: 64px; border-radius: var(--copio-radius-pill); border: 4px solid var(--copio-color-primary); background: transparent; padding: 4px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: transform var(--copio-transition-fast), border-color 150ms ease; flex-shrink: 0; } .copio-shutter-btn:hover { transform: scale(1.04); } .copio-shutter-btn:active { transform: scale(0.94); } .copio-shutter-btn-inner, .copio-shutter-inner { width: 100%; height: 100%; border-radius: var(--copio-radius-pill); background: var(--copio-color-primary); display: flex; align-items: center; justify-content: center; color: var(--copio-color-primary-contrast); transition: transform var(--copio-transition-fast); } .copio-shutter-btn:active .copio-shutter-btn-inner, .copio-shutter-btn:active .copio-shutter-inner { transform: scale(0.88); } /* Stacking Thumbnail Counter Pill in Viewfinder */ .copio-stack-pill { display: inline-flex; align-items: center; gap: 8px; min-height: var(--copio-touch-target-min); padding: 4px 12px 4px 6px; border-radius: var(--copio-radius-md); background: var(--copio-color-surface-elevated); border: 1px solid var(--copio-color-primary); color: var(--copio-color-text); font-size: 12px; font-weight: 600; cursor: pointer; } .copio-stack-thumb { width: 30px; height: 36px; border-radius: 4px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.35); background: #000; } /* Workbench & Filmstrip (Shadow Part: workbench) */ .copio-workbench, .copio-workbench-stage { position: relative; flex: 1 1 auto; display: flex; flex-direction: column; background: var(--copio-color-bg); overflow: hidden; min-height: 0; width: 100%; } .copio-workbench-main { flex: 1; display: flex; flex-direction: column; min-height: 0; width: 100%; overflow: hidden; } .copio-stage-canvas, .copio-canvas-viewport { position: relative; flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; padding: 16px 20px 44px 20px; background: var(--copio-color-stage-bg); min-height: 180px; } .copio-canvas-viewport.has-card-switcher { padding-top: 66px; } .copio-canvas-viewport.is-cropping { padding: 74px 26px 26px 26px; } /* Card Side Switcher */ .copio-card-side-switcher { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 6; display: inline-flex; gap: 4px; padding: 3px; background: var(--copio-color-surface-overlay, rgba(15, 22, 32, 0.88)); border: 1px solid var(--copio-color-border-strong); border-radius: var(--copio-radius-pill); backdrop-filter: blur(8px); } .copio-side-pill { appearance: none; border: none; background: transparent; color: var(--copio-color-text-muted); font-family: inherit; font-size: 11px; font-weight: 600; padding: 6px 12px; min-height: var(--copio-touch-target-min); min-width: var(--copio-touch-target-min); border-radius: var(--copio-radius-pill); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; } .copio-side-pill[aria-selected=\"true\"] { background: var(--copio-color-primary); color: var(--copio-color-primary-contrast); } .copio-stage-figure { position: relative; display: flex; align-items: center; justify-content: center; max-width: 100%; max-height: 100%; } .copio-stage-canvas img, .copio-stage-img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: var(--copio-shadow-elevated); border-radius: var(--copio-radius-sm); user-select: none; } .copio-edit-state-bar { position: absolute; bottom: 10px; left: 12px; right: 12px; display: flex; align-items: center; justify-content: space-between; pointer-events: none; z-index: 5; } .copio-status-chip { pointer-events: auto; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--copio-radius-pill); background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(148, 163, 184, 0.25); color: #e2e8f0; font-size: 11px; font-weight: 500; backdrop-filter: blur(6px); } /* ========================================================================== NON-DESTRUCTIVE CROP OVERLAY (CPO-025) ========================================================================== */ .copio-crop-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; z-index: 8; touch-action: none; } .copio-crop-box { position: absolute; border: 2px solid var(--copio-color-primary); box-shadow: 0 0 0 9999px rgba(5, 8, 14, 0.68); cursor: move; touch-action: none; box-sizing: border-box; } /* Rule-of-thirds crop grid */ .copio-crop-grid { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(to right, rgba(56, 189, 248, 0.28) 1px, transparent 1px), linear-gradient(to bottom, rgba(56, 189, 248, 0.28) 1px, transparent 1px); background-size: 33.333% 33.333%; } /* 48px x 48px Touch Target Handles (exceeds 44px requirement) */ .copio-crop-handle { position: absolute; width: var(--copio-crop-handle-hit); height: var(--copio-crop-handle-hit); min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; z-index: 10; touch-action: none; box-sizing: border-box; } .copio-crop-handle::after { content: ''; width: var(--copio-crop-handle-visual); height: var(--copio-crop-handle-visual); border-radius: 50%; background: var(--copio-color-primary); border: 2.5px solid #ffffff; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); transition: transform 120ms ease; box-sizing: border-box; } .copio-crop-handle:hover::after, .copio-crop-handle:active::after { transform: scale(1.25); background: var(--copio-color-success, #22c55e); } .copio-crop-handle.nw { top: -24px; left: -24px; cursor: nwse-resize; } .copio-crop-handle.ne { top: -24px; right: -24px; cursor: nesw-resize; } .copio-crop-handle.sw { bottom: -24px; left: -24px; cursor: nesw-resize; } .copio-crop-handle.se { bottom: -24px; right: -24px; cursor: nwse-resize; } .copio-crop-handle.n { top: -24px; left: calc(50% - 24px); cursor: ns-resize; } .copio-crop-handle.s { bottom: -24px; left: calc(50% - 24px); cursor: ns-resize; } .copio-crop-handle.w { left: -24px; top: calc(50% - 24px); cursor: ew-resize; } .copio-crop-handle.e { right: -24px; top: calc(50% - 24px); cursor: ew-resize; } /* Crop Sub-Toolbar Banner */ .copio-crop-banner { position: absolute; top: 8px; left: 12px; right: 12px; z-index: 12; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px; background: var(--copio-color-surface-overlay, rgba(15, 23, 42, 0.94)); border: 1px solid var(--copio-color-primary); border-radius: var(--copio-radius-md); box-shadow: var(--copio-shadow-elevated); } .copio-crop-banner-text { font-size: 11px; font-weight: 600; color: var(--copio-color-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .copio-crop-banner-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; } /* Filmstrip & Reorder Tray */ .copio-filmstrip, .copio-filmstrip-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--copio-color-surface); border-top: 1px solid var(--copio-color-border); overflow-x: auto; min-height: 80px; flex-shrink: 0; } .copio-thumb-card { position: relative; display: flex; flex-direction: column; align-items: center; width: 60px; flex-shrink: 0; padding: 4px; border-radius: var(--copio-radius-sm); background: var(--copio-color-surface-elevated); border: 2px solid transparent; cursor: pointer; transition: all var(--copio-transition-fast); } .copio-thumb-card[aria-selected=\"true\"] { border-color: var(--copio-color-primary); background: rgba(56, 189, 248, 0.12); } .copio-thumb-card.dragging { opacity: 0.4; transform: scale(0.95); } .copio-thumb-img-wrap { width: 48px; height: 60px; border-radius: 4px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; } .copio-thumb-img { width: 100%; height: 100%; object-fit: cover; } .copio-thumb-meta { display: flex; align-items: center; justify-content: center; width: 100%; margin-top: 4px; font-size: 10px; font-weight: 600; color: var(--copio-color-text-muted); } .copio-filmstrip-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: auto; } .copio-add-page-tile { min-width: 60px; height: 82px; padding: 0 8px; flex-shrink: 0; border-radius: var(--copio-radius-sm); border: 1.5px dashed var(--copio-color-border-strong); background: transparent; color: var(--copio-color-text-muted); font-family: inherit; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all var(--copio-transition-fast); } .copio-add-page-tile:hover { border-color: var(--copio-color-primary); color: var(--copio-color-primary); background: rgba(56, 189, 248, 0.06); } /* Edit Action Toolbar & Primary Completion Dock */ .copio-toolbar, .copio-controls-dock { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; background: var(--copio-color-surface); border-top: 1px solid var(--copio-color-border); min-height: 56px; flex-shrink: 0; z-index: 6; } .copio-edit-toolbar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; width: 100%; } .copio-edit-toolbar.cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } .copio-tool-btn { appearance: none; border: 1px solid var(--copio-color-border); background: var(--copio-color-surface-elevated); color: var(--copio-color-text); font-family: inherit; font-size: 11px; font-weight: 600; min-height: var(--copio-touch-target-min); min-width: var(--copio-touch-target-min); padding: 4px 6px; border-radius: var(--copio-radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; transition: all var(--copio-transition-fast); } .copio-tool-btn:hover:not(:disabled) { border-color: var(--copio-color-border-strong); background: rgba(255, 255, 255, 0.06); } .copio-tool-btn[aria-pressed=\"true\"] { background: rgba(56, 189, 248, 0.16); color: var(--copio-color-primary); border-color: var(--copio-color-primary); } .copio-tool-btn.danger { color: #fca5a5; } .copio-tool-btn.danger:hover:not(:disabled) { background: rgba(239, 68, 68, 0.16); border-color: rgba(239, 68, 68, 0.45); } .copio-submit-row { display: flex; align-items: center; gap: 8px; width: 100%; } .copio-submit-btn { flex: 1; min-height: 46px; font-size: 14px; } /* Container-Scoped Toast & Undo Notification */ .copio-toast-region { position: absolute; bottom: 124px; left: 12px; right: 12px; z-index: 30; display: flex; flex-direction: column; gap: 8px; pointer-events: none; } .copio-toast { pointer-events: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; border-radius: var(--copio-radius-md); background: #0f172a; color: #f8fafc; border: 1px solid var(--copio-color-primary); box-shadow: var(--copio-shadow-elevated); font-size: 12px; font-weight: 500; position: relative; overflow: hidden; } .copio-toast-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--copio-color-primary); transition: width 100ms linear; } .copio-toast-undo-btn { appearance: none; border: 1px solid rgba(56, 189, 248, 0.45); background: rgba(56, 189, 248, 0.16); color: #38bdf8; font-family: inherit; font-size: 12px; font-weight: 700; min-height: var(--copio-touch-target-min); min-width: var(--copio-touch-target-min); padding: 0 12px; border-radius: var(--copio-radius-sm); cursor: pointer; flex-shrink: 0; } /* Slide-up OCR Extraction Sheet */ .copio-ocr-sheet { position: absolute; inset: auto 0 0 0; max-height: 78%; background: var(--copio-color-surface); border-top: 1px solid var(--copio-color-primary); border-radius: 16px 16px 0 0; box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.65); z-index: 25; display: flex; flex-direction: column; padding: 14px; gap: 10px; } .copio-ocr-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; } .copio-ocr-textarea { width: 100%; min-height: 130px; flex: 1; resize: none; background: var(--copio-color-bg); color: var(--copio-color-text); border: 1px solid var(--copio-color-border); border-radius: var(--copio-radius-sm); padding: 10px; font-family: var(--copio-font-mono); font-size: 11px; line-height: 1.5; } /* Container-Scoped Toast Stack */ .sl-toast-stack, .copio-toast-stack-scoped { position: absolute !important; top: auto !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; max-width: 100% !important; padding: var(--copio-spacing-md) !important; box-sizing: border-box !important; z-index: 1000 !important; pointer-events: none; } .sl-toast-stack sl-alert, .copio-toast-stack-scoped sl-alert { pointer-events: auto; margin-top: var(--copio-spacing-sm); } /* ========================================================================== 4. @container BREAKPOINTS (Strictly Container Queries) ========================================================================== */ /* Modal Breakpoint: <= 400px */ @container copio-scanner (max-width: 400px) { .copio-header { padding: 6px 10px; min-height: 52px; } .copio-header-left { flex-direction: column; align-items: flex-start; gap: 2px; } .copio-mode-badge { font-size: 10px; padding: 2px 6px; } .copio-subtitle { display: none; } .copio-privacy-pill span.hide-compact { display: none; } .copio-crop-banner-text { display: none; } .copio-crop-banner-actions { width: 100%; justify-content: space-between; } .copio-filmstrip-bar { gap: 6px; padding: 6px 8px; } .copio-thumb-card { width: 52px; padding: 3px; } .copio-thumb-img-wrap { width: 42px; height: 52px; } .copio-filmstrip-actions { gap: 4px; } .copio-add-page-tile { min-width: 52px; height: 70px; padding: 0 6px; font-size: 10px; } .copio-tool-btn { font-size: 10px; padding: 3px 4px; } .copio-btn { padding: 0 8px; font-size: 12px; } } /* Drawer Breakpoint: 401px..767px */ @container copio-scanner (min-width: 401px) and (max-width: 767px) { .copio-header { padding: var(--copio-spacing-sm) var(--copio-spacing-md); } .copio-tool-btn { flex-direction: row; font-size: 12px; gap: 6px; } } /* Full View Breakpoint: >= 768px */ @container copio-scanner (min-width: 768px) { .copio-header { padding: var(--copio-spacing-md) var(--copio-spacing-lg); } .copio-workbench-main { flex-direction: row; } .copio-filmstrip-bar { order: -1; flex-direction: column; width: 168px; height: 100%; border-top: none; border-right: 1px solid var(--copio-color-border); overflow-y: auto; overflow-x: hidden; padding: 12px; } .copio-thumb-card { width: 100%; padding: 8px; } .copio-thumb-img-wrap { width: 100%; height: 110px; } .copio-filmstrip-actions { width: 100%; flex-wrap: wrap; justify-content: center; margin-left: 0; } } `",
+          "description": "Copio Scanner Encapsulated Styles & Design Tokens (CPO-032 / CPO-038)\n\nProvides constructable stylesheets and adoptedStyleSheets architecture for <copio-scanner>\nwith complete Shadow DOM style encapsulation, zero global leakage, and hostile host immunity."
+        },
+        {
+          "kind": "function",
+          "name": "getScannerStyleSheet",
+          "description": "Returns a cached constructable CSSStyleSheet instance for <copio-scanner>.\nReturns null if constructable stylesheets are not supported.",
+          "return": {
+            "type": {
+              "text": "CSSStyleSheet|null"
+            }
+          }
+        },
+        {
+          "kind": "function",
+          "name": "adoptScannerStyles",
+          "parameters": [
+            {
+              "name": "shadowRoot",
+              "type": {
+                "text": "ShadowRoot"
+              }
+            }
+          ],
+          "description": "Adopts the encapsulated <copio-scanner> stylesheet into a ShadowRoot.\nUses adoptedStyleSheets when supported, falling back to a scoped <style> element.",
+          "return": {
+            "type": {
+              "text": "void"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "scannerCss",
+          "declaration": {
+            "name": "scannerCss",
+            "module": "sdk/styles.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getScannerStyleSheet",
+          "declaration": {
+            "name": "getScannerStyleSheet",
+            "module": "sdk/styles.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "adoptScannerStyles",
+          "declaration": {
+            "name": "adoptScannerStyles",
+            "module": "sdk/styles.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/sync.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SyncManager",
+          "declaration": {
+            "name": "SyncManager",
+            "module": "sdk/sync.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CopioSyncDialog",
+          "declaration": {
+            "name": "CopioSyncDialog",
+            "module": "sdk/sync.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "getIceServers",
+          "declaration": {
+            "name": "getIceServers",
+            "module": "sdk/sync.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "sdk/version.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "BUILD_DATE"
+        },
+        {
+          "kind": "variable",
+          "name": "VERSION",
+          "type": {
+            "text": "string"
+          },
+          "default": "'0.1.0'"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "BUILD_DATE",
+          "declaration": {
+            "name": "BUILD_DATE",
+            "module": "sdk/version.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "VERSION",
+          "declaration": {
+            "name": "VERSION",
+            "module": "sdk/version.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/routes/doc/copio-carousel.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioCarousel",
+          "members": [
+            {
+              "kind": "field",
+              "name": "hasImages",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "hasMarkdown",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "pageCount",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "handleBackClick"
+            },
+            {
+              "kind": "method",
+              "name": "handleOcrClick"
+            },
+            {
+              "kind": "method",
+              "name": "handleExportSelect",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleSlideChange",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderItem",
+              "parameters": [
+                {
+                  "name": "img"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "docId",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "docId"
+            },
+            {
+              "kind": "field",
+              "name": "docName",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "docName"
+            },
+            {
+              "kind": "field",
+              "name": "images",
+              "privacy": "public",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "attribute": "images"
+            },
+            {
+              "kind": "field",
+              "name": "activeSlideIndex",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "attribute": "activeSlideIndex"
+            }
+          ],
+          "events": [
+            {
+              "name": "dialog:close",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "copio:ocr-page",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download-pdf",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download-images",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download-markdown",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "docId",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "docId"
+            },
+            {
+              "name": "docName",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "docName"
+            },
+            {
+              "name": "images",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "fieldName": "images"
+            },
+            {
+              "name": "activeSlideIndex",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "fieldName": "activeSlideIndex"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "module": "/js/lib/lit-core.min.js"
+          },
+          "tagName": "copio-carousel",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioCarousel",
+          "declaration": {
+            "name": "CopioCarousel",
+            "module": "js/routes/doc/copio-carousel.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-carousel",
+          "declaration": {
+            "name": "CopioCarousel",
+            "module": "js/routes/doc/copio-carousel.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/routes/doc/copio-images.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioImages",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#images",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#cropper",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#sortable",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#cropIndex",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#textIndex",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#isInitialized",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#abortController",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#createdObjectUrls",
+              "privacy": "private",
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "#activeCameraStream",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "setCameraStream",
+              "parameters": [
+                {
+                  "name": "stream"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "stopCamera"
+            },
+            {
+              "kind": "method",
+              "name": "#trackObjectUrl",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "url"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#revokeObjectUrl",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "url"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#revokeAllObjectUrls",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#initShell",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#renderGrid",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#setupSortable",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "container"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "openCropDialog",
+              "parameters": [
+                {
+                  "name": "index"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "closeCropDialog"
+            },
+            {
+              "kind": "method",
+              "name": "applyCrop"
+            },
+            {
+              "kind": "method",
+              "name": "rotateImage",
+              "parameters": [
+                {
+                  "name": "index"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "thresholdImage",
+              "parameters": [
+                {
+                  "name": "index"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "resetImage",
+              "parameters": [
+                {
+                  "name": "index"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addBlankNote"
+            },
+            {
+              "kind": "method",
+              "name": "downloadImage",
+              "parameters": [
+                {
+                  "name": "index"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "openTextDialog",
+              "parameters": [
+                {
+                  "name": "index"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "applyTextEdit"
+            },
+            {
+              "kind": "method",
+              "name": "closeTextDialog"
+            },
+            {
+              "kind": "method",
+              "name": "showImageData",
+              "parameters": [
+                {
+                  "name": "index"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "pdfToImages",
+              "parameters": [
+                {
+                  "name": "file"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addFiles",
+              "parameters": [
+                {
+                  "name": "files"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "images"
+            }
+          ],
+          "events": [
+            {
+              "name": "copio:ocr-page",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "copio-images",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioImages",
+          "declaration": {
+            "name": "CopioImages",
+            "module": "js/routes/doc/copio-images.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-images",
+          "declaration": {
+            "name": "CopioImages",
+            "module": "js/routes/doc/copio-images.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/routes/add-edit/copio-add-edit-dialog.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioAddEditDialog",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#clearValidation",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#handleNameInput",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#handleHide",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#handleKeydown",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "open"
+            },
+            {
+              "kind": "method",
+              "name": "openEdit",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "pages"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#handleSave",
+              "privacy": "private"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "module": "/js/lib/lit-core.min.js"
+          },
+          "tagName": "copio-add-edit-dialog",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioAddEditDialog",
+          "declaration": {
+            "name": "CopioAddEditDialog",
+            "module": "js/routes/add-edit/copio-add-edit-dialog.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-add-edit-dialog",
+          "declaration": {
+            "name": "CopioAddEditDialog",
+            "module": "js/routes/add-edit/copio-add-edit-dialog.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/routes/ocr/copio-doc-ocr-dialog.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioDocOcrDialog",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#abortController",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "open",
+              "parameters": [
+                {
+                  "name": "docId",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "docName",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "pages",
+                  "type": {
+                    "text": "Array"
+                  }
+                },
+                {
+                  "name": "lang",
+                  "default": "'eng'",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Open for a full document (all image pages)."
+            },
+            {
+              "kind": "method",
+              "name": "openPage",
+              "parameters": [
+                {
+                  "name": "docId",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "docName",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "page",
+                  "description": "– the single image page object",
+                  "type": {
+                    "text": "{ id: string, src: string }"
+                  }
+                },
+                {
+                  "name": "pageIndex",
+                  "description": "– its index in the document pages array",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "lang",
+                  "default": "'eng'",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Open for a single page (from the page grid or carousel)."
+            },
+            {
+              "kind": "method",
+              "name": "_openInternal",
+              "parameters": [
+                {
+                  "name": "docId"
+                },
+                {
+                  "name": "docName"
+                },
+                {
+                  "name": "pages"
+                },
+                {
+                  "name": "lang"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "cancel"
+            },
+            {
+              "kind": "field",
+              "name": "close"
+            },
+            {
+              "kind": "method",
+              "name": "startOcr",
+              "parameters": [
+                {
+                  "name": "lang",
+                  "default": "'eng'"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "handleLangChange"
+            },
+            {
+              "kind": "field",
+              "name": "handleTextInput"
+            },
+            {
+              "kind": "field",
+              "name": "copyText"
+            },
+            {
+              "kind": "field",
+              "name": "downloadMarkdown"
+            },
+            {
+              "kind": "field",
+              "name": "downloadText"
+            },
+            {
+              "kind": "field",
+              "name": "saveAsNote"
+            },
+            {
+              "kind": "field",
+              "name": "_isSinglePage",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "_dialogLabel",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "isOpen",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "isOpen"
+            },
+            {
+              "kind": "field",
+              "name": "docId",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "docId"
+            },
+            {
+              "kind": "field",
+              "name": "docName",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "docName"
+            },
+            {
+              "kind": "field",
+              "name": "pages",
+              "privacy": "public",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "attribute": "pages"
+            },
+            {
+              "kind": "field",
+              "name": "lang",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "'eng'",
+              "attribute": "lang"
+            },
+            {
+              "kind": "field",
+              "name": "step",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "'processing'",
+              "attribute": "step"
+            },
+            {
+              "kind": "field",
+              "name": "progress",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "attribute": "progress"
+            },
+            {
+              "kind": "field",
+              "name": "statusMessage",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "'Starting OCR engine...'",
+              "attribute": "statusMessage"
+            },
+            {
+              "kind": "field",
+              "name": "resultText",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "resultText"
+            },
+            {
+              "kind": "field",
+              "name": "confidence",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "attribute": "confidence"
+            },
+            {
+              "kind": "field",
+              "name": "copied",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "copied"
+            },
+            {
+              "kind": "field",
+              "name": "_pageIndex",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "isOpen",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "isOpen"
+            },
+            {
+              "name": "docId",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "docId"
+            },
+            {
+              "name": "docName",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "docName"
+            },
+            {
+              "name": "pages",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "fieldName": "pages"
+            },
+            {
+              "name": "lang",
+              "type": {
+                "text": "string"
+              },
+              "default": "'eng'",
+              "fieldName": "lang"
+            },
+            {
+              "name": "step",
+              "type": {
+                "text": "string"
+              },
+              "default": "'processing'",
+              "fieldName": "step"
+            },
+            {
+              "name": "progress",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "fieldName": "progress"
+            },
+            {
+              "name": "statusMessage",
+              "type": {
+                "text": "string"
+              },
+              "default": "'Starting OCR engine...'",
+              "fieldName": "statusMessage"
+            },
+            {
+              "name": "resultText",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "resultText"
+            },
+            {
+              "name": "confidence",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "fieldName": "confidence"
+            },
+            {
+              "name": "copied",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "copied"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "module": "/js/lib/lit-core.min.js"
+          },
+          "tagName": "copio-doc-ocr-dialog",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioDocOcrDialog",
+          "declaration": {
+            "name": "CopioDocOcrDialog",
+            "module": "js/routes/ocr/copio-doc-ocr-dialog.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-doc-ocr-dialog",
+          "declaration": {
+            "name": "CopioDocOcrDialog",
+            "module": "js/routes/ocr/copio-doc-ocr-dialog.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/routes/home/copio-row.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioRow",
+          "members": [
+            {
+              "kind": "field",
+              "name": "hasImages",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "hasMarkdown",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "pageCount",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#handleWrapperClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#handleMenuSelect",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "startRename",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "cancelRename",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "commitRename",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRenameKeyDown",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleExtractOcr"
+            },
+            {
+              "kind": "method",
+              "name": "handleView"
+            },
+            {
+              "kind": "method",
+              "name": "handleDelete"
+            },
+            {
+              "kind": "method",
+              "name": "handleEdit"
+            },
+            {
+              "kind": "method",
+              "name": "handleDownload"
+            },
+            {
+              "kind": "method",
+              "name": "handleDownloadImages"
+            },
+            {
+              "kind": "method",
+              "name": "handleDownloadMarkdown"
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "pages",
+              "privacy": "public",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "attribute": "pages"
+            },
+            {
+              "kind": "field",
+              "name": "isRenaming",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "isRenaming"
+            },
+            {
+              "kind": "field",
+              "name": "renameValue",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "renameValue"
+            }
+          ],
+          "events": [
+            {
+              "name": "doc:rename",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:extract-ocr",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:view",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:delete",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:edit",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download-images",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download-markdown",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "name"
+            },
+            {
+              "name": "pages",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "fieldName": "pages"
+            },
+            {
+              "name": "isRenaming",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "isRenaming"
+            },
+            {
+              "name": "renameValue",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "renameValue"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "module": "/js/lib/lit-core.min.js"
+          },
+          "tagName": "copio-row",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioRow",
+          "declaration": {
+            "name": "CopioRow",
+            "module": "js/routes/home/copio-row.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-row",
+          "declaration": {
+            "name": "CopioRow",
+            "module": "js/routes/home/copio-row.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/routes/sync/copio-sync-dialog.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioSyncDialog",
+          "members": [
+            {
+              "kind": "field",
+              "name": "handleCloseClick"
+            },
+            {
+              "kind": "field",
+              "name": "closeSyncDialog"
+            },
+            {
+              "kind": "field",
+              "name": "syncState",
+              "privacy": "public",
+              "type": {
+                "text": "object"
+              },
+              "attribute": "syncState"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "syncState",
+              "type": {
+                "text": "object"
+              },
+              "fieldName": "syncState"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "module": "/js/lib/lit-core.min.js"
+          },
+          "tagName": "copio-sync-dialog",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioSyncDialog",
+          "declaration": {
+            "name": "CopioSyncDialog",
+            "module": "js/routes/sync/copio-sync-dialog.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-sync-dialog",
+          "declaration": {
+            "name": "CopioSyncDialog",
+            "module": "js/routes/sync/copio-sync-dialog.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/components/copio-app.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioApp",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#syncManager",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "new SyncManager(this.docRepo, (state) => { this.syncState = state; })"
+            },
+            {
+              "kind": "field",
+              "name": "#unsubscribeRouter",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#repoUnsubscribe",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "store",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "persister",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#refreshDocs",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "hideLoader"
+            },
+            {
+              "kind": "method",
+              "name": "#handleRouteChange",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "{ name, params }"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#openAddDialog",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "handleAddNew"
+            },
+            {
+              "kind": "method",
+              "name": "#requestPersistentStorage",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "handleAddEditSave",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleAddEditHide"
+            },
+            {
+              "kind": "method",
+              "name": "#loadEditDoc",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "id"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#startSyncHost",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#startSyncJoiner",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "peer"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRowEdit",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#loadCarouselDoc",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "id"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRowView",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRowRename",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRowDelete",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRowDownload",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRowDownloadImages",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRowDownloadMarkdown",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleCarouselDownloadPdf",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleCarouselDownloadImages",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleCarouselDownloadMarkdown",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRowExtractOcr",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleOcrPage",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ],
+              "description": "Handle copio:ocr-page — fired by copio-images (page grid) or copio-carousel.\nDetermines the current document from the active route and opens the shared\nOCR dialog in single-page mode via openPage()."
+            },
+            {
+              "kind": "method",
+              "name": "handleOcrSaveNote",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleCarouselClose"
+            },
+            {
+              "kind": "field",
+              "name": "startSyncAsHost"
+            },
+            {
+              "kind": "field",
+              "name": "startSyncAsJoiner"
+            },
+            {
+              "kind": "field",
+              "name": "closeSyncDialog"
+            },
+            {
+              "kind": "field",
+              "name": "handleClearCache"
+            },
+            {
+              "kind": "method",
+              "name": "renderRows"
+            },
+            {
+              "kind": "field",
+              "name": "docsData",
+              "privacy": "public",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "attribute": "docsData"
+            },
+            {
+              "kind": "field",
+              "name": "showCarousel",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "showCarousel"
+            },
+            {
+              "kind": "field",
+              "name": "syncState",
+              "privacy": "public",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "attribute": "syncState"
+            },
+            {
+              "kind": "field",
+              "name": "hideLoaderTimer",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "docRepo",
+              "default": "docRepository"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "docsData",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "fieldName": "docsData"
+            },
+            {
+              "name": "showCarousel",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "showCarousel"
+            },
+            {
+              "name": "syncState",
+              "type": {
+                "text": "null"
+              },
+              "default": "null",
+              "fieldName": "syncState"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "module": "/js/lib/lit-core.min.js"
+          },
+          "tagName": "copio-app",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioApp",
+          "declaration": {
+            "name": "CopioApp",
+            "module": "js/components/copio-app.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-app",
+          "declaration": {
+            "name": "CopioApp",
+            "module": "js/components/copio-app.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/components/copio-header.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioHeader",
+          "members": [
+            {
+              "kind": "method",
+              "name": "#updateStorageInfo",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_formatBytes",
+              "parameters": [
+                {
+                  "name": "bytes"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#handleSelect",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "_storageEstimate",
+              "privacy": "public",
+              "attribute": "_storageEstimate"
+            },
+            {
+              "kind": "field",
+              "name": "_isPersisted",
+              "privacy": "public",
+              "attribute": "_isPersisted"
+            }
+          ],
+          "events": [
+            {
+              "name": "header:link-device",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "header:clear-cache",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "_storageEstimate",
+              "fieldName": "_storageEstimate"
+            },
+            {
+              "name": "_isPersisted",
+              "fieldName": "_isPersisted"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "module": "/js/lib/lit-core.min.js"
+          },
+          "tagName": "copio-header",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioHeader",
+          "declaration": {
+            "name": "CopioHeader",
+            "module": "js/components/copio-header.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-header",
+          "declaration": {
+            "name": "CopioHeader",
+            "module": "js/components/copio-header.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/components/copio-loader.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopioLoader",
+          "members": [],
+          "superclass": {
+            "name": "LitElement",
+            "module": "/js/lib/lit-core.min.js"
+          },
+          "tagName": "copio-loader",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopioLoader",
+          "declaration": {
+            "name": "CopioLoader",
+            "module": "js/components/copio-loader.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "copio-loader",
+          "declaration": {
+            "name": "CopioLoader",
+            "module": "js/components/copio-loader.js"
+          }
+        }
+      ]
+    }
+  ]
+}

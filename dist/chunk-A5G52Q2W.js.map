@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../js/adapters/sync/null-sync-adapter.js"],
+  "sourcesContent": ["/**\n * NullSyncAdapter (CPO-045 SyncPort fallback)\n *\n * Safe no-op adapter when synchronization is disabled or in headless environments.\n */\nimport { SyncPort } from './sync-port.js';\n\nexport class NullSyncAdapter extends SyncPort {\n  async connect() {\n    return {\n      step: 'disconnected',\n      peerId: null,\n      destroy: () => {},\n    };\n  }\n\n  async disconnect() {}\n}\n"],
+  "mappings": "wCAOO,IAAMA,EAAN,cAA8BC,CAAS,CAC5C,MAAM,SAAU,CACd,MAAO,CACL,KAAM,eACN,OAAQ,KACR,QAAS,IAAM,CAAC,CAClB,CACF,CAEA,MAAM,YAAa,CAAC,CACtB",
+  "names": ["NullSyncAdapter", "SyncPort"]
+}

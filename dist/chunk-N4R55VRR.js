@@ -1,0 +1,2 @@
+var t=class{async recognizeImageText(e,r={}){throw new Error("OcrPort.recognizeImageText() must be implemented by adapter")}async recognizeDocumentPages(e,r={}){throw new Error("OcrPort.recognizeDocumentPages() must be implemented by adapter")}async getOcrWorker(e="eng",r=null){throw new Error("OcrPort.getOcrWorker() must be implemented by adapter")}async terminateOcrWorker(){throw new Error("OcrPort.terminateOcrWorker() must be implemented by adapter")}};export{t as a};
+//# sourceMappingURL=chunk-N4R55VRR.js.map

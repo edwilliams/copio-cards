@@ -1,5 +1,4 @@
 node_modules
-dist
 .DS_Store
 
 # Private strategy & business docs
@@ -10,3 +9,4 @@ js/lib/*.d.ts
 js/lib/*.d.mts
 # Local Netlify folder
 .netlify
+scripts/bundle/dist/

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../js/adapters/sync/sync-port.js"],
+  "sourcesContent": ["/**\n * SyncPort (Hexagonal Architecture Driven Outbound Port CPO-045)\n *\n * Defines the contract for P2P / WebRTC synchronization.\n */\nexport class SyncPort {\n  /**\n   * Initializes or links a P2P sync session.\n   * @param {Object} [_options]\n   * @returns {Promise<any>}\n   */\n  async connect(_options = {}) {\n    throw new Error('SyncPort.connect() must be implemented by adapter');\n  }\n\n  /**\n   * Disconnects or closes the sync session.\n   * @returns {Promise<void>}\n   */\n  async disconnect() {\n    throw new Error('SyncPort.disconnect() must be implemented by adapter');\n  }\n}\n"],
+  "mappings": "AAKO,IAAMA,EAAN,KAAe,CAMpB,MAAM,QAAQC,EAAW,CAAC,EAAG,CAC3B,MAAM,IAAI,MAAM,mDAAmD,CACrE,CAMA,MAAM,YAAa,CACjB,MAAM,IAAI,MAAM,sDAAsD,CACxE,CACF",
+  "names": ["SyncPort", "_options"]
+}

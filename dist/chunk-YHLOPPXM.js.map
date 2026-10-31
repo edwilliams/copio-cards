@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../js/adapters/pdf/pdf-port.js"],
+  "sourcesContent": ["/**\n * PdfPort \u2014 Outbound/Driven Port for PDF Export & Import (Hexagonal Architecture / CPO-042, CPO-045).\n * \n * Defines the contract that all PDF adapters (PDFKit, Null, Native/Browser) must implement.\n */\n\nexport class PdfPort {\n  /**\n   * Export document pages as a PDF Blob.\n   * @param {string} _docName\n   * @param {Array<any>} _pages\n   * @param {Object} [_options]\n   * @returns {Promise<Blob|undefined>}\n   */\n  async exportDocumentAsPdf(_docName, _pages, _options = {}) {\n    throw new Error('PdfPort.exportDocumentAsPdf() must be implemented by adapter');\n  }\n\n  /**\n   * Render pages of a PDF File or ArrayBuffer to image data URLs.\n   * @param {File|Blob|ArrayBuffer} _fileOrBuffer\n   * @returns {Promise<string[]>}\n   */\n  async renderPdfPagesToDataUrls(_fileOrBuffer) {\n    throw new Error('PdfPort.renderPdfPagesToDataUrls() must be implemented by adapter');\n  }\n}\n"],
+  "mappings": "AAMO,IAAMA,EAAN,KAAc,CAQnB,MAAM,oBAAoBC,EAAUC,EAAQC,EAAW,CAAC,EAAG,CACzD,MAAM,IAAI,MAAM,8DAA8D,CAChF,CAOA,MAAM,yBAAyBC,EAAe,CAC5C,MAAM,IAAI,MAAM,mEAAmE,CACrF,CACF",
+  "names": ["PdfPort", "_docName", "_pages", "_options", "_fileOrBuffer"]
+}

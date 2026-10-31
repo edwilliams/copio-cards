@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../js/adapters/storage/index.js"],
+  "sourcesContent": ["import { StoragePort } from './storage-port.js';\nimport { MemoryStorageAdapter } from './memory-adapter.js';\nimport { IndexedDbStorageAdapter } from './indexeddb-adapter.js';\n\nexport { StoragePort, MemoryStorageAdapter, IndexedDbStorageAdapter };\n\n/**\n * Creates the appropriate default storage adapter for the runtime environment.\n * Selects IndexedDB in browsers, falling back to MemoryStorageAdapter in\n * Node.js / SSR or when forceMemory is explicitly specified.\n *\n * @param {Object} [options]\n * @param {boolean} [options.forceMemory] - Force use of MemoryStorageAdapter\n * @param {string} [options.dbName] - Database name for IndexedDB\n * @param {any} [options.store] - Optional TinyBase store instance\n * @param {any} [options.persister] - Optional TinyBase persister instance\n * @returns {StoragePort}\n */\nexport function createDefaultAdapter(options = {}) {\n  if (options.forceMemory) {\n    return new MemoryStorageAdapter();\n  }\n\n  if (typeof indexedDB !== 'undefined') {\n    return new IndexedDbStorageAdapter(options);\n  }\n\n  return new MemoryStorageAdapter();\n}\n"],
+  "mappings": "gFAkBO,SAASA,EAAqBC,EAAU,CAAC,EAAG,CACjD,OAAIA,EAAQ,YACH,IAAIC,EAGT,OAAO,UAAc,IAChB,IAAIC,EAAwBF,CAAO,EAGrC,IAAIC,CACb",
+  "names": ["createDefaultAdapter", "options", "MemoryStorageAdapter", "IndexedDbStorageAdapter"]
+}
