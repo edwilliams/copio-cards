@@ -185,8 +185,6 @@ async function buildSdk() {
       'copio.svg',
       'css/stow-cards.css',
       'js/stow-cards-app.js',
-      'js/barcode-engine.js',
-      'js/wallet-storage.js',
     ];
     const distEntries = (await readdir(distDir))
       .filter((f) => f.endsWith('.js') && !f.endsWith('.map'))

@@ -32,6 +32,7 @@ export class CopioScanner extends BaseElement {
   #undoRemaining = 0;
   #renderPromise = null;
   #sessionDocId = null;
+  #cameraStream = null;
 
   get #targetDocId() {
     if (this.docId) return this.docId;
@@ -115,6 +116,7 @@ export class CopioScanner extends BaseElement {
   }
 
   disconnectedCallback() {
+    this.#stopCameraStream();
     if (typeof this.#unsubscribeRepo === 'function') {
       this.#unsubscribeRepo();
       this.#unsubscribeRepo = null;
@@ -206,8 +208,10 @@ export class CopioScanner extends BaseElement {
     if (!this.shadowRoot || this.shadowRoot.innerHTML) return;
 
     let initialStepText = 'Align Document Inside Frame';
-    if (this.aspect === 'card') {
+    if (this.aspect === 'card' && this.maxPages === 2) {
       initialStepText = 'Step 1 of 2: Capture Front of ID Card';
+    } else if (this.aspect === 'card') {
+      initialStepText = 'Take a Photo or Upload Screenshot of Card';
     } else if (this.mode === 'batch') {
       initialStepText = 'Batch Capture · Page 1';
     }
@@ -244,19 +248,20 @@ export class CopioScanner extends BaseElement {
           </div>
 
           <div class="copio-camera-feed" id="camera-feed">
+            <video id="camera-video" playsinline muted autoplay style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; z-index: 1;"></video>
             <slot name="viewfinder">
-              <div class="copio-framing-guide" id="framing-guide" data-aspect="${this.aspect}">
+              <div class="copio-framing-guide" id="framing-guide" data-aspect="${this.aspect}" style="position: relative; z-index: 2;">
                 <span class="copio-corner tl"></span>
                 <span class="copio-corner tr"></span>
                 <span class="copio-corner bl"></span>
                 <span class="copio-corner br"></span>
                 <div class="copio-edge-quad"></div>
-                <div class="copio-camera-placeholder">
+                <div class="copio-camera-placeholder" id="camera-placeholder">
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                     <circle cx="12" cy="13" r="4"/>
                   </svg>
-                  <span>Position document within guide lines</span>
+                  <span id="camera-placeholder-text">Tap shutter for camera or Import screenshot</span>
                 </div>
               </div>
             </slot>
@@ -619,15 +624,25 @@ export class CopioScanner extends BaseElement {
       // Step pill text in viewfinder
       const stepPillText = shadow.getElementById('step-pill-text');
       if (stepPillText) {
-        if (this.aspect === 'card' && this.maxPages === 2) {
+        if (this.#cameraStream) {
+          stepPillText.textContent = 'Camera Active · Tap Shutter to Snap Photo';
+        } else if (this.aspect === 'card' && this.maxPages === 2) {
           stepPillText.textContent = pages.length === 0
             ? 'Step 1 of 2: Capture Front of ID Card'
             : 'Step 2 of 2: Capture Back of ID Card';
+        } else if (this.aspect === 'card') {
+          stepPillText.textContent = 'Take a Photo or Upload Screenshot of Card';
         } else if (this.mode === 'batch') {
           stepPillText.textContent = `Batch Capture · Page ${pages.length + 1}`;
         } else {
           stepPillText.textContent = 'Align Document Inside Frame';
         }
+      }
+
+      // Hide OCR button if OCR is disabled
+      const btnOcr = shadow.getElementById('btn-ocr');
+      if (btnOcr) {
+        btnOcr.style.display = this.ocrEnabled && this.hasFeature('ocr') ? '' : 'none';
       }
 
       // Review pill in shutter dock
@@ -658,7 +673,7 @@ export class CopioScanner extends BaseElement {
       // Card side switcher visibility
       const cardSwitcher = shadow.getElementById('card-side-switcher');
       if (cardSwitcher) {
-        const isCardGuided = this.aspect === 'card' && (this.maxPages === 2 || pages.length <= 2);
+        const isCardGuided = this.aspect === 'card' && this.maxPages === 2;
         cardSwitcher.style.display = isCardGuided ? 'flex' : 'none';
         const btnFront = shadow.getElementById('btn-card-front');
         const btnBack = shadow.getElementById('btn-card-back');
@@ -673,6 +688,12 @@ export class CopioScanner extends BaseElement {
       }
 
       // Image in viewport: in crop mode show originalSrc, otherwise show src
+      const stageImg = /** @type {HTMLImageElement|null} */ (shadow.getElementById('stage-img'));
+      if (stageImg && activePage) {
+        stageImg.src = this.#cropMode
+          ? (activePage.originalSrc || activePage.src || '')
+          : (activePage.src || activePage.originalSrc || '');
+      }
       let cropLayer = shadow.getElementById('crop-layer');
       if (this.#cropMode) {
         if (!cropLayer) {
@@ -788,11 +809,73 @@ export class CopioScanner extends BaseElement {
     this.#syncView();
   }
 
-  async #handleShutterClick() {
-    // If capture method is invoked via shutter click
+  #stopCameraStream() {
+    if (this.#cameraStream) {
+      try {
+        this.#cameraStream.getTracks().forEach((t) => t.stop());
+      } catch {}
+      this.#cameraStream = null;
+    }
     const shadow = this.shadowRoot;
-    const fileInput = shadow?.getElementById('internal-file-input');
+    if (shadow) {
+      const video = /** @type {HTMLVideoElement|null} */ (shadow.getElementById('camera-video'));
+      if (video) {
+        video.srcObject = null;
+        video.style.display = 'none';
+      }
+      const placeholder = shadow.getElementById('camera-placeholder');
+      if (placeholder) {
+        placeholder.style.display = '';
+      }
+    }
+  }
 
+  async #handleShutterClick() {
+    const shadow = this.shadowRoot;
+    const video = /** @type {HTMLVideoElement|null} */ (shadow?.getElementById('camera-video'));
+
+    // If live video stream is active, capture current frame
+    if (this.#cameraStream && video && video.readyState >= 2) {
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const blob = await new Promise((r) => canvas.toBlob(r, 'image/png'));
+        this.#stopCameraStream();
+        if (blob) {
+          const file = new File([blob], `card-scan-${Date.now()}.png`, { type: 'image/png' });
+          await this.addFiles([file]);
+          this.stage = 'workbench';
+          return;
+        }
+      }
+    }
+
+    // Otherwise try starting live camera stream first
+    if (typeof navigator !== 'undefined' && navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+      try {
+        this.#cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false,
+        });
+        if (video) {
+          video.srcObject = this.#cameraStream;
+          video.style.display = 'block';
+          await video.play().catch(() => {});
+        }
+        const placeholder = shadow?.getElementById('camera-placeholder');
+        if (placeholder) placeholder.style.display = 'none';
+        await this.#syncView();
+        return;
+      } catch {
+        this.#stopCameraStream();
+      }
+    }
+
+    // Fallback: trigger file/camera input
+    const fileInput = shadow?.getElementById('internal-file-input');
     if (fileInput && typeof fileInput.click === 'function') {
       fileInput.click();
     }
@@ -1227,6 +1310,7 @@ export class CopioScanner extends BaseElement {
   }
 
   async close() {
+    this.#stopCameraStream();
     this.#isOpen = false;
   }
 
@@ -1318,6 +1402,7 @@ export class CopioScanner extends BaseElement {
   }
 
   async clear() {
+    this.#stopCameraStream();
     await this.#engine.clear(this.#targetDocId);
     this.dispatch(COPIO_EVENTS.PAGES_CHANGED, {
       pages: [],

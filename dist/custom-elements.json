@@ -2250,6 +2250,15 @@
             },
             {
               "kind": "field",
+              "name": "#cameraStream",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
               "name": "#targetDocId",
               "privacy": "private",
               "readonly": true
@@ -2316,6 +2325,11 @@
                   "name": "toIdx"
                 }
               ]
+            },
+            {
+              "kind": "method",
+              "name": "#stopCameraStream",
+              "privacy": "private"
             },
             {
               "kind": "method",
@@ -2844,81 +2858,260 @@
     },
     {
       "kind": "javascript-module",
-      "path": "js/routes/add-edit/copio-add-edit-dialog.js",
+      "path": "js/routes/home/copio-row.js",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "CopioAddEditDialog",
+          "name": "CopioRow",
           "members": [
             {
               "kind": "field",
-              "name": "#clearValidation",
-              "privacy": "private"
+              "name": "hasImages",
+              "readonly": true
             },
             {
               "kind": "field",
-              "name": "#handleNameInput",
-              "privacy": "private"
+              "name": "hasMarkdown",
+              "readonly": true
             },
             {
               "kind": "field",
-              "name": "#handleHide",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#handleKeydown",
-              "privacy": "private"
+              "name": "pageCount",
+              "readonly": true
             },
             {
               "kind": "method",
-              "name": "open"
-            },
-            {
-              "kind": "method",
-              "name": "openEdit",
+              "name": "#handleWrapperClick",
+              "privacy": "private",
               "parameters": [
                 {
-                  "name": "id"
-                },
-                {
-                  "name": "name"
-                },
-                {
-                  "name": "pages"
+                  "name": "e"
                 }
               ]
             },
             {
+              "kind": "method",
+              "name": "#handleMenuSelect",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "startRename",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "cancelRename",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "commitRename",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleRenameKeyDown",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleExtractOcr"
+            },
+            {
+              "kind": "method",
+              "name": "handleView"
+            },
+            {
+              "kind": "method",
+              "name": "handleDelete"
+            },
+            {
+              "kind": "method",
+              "name": "handleEdit"
+            },
+            {
+              "kind": "method",
+              "name": "handleDownload"
+            },
+            {
+              "kind": "method",
+              "name": "handleDownloadImages"
+            },
+            {
+              "kind": "method",
+              "name": "handleDownloadMarkdown"
+            },
+            {
               "kind": "field",
-              "name": "#handleSave",
-              "privacy": "private"
+              "name": "name",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "pages",
+              "privacy": "public",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "attribute": "pages"
+            },
+            {
+              "kind": "field",
+              "name": "isRenaming",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "isRenaming"
+            },
+            {
+              "kind": "field",
+              "name": "renameValue",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "attribute": "renameValue"
+            }
+          ],
+          "events": [
+            {
+              "name": "doc:rename",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:extract-ocr",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:view",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:delete",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:edit",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download-images",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "doc:download-markdown",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "name"
+            },
+            {
+              "name": "pages",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "fieldName": "pages"
+            },
+            {
+              "name": "isRenaming",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "isRenaming"
+            },
+            {
+              "name": "renameValue",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "fieldName": "renameValue"
             }
           ],
           "superclass": {
             "name": "LitElement",
             "module": "/js/lib/lit-core.min.js"
           },
-          "tagName": "copio-add-edit-dialog",
+          "tagName": "copio-row",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "CopioAddEditDialog",
+          "name": "CopioRow",
           "declaration": {
-            "name": "CopioAddEditDialog",
-            "module": "js/routes/add-edit/copio-add-edit-dialog.js"
+            "name": "CopioRow",
+            "module": "js/routes/home/copio-row.js"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "copio-add-edit-dialog",
+          "name": "copio-row",
           "declaration": {
-            "name": "CopioAddEditDialog",
-            "module": "js/routes/add-edit/copio-add-edit-dialog.js"
+            "name": "CopioRow",
+            "module": "js/routes/home/copio-row.js"
           }
         }
       ]
@@ -3403,260 +3596,63 @@
     },
     {
       "kind": "javascript-module",
-      "path": "js/routes/home/copio-row.js",
+      "path": "js/routes/sync/copio-sync-dialog.js",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "CopioRow",
+          "name": "CopioSyncDialog",
           "members": [
             {
               "kind": "field",
-              "name": "hasImages",
-              "readonly": true
+              "name": "handleCloseClick"
             },
             {
               "kind": "field",
-              "name": "hasMarkdown",
-              "readonly": true
+              "name": "closeSyncDialog"
             },
             {
               "kind": "field",
-              "name": "pageCount",
-              "readonly": true
-            },
-            {
-              "kind": "method",
-              "name": "#handleWrapperClick",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "e"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#handleMenuSelect",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "e"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "startRename",
-              "parameters": [
-                {
-                  "name": "e"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "cancelRename",
-              "parameters": [
-                {
-                  "name": "e"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "commitRename",
-              "parameters": [
-                {
-                  "name": "e"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "handleRenameKeyDown",
-              "parameters": [
-                {
-                  "name": "e"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "handleExtractOcr"
-            },
-            {
-              "kind": "method",
-              "name": "handleView"
-            },
-            {
-              "kind": "method",
-              "name": "handleDelete"
-            },
-            {
-              "kind": "method",
-              "name": "handleEdit"
-            },
-            {
-              "kind": "method",
-              "name": "handleDownload"
-            },
-            {
-              "kind": "method",
-              "name": "handleDownloadImages"
-            },
-            {
-              "kind": "method",
-              "name": "handleDownloadMarkdown"
-            },
-            {
-              "kind": "field",
-              "name": "name",
+              "name": "syncState",
               "privacy": "public",
               "type": {
-                "text": "string"
+                "text": "object"
               },
-              "default": "''",
-              "attribute": "name"
-            },
-            {
-              "kind": "field",
-              "name": "pages",
-              "privacy": "public",
-              "type": {
-                "text": "array"
-              },
-              "default": "[]",
-              "attribute": "pages"
-            },
-            {
-              "kind": "field",
-              "name": "isRenaming",
-              "privacy": "public",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "attribute": "isRenaming"
-            },
-            {
-              "kind": "field",
-              "name": "renameValue",
-              "privacy": "public",
-              "type": {
-                "text": "string"
-              },
-              "default": "''",
-              "attribute": "renameValue"
-            }
-          ],
-          "events": [
-            {
-              "name": "doc:rename",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "name": "doc:extract-ocr",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "name": "doc:view",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "name": "doc:delete",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "name": "doc:edit",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "name": "doc:download",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "name": "doc:download-images",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "name": "doc:download-markdown",
-              "type": {
-                "text": "CustomEvent"
-              }
+              "attribute": "syncState"
             }
           ],
           "attributes": [
             {
-              "name": "name",
+              "name": "syncState",
               "type": {
-                "text": "string"
+                "text": "object"
               },
-              "default": "''",
-              "fieldName": "name"
-            },
-            {
-              "name": "pages",
-              "type": {
-                "text": "array"
-              },
-              "default": "[]",
-              "fieldName": "pages"
-            },
-            {
-              "name": "isRenaming",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "fieldName": "isRenaming"
-            },
-            {
-              "name": "renameValue",
-              "type": {
-                "text": "string"
-              },
-              "default": "''",
-              "fieldName": "renameValue"
+              "fieldName": "syncState"
             }
           ],
           "superclass": {
             "name": "LitElement",
             "module": "/js/lib/lit-core.min.js"
           },
-          "tagName": "copio-row",
+          "tagName": "copio-sync-dialog",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "CopioRow",
+          "name": "CopioSyncDialog",
           "declaration": {
-            "name": "CopioRow",
-            "module": "js/routes/home/copio-row.js"
+            "name": "CopioSyncDialog",
+            "module": "js/routes/sync/copio-sync-dialog.js"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "copio-row",
+          "name": "copio-sync-dialog",
           "declaration": {
-            "name": "CopioRow",
-            "module": "js/routes/home/copio-row.js"
+            "name": "CopioSyncDialog",
+            "module": "js/routes/sync/copio-sync-dialog.js"
           }
         }
       ]
@@ -4061,63 +4057,81 @@
     },
     {
       "kind": "javascript-module",
-      "path": "js/routes/sync/copio-sync-dialog.js",
+      "path": "js/routes/add-edit/copio-add-edit-dialog.js",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "CopioSyncDialog",
+          "name": "CopioAddEditDialog",
           "members": [
             {
               "kind": "field",
-              "name": "handleCloseClick"
+              "name": "#clearValidation",
+              "privacy": "private"
             },
             {
               "kind": "field",
-              "name": "closeSyncDialog"
+              "name": "#handleNameInput",
+              "privacy": "private"
             },
             {
               "kind": "field",
-              "name": "syncState",
-              "privacy": "public",
-              "type": {
-                "text": "object"
-              },
-              "attribute": "syncState"
-            }
-          ],
-          "attributes": [
+              "name": "#handleHide",
+              "privacy": "private"
+            },
             {
-              "name": "syncState",
-              "type": {
-                "text": "object"
-              },
-              "fieldName": "syncState"
+              "kind": "field",
+              "name": "#handleKeydown",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "open"
+            },
+            {
+              "kind": "method",
+              "name": "openEdit",
+              "parameters": [
+                {
+                  "name": "id"
+                },
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "pages"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#handleSave",
+              "privacy": "private"
             }
           ],
           "superclass": {
             "name": "LitElement",
             "module": "/js/lib/lit-core.min.js"
           },
-          "tagName": "copio-sync-dialog",
+          "tagName": "copio-add-edit-dialog",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "CopioSyncDialog",
+          "name": "CopioAddEditDialog",
           "declaration": {
-            "name": "CopioSyncDialog",
-            "module": "js/routes/sync/copio-sync-dialog.js"
+            "name": "CopioAddEditDialog",
+            "module": "js/routes/add-edit/copio-add-edit-dialog.js"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "copio-sync-dialog",
+          "name": "copio-add-edit-dialog",
           "declaration": {
-            "name": "CopioSyncDialog",
-            "module": "js/routes/sync/copio-sync-dialog.js"
+            "name": "CopioAddEditDialog",
+            "module": "js/routes/add-edit/copio-add-edit-dialog.js"
           }
         }
       ]
