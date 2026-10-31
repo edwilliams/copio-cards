@@ -28,7 +28,7 @@ const staticFiles = [
   'copio.svg',
 ];
 
-const directoriesToScan = ['css', 'js', 'sdk', 'fonts', 'assets/tessdata'];
+const directoriesToScan = ['css', 'js', 'sdk', 'fonts'];
 
 async function getFilesRecursively(dir) {
   const files = [];
@@ -55,7 +55,9 @@ async function findUsedIcons() {
       const content = await readFile(file, 'utf-8');
       for (const match of content.matchAll(iconPattern)) {
         if (!match[0].includes('library="system"') && !match[0].includes("library='system'")) {
-          iconNames.add(match[1]);
+          if (/^[a-z0-9-]+$/.test(match[1])) {
+            iconNames.add(match[1]);
+          }
         }
       }
       for (const match of content.matchAll(notifyIconPattern)) {
@@ -75,7 +77,15 @@ async function generateFilesToCache() {
     filesToCache.push(
       ...files
         .map((f) => relative(rootDir, f))
-        .filter((p) => !p.split('/').pop().startsWith('.'))
+        .filter((p) => {
+          const filename = p.split('/').pop() || '';
+          if (filename.startsWith('.') || p.endsWith('.d.ts') || p.endsWith('.d.mts')) return false;
+          // Heavy modules are lazy-loaded on demand (CPO-042, CPO-043); do not precache on initial SW install
+          if (p.startsWith('js/lib/tesseract-core') || p.startsWith('assets/tessdata') || p === 'js/lib/pdfkit.js') {
+            return false;
+          }
+          return true;
+        })
         .sort(),
     );
   }
@@ -108,7 +118,6 @@ export default {
     terser(),
     generateCacheManifest(),
     copy({
-      copyOnce: true,
       targets: [
         {
           src: path.resolve(__dirname, 'dist/shoelace.css'),

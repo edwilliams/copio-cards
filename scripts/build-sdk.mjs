@@ -56,9 +56,24 @@ async function buildSdk() {
       sync: path.join(rootDir, 'sdk/sync.js'),
       ocr: path.join(rootDir, 'js/services/ocr-service.js'),
       export: path.join(rootDir, 'js/services/export-utils.js'),
-      'adapters/index': path.join(rootDir, 'js/adapters/storage/index.js'),
+      'adapters/index': path.join(rootDir, 'js/adapters/index.js'),
       'adapters/memory-adapter': path.join(rootDir, 'js/adapters/storage/memory-adapter.js'),
       'adapters/indexeddb-adapter': path.join(rootDir, 'js/adapters/storage/indexeddb-adapter.js'),
+      'adapters/storage/index': path.join(rootDir, 'js/adapters/storage/index.js'),
+      'adapters/storage/memory-adapter': path.join(rootDir, 'js/adapters/storage/memory-adapter.js'),
+      'adapters/storage/indexeddb-adapter': path.join(rootDir, 'js/adapters/storage/indexeddb-adapter.js'),
+      'adapters/ocr/index': path.join(rootDir, 'js/adapters/ocr/index.js'),
+      'adapters/ocr/null-ocr-adapter': path.join(rootDir, 'js/adapters/ocr/null-ocr-adapter.js'),
+      'adapters/ocr/tesseract-wasm-adapter': path.join(rootDir, 'js/adapters/ocr/tesseract-wasm-adapter.js'),
+      'adapters/pdf/index': path.join(rootDir, 'js/adapters/pdf/index.js'),
+      'adapters/pdf/null-pdf-adapter': path.join(rootDir, 'js/adapters/pdf/null-pdf-adapter.js'),
+      'adapters/pdf/pdfkit-adapter': path.join(rootDir, 'js/adapters/pdf/pdfkit-adapter.js'),
+      'adapters/image/index': path.join(rootDir, 'js/adapters/image/index.js'),
+      'adapters/image/canvas2d-adapter': path.join(rootDir, 'js/adapters/image/canvas2d-adapter.js'),
+      'adapters/image/null-image-processor-adapter': path.join(rootDir, 'js/adapters/image/null-image-processor-adapter.js'),
+      'adapters/sync/index': path.join(rootDir, 'js/adapters/sync/index.js'),
+      'adapters/sync/null-sync-adapter': path.join(rootDir, 'js/adapters/sync/null-sync-adapter.js'),
+      'adapters/sync/peerjs-adapter': path.join(rootDir, 'js/adapters/sync/peerjs-adapter.js'),
     },
     bundle: true,
     splitting: true,
@@ -155,6 +170,33 @@ async function buildSdk() {
 
   const cdnStat = await stat(path.join(distDir, 'cdn.js'));
   console.log(`   - dist/cdn.js: ${(cdnStat.size / 1024).toFixed(2)} KB (standalone CDN)`);
+
+  // 7. Update files-to-cache.json with latest chunks (CPO-048)
+  try {
+    const { readdir, writeFile } = await import('fs/promises');
+    const baseFiles = [
+      '/',
+      'index.html',
+      'manifest.webmanifest',
+      'favicon.ico',
+      'apple-touch-icon.png',
+      'icon-192.png',
+      'icon-512.png',
+      'copio.svg',
+      'css/stow-cards.css',
+      'js/stow-cards-app.js',
+      'js/barcode-engine.js',
+      'js/wallet-storage.js',
+    ];
+    const distEntries = (await readdir(distDir))
+      .filter((f) => f.endsWith('.js') && !f.endsWith('.map'))
+      .map((f) => `dist/${f}`);
+    const cacheList = [...baseFiles, ...distEntries];
+    await writeFile(path.join(rootDir, 'files-to-cache.json'), JSON.stringify(cacheList, null, 2) + '\n');
+    console.log(`   - files-to-cache.json: updated with ${cacheList.length} files`);
+  } catch (err) {
+    console.warn('Warning updating files-to-cache.json:', err.message);
+  }
 }
 
 buildSdk().catch((err) => {

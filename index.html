@@ -8,50 +8,200 @@
     />
     <meta
       name="description"
-      content="Offline-first loyalty card and personal document wallet"
+      content="Stow Cards — The Private Loyalty Cards & Pocket Wallet. 100% offline-first, client-side supermarket card wallet dogfooding the Copio SDK."
     />
-    <meta property="og:title" content="Copio Cards" />
-    <meta name="theme-color" content="#151F2A" />
+    <meta property="og:title" content="Stow Cards — The Private Loyalty Cards & Pocket Wallet" />
+    <meta name="theme-color" content="#090c13" />
     <meta name="mobile-web-app-capable" content="yes" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="icon" href="copio.svg" type="image/svg+xml" />
     <link rel="icon" href="favicon.ico" sizes="any" />
-    <link rel="stylesheet" href="css/reset.css" />
-    <link rel="stylesheet" href="css/shoelace.css" />
-    <link rel="stylesheet" href="css/utils.css" />
-    <link rel="stylesheet" href="css/cropper.css" />
-    <link rel="stylesheet" href="css/main.css" />
-    <title>Copio Cards</title>
+    <link rel="stylesheet" href="css/stow-cards.css" />
+    <title>Stow Cards — Loyalty Cards & Pocket Wallet</title>
   </head>
   <body>
-    <copio-app></copio-app>
+    <!-- Screen Brightness Simulator for Laser Checkouts -->
+    <div class="brightness-boost-screen" id="brightness-overlay"></div>
 
-    <script type="module" src="js/lib/shoelace.js"></script>
-    <script type="module" src="js/core/register-components.js"></script>
+    <!-- App Header & Navigation -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="brand-section">
+          <div class="brand-icon-plate">📇</div>
+          <div class="brand-titles">
+            <div class="brand-name-row">
+              <span class="brand-name">Stow Cards</span>
+              <span class="brand-badge">Copio SDK Demo</span>
+            </div>
+            <span class="brand-tagline">The Private Loyalty Cards & Pocket Wallet</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn-header-action btn-sync" id="btn-open-sync" title="P2P WebRTC Device Sync">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Sync
+          </button>
+          <button class="btn-header-action btn-add-card" id="btn-open-add-card">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Card
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Card Deck & Filters -->
+    <main class="app-main">
+      <div class="wallet-control-panel">
+        <div class="search-input-wrap">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="search"
+            class="card-search-input"
+            id="card-search-input"
+            placeholder="Search supermarket, pharmacy, or card number (press /)"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="search-clear-btn" id="search-clear-btn" title="Clear search">✕</button>
+        </div>
+
+        <div class="category-pills-row" id="category-pills">
+          <button class="category-pill active" data-category="all">
+            All <span class="category-badge-count" id="count-all">0</span>
+          </button>
+          <button class="category-pill" data-category="supermarket">
+            🛒 Supermarket <span class="category-badge-count" id="count-supermarket">0</span>
+          </button>
+          <button class="category-pill" data-category="pharmacy">
+            💊 Pharmacy <span class="category-badge-count" id="count-pharmacy">0</span>
+          </button>
+          <button class="category-pill" data-category="coffee">
+            ☕ Coffee <span class="category-badge-count" id="count-coffee">0</span>
+          </button>
+          <button class="category-pill" data-category="home">
+            🏡 Home <span class="category-badge-count" id="count-home">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3D Card Pocket Grid -->
+      <div class="cards-grid" id="cards-grid">
+        <!-- Rendered dynamically by stow-cards-app.js -->
+      </div>
+    </main>
+
+    <!-- Add Card & Scanner Modal Dialog -->
+    <div class="modal-overlay" id="add-modal">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <h2>Add Loyalty Card</h2>
+          <button class="modal-close-btn" id="modal-close-btn" title="Close">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Step 1: Instant Store Preset Selection -->
+          <div class="form-group">
+            <label class="form-label">1. Choose UK Store Preset</label>
+            <div class="store-picker-grid" id="store-picker-grid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Step 2: Live Card Artwork Preview -->
+          <div class="modal-card-preview-container" id="modal-card-preview">
+            <div class="front-top-row">
+              <div class="store-badge-group">
+                <span class="store-brand-title" id="preview-store-name">Tesco</span>
+                <span class="store-card-tier" id="preview-card-tier">Clubcard</span>
+              </div>
+              <span class="flip-pill-hint">Live Preview</span>
+            </div>
+            <div class="front-bottom-row">
+              <span class="card-holder-name">ED WILLIAMS</span>
+              <span class="card-masked-number" id="preview-masked-num">•••• 7401</span>
+            </div>
+          </div>
+
+          <!-- Step 3: Dogfooding <copio-scanner> Viewfinder -->
+          <div class="scanner-section-container">
+            <div class="scanner-section-header">
+              <label class="form-label">2. Point Camera or Snap Photo with &lt;copio-scanner&gt;</label>
+            </div>
+            <div class="copio-scanner-host" id="modal-scanner-host">
+              <!-- <copio-scanner mode="single" aspect="card" ocr="true"> embedded here -->
+            </div>
+          </div>
+
+          <!-- Step 4: Card Number Input -->
+          <div class="form-group">
+            <label class="form-label" for="add-input-number">3. Membership / Barcode Digits</label>
+            <input
+              type="text"
+              id="add-input-number"
+              class="form-input"
+              placeholder="e.g. 6340048291827401"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-modal btn-modal-cancel" id="modal-cancel-btn">Cancel</button>
+          <button class="btn-modal btn-modal-save" id="modal-save-btn">Save Card</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- P2P Device Sync Modal -->
+    <div class="modal-overlay" id="sync-modal">
+      <div class="modal-sheet" style="max-width: 440px;">
+        <div class="modal-header">
+          <h2>Direct Device-to-Device Sync</h2>
+          <button class="modal-close-btn" id="sync-close-btn" title="Close">✕</button>
+        </div>
+        <div class="modal-body" style="text-align: center; gap: 14px;">
+          <p style="font-size: 13px; color: var(--color-text-muted);">
+            Scan this QR code from your phone or tablet camera to sync your supermarket wallet securely via encrypted WebRTC DataChannels.
+          </p>
+          <div class="sync-qr-box" id="sync-qr-container"></div>
+          <p style="font-size: 11px; color: var(--color-text-faint);">
+            Zero cloud accounts • 100% Peer-to-Peer • Instant transfer
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal btn-modal-save" id="sync-done-btn">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div class="toast-pill" id="toast-pill">
+      <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Scripts: Embed Copio SDK & Launch Stow Cards App -->
+    <script type="module" src="dist/scanner.js"></script>
+    <script type="module" src="js/stow-cards-app.js"></script>
+
+    <!-- Offline Service Worker -->
     <script type="module">
-      import { notify } from './js/services/notify.js';
-
-      // set to false if testing SW locally
-      // http://192.168.x.x:3000 won't work as only localhost works this SWs or SSL is needed
       const isDev = window.location.hostname === 'localhost';
       if (!isDev && 'serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-
-        // Capture whether a SW was already controlling this page at load time.
-        // If not (fresh install or post-unregister reload), we don't show the toast.
-        const hadController = !!navigator.serviceWorker.controller;
-
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!hadController) return;
-          notify.info('Update available', {
-            icon: 'arrow-clockwise',
-            duration: Infinity,
-            action: {
-              text: 'Reload',
-              onClick: () => window.location.reload(),
-            },
-          });
+        navigator.serviceWorker.register('sw.js').catch(err => {
+          console.warn('[SW] Registration failed:', err);
         });
       }
     </script>
