@@ -4,12 +4,12 @@ import {
   STORE_PRESETS,
   WalletStorage,
   walletStorage,
-  StowCardsApp,
+  CopioCardsApp,
   formatCardNumber,
   maskCardNumber,
-} from '../js/stow-cards-app.js';
+} from '../js/copio-cards-app.js';
 
-describe('Stow Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CPO-047, CPO-048)', () => {
+describe('Copio Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CPO-047, CPO-048)', () => {
   describe('Store Presets & Helpers', () => {
     it('provides all 8 UK supermarket & chain presets', () => {
       expect(STORE_PRESETS).to.be.an('array').with.lengthOf(8);
@@ -68,7 +68,7 @@ describe('Stow Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CPO
     });
   });
 
-  describe('StowCardsApp UI & <copio-scanner> Card Photo / Screenshot Workflow', () => {
+  describe('CopioCardsApp UI & <copio-scanner> Card Photo / Screenshot Workflow', () => {
     let container;
     let app;
 
@@ -109,7 +109,7 @@ describe('Stow Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CPO
       `;
       document.body.appendChild(container);
 
-      app = new StowCardsApp();
+      app = new CopioCardsApp();
       await app.init();
     });
 
@@ -150,27 +150,30 @@ describe('Stow Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CPO
       nectarChip.click();
       expect(app.selectedPresetKey).to.equal('sainsburys');
 
-      // Simulate uploading a screenshot / taking a photo in <copio-scanner>
+      // Simulate uploading a screenshot / taking a photo in <copio-scanner> via addFiles()
       const sampleDataUrl =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-      scanner.dispatchEvent(
-        new CustomEvent('copio:scan-complete', {
-          bubbles: true,
-          composed: true,
-          detail: {
-            pages: [{ id: 'p1', src: sampleDataUrl }],
-          },
-        })
-      );
+      const res = await fetch(sampleDataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], 'card.png', { type: 'image/png' });
+      await scanner.addFiles([file]);
 
-      expect(app.scannedCardPhoto).to.equal(sampleDataUrl);
+      // Verify <copio-scanner> automatically transitions to workbench preview and constrains stage-img
+      expect(scanner.stage).to.equal('workbench');
+      const wbSection = scanner.shadowRoot.getElementById('workbench-section');
+      expect(wbSection.style.display).to.equal('flex');
+      const stageImg = scanner.shadowRoot.getElementById('stage-img');
+      expect(stageImg).to.exist;
+      expect(stageImg.getAttribute('src')).to.include('data:image/png;base64');
+
+      expect(app.scannedCardPhoto).to.include('data:image/png;base64');
       expect(container.querySelector('#preview-badge-status').textContent).to.equal('Barcode Scanned ✓');
 
       // Save the card to the wallet
       const saved = await app.saveNewCard();
       expect(saved).to.exist;
       expect(saved.store).to.equal("Sainsbury's");
-      expect(saved.barcodeImage).to.equal(sampleDataUrl);
+      expect(saved.barcodeImage).to.equal(app.scannedCardPhoto);
 
       // Verify the card renders in the grid with store front artwork and the scanned photo on the back
       const cardWrapper = container.querySelector('.card-3d-wrapper');
@@ -179,7 +182,7 @@ describe('Stow Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CPO
 
       const backImg = cardWrapper.querySelector('.card-face-back img.back-barcode-img');
       expect(backImg).to.exist;
-      expect(backImg.getAttribute('src')).to.equal(sampleDataUrl);
+      expect(backImg.getAttribute('src')).to.include('data:image/png;base64');
     });
 
     it('flips card 180° in place to reveal scanned barcode photo and toggles ☀ Max Bright', async () => {

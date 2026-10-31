@@ -1,5 +1,5 @@
 /* ==========================================================================
-   STOW CARDS / COPIO CARDS — DESIGN SYSTEM & CHECKOUT ERGONOMICS
+   COPIO CARDS — DESIGN SYSTEM & CHECKOUT ERGONOMICS
    ========================================================================== */
 
 :root {
@@ -820,6 +820,8 @@ body {
 .modal-card-preview-container {
   width: 100%;
   height: 136px;
+  min-height: 136px;
+  flex-shrink: 0;
   border-radius: var(--radius-md);
   padding: 14px 16px;
   display: flex;
@@ -845,6 +847,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .form-label {

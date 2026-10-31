@@ -1,7 +1,7 @@
 {
   "name": "copio-cards",
   "version": "1.0.0",
-  "description": "Stow Cards — Simple 100% offline-first supermarket loyalty card wallet powered by <copio-scanner>.",
+  "description": "Copio Cards — Simple 100% offline-first supermarket loyalty card wallet powered by <copio-scanner>.",
   "type": "module",
   "scripts": {
     "lint": "oxlint",

@@ -1,5 +1,5 @@
 /**
- * Stow Cards — Offline-First Supermarket Loyalty Card Wallet
+ * Copio Cards — Offline-First Supermarket Loyalty Card Wallet
  * Minimal client-side application showcasing <copio-scanner>.
  * Opens afresh with 0 cards. Users choose a store preset and use <copio-scanner>
  * to take a photo or upload a screenshot of their card's barcode or QR code.
@@ -92,9 +92,9 @@ export function maskCardNumber(num) {
   return `•••• ${clean.slice(-4)}`;
 }
 
-const DB_NAME = 'stow_cards_wallet_db_v2';
+const DB_NAME = 'copio_cards_wallet_db_v2';
 const STORE_NAME = 'cards';
-const LOCAL_STORAGE_KEY = 'stow_cards_wallet_data_v2';
+const LOCAL_STORAGE_KEY = 'copio_cards_wallet_data_v2';
 
 export class WalletStorage {
   #dbPromise = null;
@@ -224,7 +224,7 @@ export class WalletStorage {
 
 export const walletStorage = new WalletStorage();
 
-export class StowCardsApp {
+export class CopioCardsApp {
   /** @type {Array<Object>} */
   cards = [];
   /** @type {'all'|'supermarket'|'pharmacy'|'coffee'|'home'} */
@@ -284,7 +284,7 @@ export class StowCardsApp {
 
   #restoreTheme() {
     try {
-      const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('stow_cards_theme') : null;
+      const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('copio_cards_theme') : null;
       const theme = saved === 'light' ? 'light' : 'dark';
       document.body.setAttribute('data-theme', theme);
       const themeIcon = document.getElementById('theme-icon');
@@ -300,7 +300,7 @@ export class StowCardsApp {
     if (themeIcon) themeIcon.textContent = next === 'dark' ? '🌙' : '☀️';
     try {
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('stow_cards_theme', next);
+        localStorage.setItem('copio_cards_theme', next);
       }
     } catch {}
   }
@@ -585,6 +585,11 @@ export class StowCardsApp {
               this.previewBadgeStatus.textContent = 'Barcode Scanned ✓';
             }
           }
+        } else {
+          this.scannedCardPhoto = null;
+          if (this.previewBadgeStatus) {
+            this.previewBadgeStatus.textContent = 'Official Artwork ✓';
+          }
         }
         if (text && this.addInputNumber && !this.addInputNumber.value) {
           const digitsMatch = text.replace(/\s+/g, '').match(/\d{8,18}/);
@@ -724,10 +729,10 @@ export class StowCardsApp {
   }
 }
 
-export const stowCardsApp = new StowCardsApp();
+export const copioCardsApp = new CopioCardsApp();
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    stowCardsApp.init();
+    copioCardsApp.init();
   });
 }
