@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import '../dist/scanner.js';
+import '../vendor/copio/scanner.js';
 import {
   STORE_PRESETS,
   WalletStorage,
@@ -134,6 +134,15 @@ describe('Stow Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CPO
       expect(scanner).to.exist;
       expect(scanner.getAttribute('mode')).to.equal('single');
       expect(scanner.getAttribute('aspect')).to.equal('card');
+
+      // Verify <copio-scanner> shadow DOM viewfinder and upload controls are visible and not collapsed
+      const scannerRect = scanner.getBoundingClientRect();
+      expect(scannerRect.height).to.be.at.least(300);
+      const vfSection = scanner.shadowRoot.getElementById('viewfinder-section');
+      expect(vfSection).to.exist;
+      expect(vfSection.getBoundingClientRect().height).to.be.at.least(240);
+      expect(scanner.shadowRoot.getElementById('btn-import-file')).to.exist;
+      expect(scanner.shadowRoot.getElementById('btn-shutter')).to.exist;
 
       // Choose Sainsbury's Nectar preset
       const nectarChip = container.querySelector('.store-chip-option[data-key="sainsburys"]');

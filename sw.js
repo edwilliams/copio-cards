@@ -1,4 +1,4 @@
-const CACHE_NAME = 'stow-cards-cache-v2'; // bump this on every deploy
+const CACHE_NAME = 'stow-cards-cache-v3'; // bump this on every deploy
 
 // --------------------------------------------------------
 // install: fetch files-to-cache.json & cache all listed files

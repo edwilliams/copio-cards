@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../js/adapters/pdf/pdfkit-adapter.js"],
-  "sourcesContent": ["/**\n * PdfKitAdapter \u2014 Default Driven Adapter for PDF assembly via PDFKit (CPO-042, CPO-045).\n */\nimport { PdfPort } from './pdf-port.js';\nimport { exportDocumentAsPdf } from '../../services/export-utils.js';\nimport { renderPdfPagesToDataUrls } from '../../utils/pdf-utils.js';\n\nexport class PdfKitAdapter extends PdfPort {\n  /**\n   * @param {string} docName\n   * @param {Array<any>} pages\n   * @param {Object} [options]\n   */\n  async exportDocumentAsPdf(docName, pages, options = {}) {\n    return exportDocumentAsPdf(docName, pages, options);\n  }\n\n  /**\n   * @param {File|Blob|ArrayBuffer} fileOrBuffer\n   */\n  async renderPdfPagesToDataUrls(fileOrBuffer) {\n    const buffer = fileOrBuffer instanceof ArrayBuffer\n      ? fileOrBuffer\n      : await fileOrBuffer.arrayBuffer();\n    return renderPdfPagesToDataUrls(buffer);\n  }\n}\n"],
-  "mappings": "mHAOO,IAAMA,EAAN,cAA4BC,CAAQ,CAMzC,MAAM,oBAAoBC,EAASC,EAAOC,EAAU,CAAC,EAAG,CACtD,OAAOC,EAAoBH,EAASC,EAAOC,CAAO,CACpD,CAKA,MAAM,yBAAyBE,EAAc,CAC3C,IAAMC,EAASD,aAAwB,YACnCA,EACA,MAAMA,EAAa,YAAY,EACnC,OAAOE,EAAyBD,CAAM,CACxC,CACF",
-  "names": ["PdfKitAdapter", "PdfPort", "docName", "pages", "options", "exportDocumentAsPdf", "fileOrBuffer", "buffer", "renderPdfPagesToDataUrls"]
-}

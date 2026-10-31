@@ -1,12 +1,6 @@
 node_modules
 .DS_Store
-
-# Private strategy & business docs
-docs/strategy/
-
-# Synced vendor type declarations (source of truth in types/vendor/)
-js/lib/*.d.ts
-js/lib/*.d.mts
-# Local Netlify folder
+dist/
+coverage/
 .netlify
-scripts/bundle/dist/
+docs/strategy/

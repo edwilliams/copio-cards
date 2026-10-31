@@ -1,2 +1,0 @@
-import{a as s}from"./chunk-KIMVF5UG.js";import{b as o}from"./chunk-BKZEOOH4.js";var e=class extends s{#t=null;#n=null;#o=null;constructor(t=null,n=null){super(),this.#n=t,this.#o=n}async connect(t={}){let n=t.repo||this.#n,r=t.onStateChange||this.#o;return this.#t=new o(n,r),this.#t}async disconnect(){this.#t&&typeof this.#t.destroy=="function"&&(this.#t.destroy(),this.#t=null)}};export{e as a};
-//# sourceMappingURL=chunk-PVNRK4OH.js.map

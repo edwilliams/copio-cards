@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../js/adapters/image/null-image-processor-adapter.js"],
-  "sourcesContent": ["/**\n * NullImageProcessorAdapter (CPO-045 ImageProcessorPort fallback)\n * \n * Safe no-op adapter for headless Node.js or environments without Canvas/DOM.\n * Returns the original image source directly.\n */\nimport { ImageProcessorPort } from './image-processor-port.js';\n\nexport class NullImageProcessorAdapter extends ImageProcessorPort {\n  async renderEdits(originalSrc, _edits) {\n    return originalSrc;\n  }\n\n  async crop(src, _crop) {\n    return src;\n  }\n\n  async rotate(src, _degrees) {\n    return src;\n  }\n\n  async applyFilter(src, _filter) {\n    return src;\n  }\n}\n"],
-  "mappings": "wCAQO,IAAMA,EAAN,cAAwCC,CAAmB,CAChE,MAAM,YAAYC,EAAaC,EAAQ,CACrC,OAAOD,CACT,CAEA,MAAM,KAAKE,EAAKC,EAAO,CACrB,OAAOD,CACT,CAEA,MAAM,OAAOA,EAAKE,EAAU,CAC1B,OAAOF,CACT,CAEA,MAAM,YAAYA,EAAKG,EAAS,CAC9B,OAAOH,CACT,CACF",
-  "names": ["NullImageProcessorAdapter", "ImageProcessorPort", "originalSrc", "_edits", "src", "_crop", "_degrees", "_filter"]
-}

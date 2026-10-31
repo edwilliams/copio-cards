@@ -1,2 +1,0 @@
-import{a as r}from"./chunk-N4R55VRR.js";var o=class extends r{async recognizeImageText(n,t={}){let e=new Error('Feature "ocr" is disabled or OCR module not opted in');throw e.code="FEATURE_DISABLED",e}async recognizeDocumentPages(n,t={}){let e=new Error('Feature "ocr" is disabled or OCR module not opted in');throw e.code="FEATURE_DISABLED",e}async getOcrWorker(){return null}async terminateOcrWorker(){}};export{o as a};
-//# sourceMappingURL=chunk-B7HT2X67.js.map

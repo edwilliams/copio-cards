@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../js/adapters/pdf/null-pdf-adapter.js"],
-  "sourcesContent": ["/**\n * NullPdfAdapter \u2014 No-Op Driven Adapter for PDF (CPO-042).\n * \n * Used when PDF export/import is disabled or opted out by developer.\n * Guarantees ZERO dynamic imports, ZERO PDFKit downloads, and ZERO network requests.\n */\nimport { PdfPort } from './pdf-port.js';\n\nexport class NullPdfAdapter extends PdfPort {\n  /**\n   * Throws FEATURE_DISABLED error to prevent network requests.\n   * @param {string} _docName\n   * @param {Array<any>} _pages\n   * @param {Object} [_options]\n   * @returns {Promise<any>}\n   */\n  async exportDocumentAsPdf(_docName, _pages, _options = {}) {\n    const err = new Error('Feature \"pdf\" is disabled or PDF module not opted in');\n    // @ts-ignore\n    err.code = 'FEATURE_DISABLED';\n    throw err;\n  }\n\n  /**\n   * Returns empty array without importing pdf-utils or making network calls.\n   * @param {File|Blob|ArrayBuffer} _fileOrBuffer\n   * @returns {Promise<string[]>}\n   */\n  async renderPdfPagesToDataUrls(_fileOrBuffer) {\n    return [];\n  }\n}\n"],
-  "mappings": "wCAQO,IAAMA,EAAN,cAA6BC,CAAQ,CAQ1C,MAAM,oBAAoBC,EAAUC,EAAQC,EAAW,CAAC,EAAG,CACzD,IAAMC,EAAM,IAAI,MAAM,sDAAsD,EAE5E,MAAAA,EAAI,KAAO,mBACLA,CACR,CAOA,MAAM,yBAAyBC,EAAe,CAC5C,MAAO,CAAC,CACV,CACF",
-  "names": ["NullPdfAdapter", "PdfPort", "_docName", "_pages", "_options", "err", "_fileOrBuffer"]
-}

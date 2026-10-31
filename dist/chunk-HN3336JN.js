@@ -1,2 +1,0 @@
-var t=class{async renderEdits(r,e){throw new Error("ImageProcessorPort.renderEdits() must be implemented by adapter")}async crop(r,e){throw new Error("ImageProcessorPort.crop() must be implemented by adapter")}async rotate(r,e){throw new Error("ImageProcessorPort.rotate() must be implemented by adapter")}async applyFilter(r,e){throw new Error("ImageProcessorPort.applyFilter() must be implemented by adapter")}};export{t as a};
-//# sourceMappingURL=chunk-HN3336JN.js.map

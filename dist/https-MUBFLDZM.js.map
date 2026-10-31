@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["browser-shim-ns:https"],
-  "sourcesContent": ["export default {}; export const createCanvas = () => null; export const Path2D = globalThis.Path2D || class {};"],
-  "mappings": "4BAAA,IAAOA,EAAQ,CAAC,EAAgBC,EAAe,IAAM,KAAmBC,EAAS,WAAW,QAAU,KAAM,CAAC",
-  "names": ["https_default", "createCanvas", "Path2D"]
-}
