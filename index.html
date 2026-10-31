@@ -1,57 +1,267 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no, minimal-ui, viewport-fit=cover"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <meta
       name="description"
-      content="Offline-first loyalty card and personal document wallet"
+      content="Stow Cards — The Private Loyalty & Pocket Wallet. 100% offline-first supermarket card wallet powered by <copio-scanner>."
     />
-    <meta property="og:title" content="Copio Cards" />
-    <meta name="theme-color" content="#151F2A" />
+    <meta property="og:title" content="Stow Cards — The Private Loyalty & Pocket Wallet" />
+    <meta name="theme-color" content="#0a0d14" />
     <meta name="mobile-web-app-capable" content="yes" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="icon" href="copio.svg" type="image/svg+xml" />
     <link rel="icon" href="favicon.ico" sizes="any" />
-    <link rel="stylesheet" href="css/reset.css" />
-    <link rel="stylesheet" href="css/shoelace.css" />
-    <link rel="stylesheet" href="css/utils.css" />
-    <link rel="stylesheet" href="css/cropper.css" />
-    <link rel="stylesheet" href="css/main.css" />
-    <title>Copio Cards</title>
+    <link rel="stylesheet" href="css/stow-cards.css" />
+    <title>Stow Cards — The Private Loyalty &amp; Pocket Wallet</title>
   </head>
-  <body>
-    <copio-app></copio-app>
+  <body data-theme="dark">
+    <!-- Screen Brightness Boost Simulator for Optical Checkouts -->
+    <div class="brightness-boost-screen" id="brightness-overlay"></div>
 
-    <script type="module" src="js/lib/shoelace.js"></script>
-    <script type="module" src="js/core/register-components.js"></script>
+    <!-- App Header & Branding -->
+    <header class="app-header">
+      <div class="header-inner">
+        <a href="#" class="brand-group">
+          <div class="brand-icon">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+              <circle cx="6" cy="15" r="1"></circle>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>Stow <span style="font-weight: 400; opacity: 0.7;">Cards</span></h1>
+            <div class="brand-sub">
+              <span>The Private Loyalty &amp; Pocket Wallet</span>
+              <span>•</span>
+              <span class="status-indicator">
+                <span class="status-dot"></span> 100% Offline
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <button
+            class="btn-action btn-action-secondary"
+            id="btn-theme-toggle"
+            title="Toggle Light/Dark Theme"
+          >
+            <span id="theme-icon">🌙</span>
+            <span class="desktop-only" id="theme-label">Theme</span>
+          </button>
+
+          <button
+            class="btn-action btn-action-primary"
+            id="btn-open-add-card"
+            title="Add Store Loyalty Card"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add Card</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main App Container -->
+    <main class="app-main">
+      <!-- Search & Category Filters -->
+      <section class="toolbar-section">
+        <div class="search-box">
+          <svg
+            class="search-icon"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            id="card-search-input"
+            class="search-input"
+            placeholder="Search cards, stores, or card numbers... (Press '/' to focus)"
+            autocomplete="off"
+          />
+          <button id="search-clear-btn" class="search-clear" title="Clear search">✕</button>
+        </div>
+
+        <nav class="category-pills" id="category-pills">
+          <button class="pill-btn category-pill active" data-category="all">
+            All Cards <span class="pill-count category-badge-count" id="count-all">0</span>
+          </button>
+          <button class="pill-btn category-pill" data-category="supermarket">
+            🛒 Supermarkets <span class="pill-count category-badge-count" id="count-supermarket">0</span>
+          </button>
+          <button class="pill-btn category-pill" data-category="pharmacy">
+            💊 Health &amp; Pharmacy <span class="pill-count category-badge-count" id="count-pharmacy">0</span>
+          </button>
+          <button class="pill-btn category-pill" data-category="coffee">
+            ☕ Coffee &amp; Dining <span class="pill-count category-badge-count" id="count-coffee">0</span>
+          </button>
+          <button class="pill-btn category-pill" data-category="home">
+            🏡 Home &amp; Retail <span class="pill-count category-badge-count" id="count-home">0</span>
+          </button>
+        </nav>
+      </section>
+
+      <!-- Info & Ergonomics Bar -->
+      <div class="grid-info-bar">
+        <span>Pocket Deck</span>
+        <span class="hint-chip">
+          <span>↻ Tap any card to flip front / barcode</span>
+        </span>
+      </div>
+
+      <!-- 3D Card Pocket Grid -->
+      <section>
+        <div class="cards-grid" id="cards-grid">
+          <!-- Rendered dynamically by stow-cards-app.js -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Add Card & <copio-scanner> Modal Dialog -->
+    <div class="modal-overlay" id="add-modal" role="dialog" aria-modal="true">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="brand-icon" style="width: 32px; height: 32px; border-radius: 8px;">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+              >
+                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                <line x1="2" y1="10" x2="22" y2="10"></line>
+              </svg>
+            </div>
+            <div>
+              <h2>Add Loyalty Card</h2>
+              <div style="font-size: 11px; color: var(--color-text-muted);">
+                Choose Store &amp; Take Photo or Upload Screenshot of Barcode / QR
+              </div>
+            </div>
+          </div>
+          <button class="modal-close-btn" id="modal-close-btn" title="Close">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- 1. Store Brand Selector -->
+          <div class="form-group">
+            <label class="form-label">1. Choose Store Brand</label>
+            <div class="store-picker-grid" id="store-picker-grid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- 2. Embedded <copio-scanner> to Take Photo or Upload Screenshot -->
+          <div class="form-group">
+            <label class="form-label">2. Take a Photo of Card or Upload Screenshot</label>
+            <div class="copio-scanner-host" id="modal-scanner-host">
+              <!-- <copio-scanner mode="single" aspect="card" ocr="false" pdf="false"> mounted here -->
+            </div>
+          </div>
+
+          <!-- 3. Optional Card Number Input -->
+          <div class="form-group">
+            <label class="form-label" for="add-input-number">3. Card Number (Optional)</label>
+            <input
+              type="text"
+              id="add-input-number"
+              class="form-input"
+              placeholder="Optional — e.g. 6340 0482 9182 7401"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- 4. Live Card Preview -->
+          <div class="form-group">
+            <label class="form-label">4. Card Front Preview</label>
+            <div class="modal-card-preview-container" id="modal-card-preview">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 2;">
+                <div>
+                  <div id="preview-store-name" style="font-size: 18px; font-weight: 800;">Tesco</div>
+                  <div
+                    id="preview-card-tier"
+                    style="font-size: 11px; text-transform: uppercase; opacity: 0.9;"
+                  >
+                    Clubcard
+                  </div>
+                </div>
+                <div class="flip-pill-hint" id="preview-badge-status">Official Artwork ✓</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 2;">
+                <div id="preview-card-holder" style="font-size: 11px; opacity: 0.85;">CLUBCARD</div>
+                <div
+                  id="preview-masked-num"
+                  style="font-family: var(--font-mono); font-size: 14px; font-weight: 700;"
+                >
+                  •••• ••••
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-action btn-action-secondary" id="modal-cancel-btn">Cancel</button>
+          <button class="btn-action btn-action-primary" id="modal-save-btn">Add to Wallet ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div class="toast-pill" id="toast-pill">
+      <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Scripts: Embed <copio-scanner> & Launch Stow Cards App -->
+    <script type="module" src="vendor/copio/scanner.js"></script>
+    <script type="module" src="js/stow-cards-app.js"></script>
+
+    <!-- Offline Service Worker -->
     <script type="module">
-      import { notify } from './js/services/notify.js';
-
-      // set to false if testing SW locally
-      // http://192.168.x.x:3000 won't work as only localhost works this SWs or SSL is needed
       const isDev = window.location.hostname === 'localhost';
       if (!isDev && 'serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-
-        // Capture whether a SW was already controlling this page at load time.
-        // If not (fresh install or post-unregister reload), we don't show the toast.
-        const hadController = !!navigator.serviceWorker.controller;
-
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!hadController) return;
-          notify.info('Update available', {
-            icon: 'arrow-clockwise',
-            duration: Infinity,
-            action: {
-              text: 'Reload',
-              onClick: () => window.location.reload(),
-            },
-          });
+        navigator.serviceWorker.register('sw.js').catch((err) => {
+          console.warn('[SW] Registration failed:', err);
         });
       }
     </script>

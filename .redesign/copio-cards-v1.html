@@ -1037,7 +1037,7 @@
   <aside class="prototype-banner">
     <div class="prototype-banner-tag">
       <span class="prototype-badge">CPO-047 Prototype</span>
-      <span><strong>Stow Cards</strong> (Direct In-Place Flip & Card Photo Upload)</span>
+      <span><strong>Stow Cards</strong> (Direct In-Place Flip &amp; Barcode/QR Scanner)</span>
     </div>
     <div class="prototype-controls">
       <button class="btn-harness" id="btn-theme-toggle" title="Toggle Light/Dark Theme">
@@ -1075,17 +1075,6 @@
       </a>
 
       <div class="header-actions">
-        <!-- Direct Quick Photo Upload Input -->
-        <label class="btn-action btn-action-secondary" title="Upload Card Photo" style="cursor: pointer; margin: 0;">
-          <input type="file" id="global-card-upload-input" accept="image/*" style="display: none;" />
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          <span class="desktop-only">Upload Photo</span>
-        </label>
-
         <button class="btn-action btn-action-secondary" id="btn-open-sync" title="Peer-to-Peer Device Sync">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
@@ -1124,19 +1113,19 @@
 
       <nav class="category-pills" id="category-pills">
         <button class="pill-btn active" data-category="all">
-          All Cards <span class="pill-count" id="count-all">8</span>
+          All Cards <span class="pill-count" id="count-all">0</span>
         </button>
         <button class="pill-btn" data-category="supermarket">
-          🛒 Supermarkets <span class="pill-count" id="count-supermarket">5</span>
+          🛒 Supermarkets <span class="pill-count" id="count-supermarket">0</span>
         </button>
         <button class="pill-btn" data-category="pharmacy">
-          💊 Health & Pharmacy <span class="pill-count" id="count-pharmacy">1</span>
+          💊 Health & Pharmacy <span class="pill-count" id="count-pharmacy">0</span>
         </button>
         <button class="pill-btn" data-category="coffee">
-          ☕ Coffee & Dining <span class="pill-count" id="count-coffee">1</span>
+          ☕ Coffee & Dining <span class="pill-count" id="count-coffee">0</span>
         </button>
         <button class="pill-btn" data-category="home">
-          🏡 Home & Retail <span class="pill-count" id="count-home">1</span>
+          🏡 Home & Retail <span class="pill-count" id="count-home">0</span>
         </button>
       </nav>
     </section>
@@ -1162,7 +1151,7 @@
   <div class="brightness-boost-screen" id="brightness-overlay"></div>
 
   <!-- ========================================================================
-       ADD CARD MODAL (CAMERA & UPLOAD SUITE)
+       ADD CARD MODAL (BARCODE & QR CODE SCANNER)
        ======================================================================== -->
   <div class="modal-overlay" id="add-modal" role="dialog" aria-modal="true">
     <div class="modal-sheet">
@@ -1176,7 +1165,7 @@
           </div>
           <div>
             <h2>Add Loyalty Card</h2>
-            <div style="font-size: 11px; color: var(--color-text-muted);">Auto Store Artwork or Upload Card Photos</div>
+            <div style="font-size: 11px; color: var(--color-text-muted);">Choose Store &amp; Scan Barcode or QR Code</div>
           </div>
         </div>
         <button class="modal-close-btn" id="modal-close-btn">✕</button>
@@ -1191,61 +1180,42 @@
           </div>
         </div>
 
-        <!-- 2. Integrated Camera Viewfinder & Upload Actions -->
+        <!-- 2. Integrated Barcode & QR Code Camera Viewfinder -->
         <div class="form-group">
-          <label class="form-label">2. Card Camera & Photo Upload</label>
+          <label class="form-label">2. Scan Card Barcode or QR Code</label>
           <div class="scanner-view-box">
             <div class="copio-scanner-sim" id="scanner-viewfinder">
               <!-- Live Video Element for real camera stream -->
               <video id="scanner-live-video" playsinline muted autoplay style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
-              <!-- Simulated Canvas feed -->
+              <!-- Standby Canvas feed -->
               <canvas id="scanner-camera-canvas" width="600" height="340" style="width: 100%; height: 100%; object-fit: cover;"></canvas>
 
-              <!-- Card Frame Overlay -->
+              <!-- Barcode Reticle Overlay -->
               <div class="barcode-reticle-overlay" id="barcode-reticle">
                 <div class="reticle-corner r-tl"></div>
                 <div class="reticle-corner r-tr"></div>
                 <div class="reticle-corner r-bl"></div>
                 <div class="reticle-corner r-br"></div>
-                <span class="reticle-badge" id="reticle-status-text">Position card in frame</span>
+                <span class="reticle-badge" id="reticle-status-text">Point camera at barcode or QR code</span>
               </div>
             </div>
 
-            <!-- Action buttons (Camera, Upload Photo, Filters - No Scan Barcode button) -->
             <div class="scanner-action-bar">
               <button type="button" class="btn-scan-action" id="btn-start-camera" title="Start live device camera">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                   <circle cx="12" cy="13" r="4"></circle>
                 </svg>
-                <span id="camera-btn-text">Open Device Camera</span>
+                <span id="camera-btn-text">Start Camera Scanner</span>
               </button>
-
-              <label class="btn-scan-action" title="Upload card photo" style="cursor: pointer; margin: 0;">
-                <input type="file" id="modal-photo-upload-input" accept="image/*" style="display: none;" />
-                📁 <span>Upload Photo</span>
-              </label>
-
-              <label class="btn-scan-action" title="Take camera photo" style="cursor: pointer; margin: 0;">
-                <input type="file" id="modal-camera-snap-input" accept="image/*" capture="environment" style="display: none;" />
-                📸 <span>Snap Photo</span>
-              </label>
-            </div>
-
-            <div class="scanner-filter-bar">
-              <span style="font-size: 11px; color: var(--color-text-muted);">Copio Scanner Filter:</span>
-              <div class="filter-pills">
-                <button type="button" class="filter-pill-btn active" data-filter="normal">Natural</button>
-                <button type="button" class="filter-pill-btn" data-filter="sauvola">Sauvola B&W</button>
-              </div>
             </div>
           </div>
         </div>
 
         <!-- 3. Number Input -->
         <div class="form-group">
-          <label class="form-label" for="add-input-number">3. Membership / Barcode Number</label>
-          <input type="text" id="add-input-number" class="form-input" placeholder="e.g. 6340048291827401" value="6340048291827401" />
+          <label class="form-label" for="add-input-number">3. Barcode / Membership Number</label>
+          <input type="text" id="add-input-number" class="form-input" placeholder="Scan barcode above or type card number..." value="" />
           <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 2px;">
             High-contrast 1D/2D barcode is auto-generated instantly for till checkout.
           </div>
@@ -1253,12 +1223,7 @@
 
         <!-- 4. Live Card Artwork Preview -->
         <div class="form-group">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <label class="form-label" style="margin: 0;">4. Live Card Artwork Preview</label>
-            <button type="button" id="btn-reset-artwork" style="display: none; background: none; border: none; color: var(--color-primary); font-size: 11px; cursor: pointer;">
-              ↺ Reset to Official Artwork
-            </button>
-          </div>
+          <label class="form-label" style="margin: 0;">4. Card Front Preview</label>
           <div class="modal-card-preview-container" id="modal-card-preview">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 2;">
               <div>
@@ -1268,15 +1233,10 @@
               <div class="flip-pill-hint" id="preview-badge-status">Official Artwork ✓</div>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 2;">
-              <div style="font-size: 11px; opacity: 0.85;">ED WILLIAMS</div>
-              <div id="preview-masked-num" style="font-family: var(--font-mono); font-size: 14px; font-weight: 700;">•••• 7401</div>
+              <div id="preview-card-holder" style="font-size: 11px; opacity: 0.85;">CLUBCARD</div>
+              <div id="preview-masked-num" style="font-family: var(--font-mono); font-size: 14px; font-weight: 700;">•••• ••••</div>
             </div>
           </div>
-        </div>
-
-        <div class="form-group" id="custom-store-group" style="display: none;">
-          <label class="form-label" for="add-input-store-custom">Custom Store Name</label>
-          <input type="text" id="add-input-store-custom" class="form-input" placeholder="Store name" />
         </div>
       </div>
 
@@ -1430,29 +1390,13 @@
         }
       ];
 
-      // Initial active wallet cards
-      let walletCards = storePresets.map((p, idx) => ({
-        id: 'card-' + (idx + 1),
-        store: p.store,
-        title: p.title,
-        category: p.category,
-        number: p.sampleNumber,
-        barcodeType: p.barcodeType,
-        color: p.color,
-        colorEnd: p.colorEnd,
-        symbol: p.symbol,
-        holder: 'ED WILLIAMS',
-        frontImage: null,
-        backImage: null,
-        isFlipped: false
-      }));
+      // Initial wallet opens afresh without pre-populated cards
+      let walletCards = [];
 
       let activeCategory = 'all';
       let searchQuery = '';
       let isBrightnessBoostActive = false;
       let selectedPresetKey = 'tesco';
-      let uploadedFrontDataUrl = null;
-      let currentFilterMode = 'normal';
       let cameraStream = null;
 
       /* ----------------------------------------------------------------------
@@ -1476,19 +1420,15 @@
       const modalCardPreview = document.getElementById('modal-card-preview');
       const previewStoreName = document.getElementById('preview-store-name');
       const previewCardTier = document.getElementById('preview-card-tier');
+      const previewCardHolder = document.getElementById('preview-card-holder');
       const previewMaskedNum = document.getElementById('preview-masked-num');
-      const previewBadgeStatus = document.getElementById('preview-badge-status');
       const addInputNumber = document.getElementById('add-input-number');
-      const btnResetArtwork = document.getElementById('btn-reset-artwork');
 
-      // Scanner Viewfinder & Upload Controls
+      // Scanner Viewfinder Controls
       const scannerCameraCanvas = document.getElementById('scanner-camera-canvas');
       const scannerLiveVideo = document.getElementById('scanner-live-video');
       const btnStartCamera = document.getElementById('btn-start-camera');
       const cameraBtnText = document.getElementById('camera-btn-text');
-      const modalPhotoUploadInput = document.getElementById('modal-photo-upload-input');
-      const modalCameraSnapInput = document.getElementById('modal-camera-snap-input');
-      const globalCardUploadInput = document.getElementById('global-card-upload-input');
       const reticleStatusText = document.getElementById('reticle-status-text');
 
       // Sync Modal Elements
@@ -1615,6 +1555,20 @@
       }
 
       function renderCardsGrid() {
+        if (walletCards.length === 0) {
+          cardsGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 56px 24px; background: var(--color-surface); border-radius: var(--radius-xl); border: 2px dashed var(--color-border-strong); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+              <div style="font-size: 40px;">📇</div>
+              <h3 style="font-size: 18px; font-weight: 700;">Your Pocket Wallet is Empty</h3>
+              <p style="font-size: 14px; color: var(--color-text-muted); max-width: 420px;">Add your first loyalty card by selecting a store and scanning the card's barcode or QR code.</p>
+              <button type="button" class="btn-action btn-action-primary" id="btn-empty-add" style="margin-top: 6px;">+ Add Loyalty Card</button>
+            </div>
+          `;
+          const btnEmptyAdd = cardsGrid.querySelector('#btn-empty-add');
+          if (btnEmptyAdd) btnEmptyAdd.addEventListener('click', () => openAddModal());
+          return;
+        }
+
         const filtered = walletCards.filter(card => {
           const matchesCategory = activeCategory === 'all' || card.category === activeCategory;
           const q = searchQuery.toLowerCase().trim();
@@ -1628,9 +1582,9 @@
         if (filtered.length === 0) {
           cardsGrid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 48px 16px; background: var(--color-surface); border-radius: var(--radius-lg); border: 2px dashed var(--color-border);">
-              <div style="font-size: 36px; margin-bottom: 8px;">📇</div>
-              <h3 style="font-size: 16px; font-weight: 700;">No cards found</h3>
-              <p style="font-size: 13px; color: var(--color-text-muted); margin-top: 4px;">Try searching for a different supermarket or upload a card photo.</p>
+              <div style="font-size: 36px; margin-bottom: 8px;">🔍</div>
+              <h3 style="font-size: 16px; font-weight: 700;">No matching cards</h3>
+              <p style="font-size: 13px; color: var(--color-text-muted); margin-top: 4px;">Try searching for a different supermarket or category.</p>
             </div>
           `;
           return;
@@ -1642,15 +1596,13 @@
             ? generateQRCode(card.number, 100)
             : generateBarcode1D(card.number);
 
-          const frontStyle = card.frontImage
-            ? `background-image: url('${card.frontImage}'); background-size: cover; background-position: center;`
-            : `background: linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color});`;
+          const frontStyle = `background: linear-gradient(135deg, ${card.color}, ${card.colorEnd || card.color});`;
 
           return `
             <div class="card-3d-wrapper ${isFlipped ? 'is-flipped' : ''}" data-id="${card.id}">
               <div class="card-3d-flipper">
                 
-                <!-- FRONT FACE: Store Image & Branding or Uploaded Photo -->
+                <!-- FRONT FACE: Official Store Branding -->
                 <div class="card-face card-face-front" style="${frontStyle}">
                   <div class="front-top-row">
                     <div class="store-badge-group">
@@ -1668,7 +1620,7 @@
                   </div>
 
                   <div class="front-bottom-row">
-                    <span class="card-holder-name">${escapeHtml(card.holder || 'ED WILLIAMS')}</span>
+                    <span class="card-holder-name">${escapeHtml(card.holder || card.title.toUpperCase())}</span>
                     <span class="card-masked-number">${maskCardNumber(card.number)}</span>
                   </div>
                 </div>
@@ -1759,53 +1711,25 @@
         ctx.fillRect(0, 0, w, h);
 
         const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
+        const currentVal = addInputNumber.value.trim() || preset.sampleNumber;
 
         const cx = 100;
         const cy = 40;
         const cw = 400;
         const ch = 240;
 
-        if (currentFilterMode === 'sauvola') {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(cx, cy, cw, ch);
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 3;
-          ctx.strokeRect(cx + 10, cy + 10, cw - 20, ch - 20);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(cx + 20, cy + 50, cw - 40, 120);
 
-          ctx.fillStyle = '#000000';
-          ctx.font = 'bold 16px Inter, sans-serif';
-          ctx.fillText(preset.store.toUpperCase() + ' REWARDS', cx + 24, cy + 44);
-
-          for (let i = 0; i < 34; i++) {
-            const bx = cx + 30 + i * 10;
-            const bw = (i % 3 === 0) ? 6 : 2;
-            ctx.fillRect(bx, cy + 70, bw, 80);
-          }
-          ctx.font = 'bold 14px monospace';
-          ctx.fillText(formatCardNumber(preset.sampleNumber), cx + 70, cy + 180);
-        } else {
-          ctx.fillStyle = '#1e293b';
-          ctx.fillRect(cx, cy, cw, ch);
-          ctx.fillStyle = '#0f172a';
-          ctx.fillRect(cx, cy, cw, 36);
-
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(cx + 20, cy + 60, cw - 40, 110);
-
-          ctx.fillStyle = '#000000';
-          for (let i = 0; i < 30; i++) {
-            const bx = cx + 40 + i * 10.5;
-            const bw = (i % 2 === 0) ? 4 : 2;
-            ctx.fillRect(bx, cy + 75, bw, 60);
-          }
-
-          ctx.font = 'bold 13px monospace';
-          ctx.fillText(formatCardNumber(preset.sampleNumber), cx + 60, cy + 155);
-
-          ctx.fillStyle = '#94a3b8';
-          ctx.font = '11px Inter, sans-serif';
-          ctx.fillText(preset.store + ' • Camera ready', cx + 24, cy + 205);
+        ctx.fillStyle = '#000000';
+        for (let i = 0; i < 30; i++) {
+          const bx = cx + 40 + i * 10.5;
+          const bw = (i % 2 === 0) ? 4 : 2;
+          ctx.fillRect(bx, cy + 68, bw, 62);
         }
+
+        ctx.font = 'bold 13px monospace';
+        ctx.fillText(formatCardNumber(currentVal), cx + 60, cy + 152);
       }
 
       async function startLiveCamera() {
@@ -1814,7 +1738,7 @@
           cameraStream = null;
           scannerLiveVideo.style.display = 'none';
           scannerCameraCanvas.style.display = 'block';
-          cameraBtnText.textContent = 'Open Device Camera';
+          cameraBtnText.textContent = 'Start Camera Scanner';
           return;
         }
 
@@ -1826,9 +1750,9 @@
           scannerLiveVideo.style.display = 'block';
           scannerCameraCanvas.style.display = 'none';
           cameraBtnText.textContent = 'Stop Camera';
-          reticleStatusText.textContent = 'Live camera stream active';
+          reticleStatusText.textContent = 'Scanning for barcode or QR code...';
         } catch (err) {
-          showToast('Camera unavailable or permission denied; using simulation mode.');
+          showToast('Camera unavailable or permission denied; enter card number manually.');
           drawScannerCanvasFeed();
         }
       }
@@ -1839,40 +1763,12 @@
           cameraStream = null;
           scannerLiveVideo.style.display = 'none';
           scannerCameraCanvas.style.display = 'block';
-          cameraBtnText.textContent = 'Open Device Camera';
+          cameraBtnText.textContent = 'Start Camera Scanner';
         }
       }
 
       /* ----------------------------------------------------------------------
-         6. FILE UPLOAD HANDLERS
-         ---------------------------------------------------------------------- */
-      function handleImageUpload(file) {
-        if (!file || !file.type.startsWith('image/')) {
-          showToast('Please select a valid image file');
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          uploadedFrontDataUrl = e.target.result;
-          modalCardPreview.style.backgroundImage = `url('${uploadedFrontDataUrl}')`;
-          previewBadgeStatus.textContent = 'Custom Photo ✓';
-          btnResetArtwork.style.display = 'inline-block';
-          showToast('✓ Card photo uploaded successfully!');
-        };
-        reader.readAsDataURL(file);
-      }
-
-      function resetArtwork() {
-        uploadedFrontDataUrl = null;
-        btnResetArtwork.style.display = 'none';
-        previewBadgeStatus.textContent = 'Official Artwork ✓';
-        updateSelectedPresetUI();
-        showToast('Reset to official store artwork');
-      }
-
-      /* ----------------------------------------------------------------------
-         7. ADD CARD CONTROLLER
+         6. ADD CARD CONTROLLER
          ---------------------------------------------------------------------- */
       function renderStorePicker() {
         storePickerGrid.innerHTML = storePresets.map(preset => {
@@ -1901,31 +1797,21 @@
         const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
         previewStoreName.textContent = preset.store;
         previewCardTier.textContent = preset.title;
+        if (previewCardHolder) previewCardHolder.textContent = preset.title.toUpperCase();
 
-        if (uploadedFrontDataUrl) {
-          modalCardPreview.style.backgroundImage = `url('${uploadedFrontDataUrl}')`;
-        } else {
-          modalCardPreview.style.backgroundImage = 'none';
-          modalCardPreview.style.background = `linear-gradient(135deg, ${preset.color}, ${preset.colorEnd})`;
-        }
+        modalCardPreview.style.backgroundImage = 'none';
+        modalCardPreview.style.background = `linear-gradient(135deg, ${preset.color}, ${preset.colorEnd})`;
 
-        addInputNumber.value = preset.sampleNumber;
-        previewMaskedNum.textContent = maskCardNumber(preset.sampleNumber);
+        addInputNumber.placeholder = `Scan barcode or enter number (e.g. ${preset.sampleNumber})`;
+        previewMaskedNum.textContent = maskCardNumber(addInputNumber.value);
         drawScannerCanvasFeed();
       }
 
-      function openAddModal(preloadedFile = null) {
-        uploadedFrontDataUrl = null;
-        btnResetArtwork.style.display = 'none';
-        previewBadgeStatus.textContent = 'Official Artwork ✓';
-
+      function openAddModal() {
+        addInputNumber.value = '';
         renderStorePicker();
         updateSelectedPresetUI();
         drawScannerCanvasFeed();
-
-        if (preloadedFile) {
-          handleImageUpload(preloadedFile);
-        }
 
         addModal.classList.add('open');
         addInputNumber.focus();
@@ -1938,7 +1824,12 @@
 
       function saveNewCard() {
         const preset = storePresets.find(p => p.key === selectedPresetKey) || storePresets[0];
-        const num = addInputNumber.value.trim() || preset.sampleNumber;
+        const num = addInputNumber.value.trim();
+        if (!num) {
+          showToast('Please scan a barcode/QR code or enter the card number');
+          addInputNumber.focus();
+          return;
+        }
 
         const newCard = {
           id: 'card-' + Date.now(),
@@ -1950,9 +1841,7 @@
           color: preset.color,
           colorEnd: preset.colorEnd,
           symbol: preset.symbol,
-          holder: 'ED WILLIAMS',
-          frontImage: uploadedFrontDataUrl,
-          backImage: null,
+          holder: preset.title.toUpperCase(),
           isFlipped: false
         };
 
@@ -1964,7 +1853,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         8. TOAST NOTIFICATION
+         7. TOAST NOTIFICATION
          ---------------------------------------------------------------------- */
       let toastTimer = null;
       function showToast(msg) {
@@ -1977,7 +1866,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         9. P2P SYNC MODAL
+         8. P2P SYNC MODAL
          ---------------------------------------------------------------------- */
       function openSyncModal() {
         syncQrContainer.innerHTML = generateQRCode('copio-p2p://session/' + Math.random().toString(36).substring(2, 10), 160);
@@ -1989,7 +1878,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         10. EVENT LISTENERS
+         9. EVENT LISTENERS
          ---------------------------------------------------------------------- */
       // Search
       searchInput.addEventListener('input', (e) => {
@@ -2035,53 +1924,11 @@
       modalSaveBtn.addEventListener('click', saveNewCard);
       addInputNumber.addEventListener('input', (e) => {
         previewMaskedNum.textContent = maskCardNumber(e.target.value);
+        drawScannerCanvasFeed();
       });
-
-      btnResetArtwork.addEventListener('click', resetArtwork);
 
       // Camera Controls
       btnStartCamera.addEventListener('click', startLiveCamera);
-
-      // File Upload Controls (Modal & Header)
-      modalPhotoUploadInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-          handleImageUpload(e.target.files[0]);
-        }
-      });
-
-      modalCameraSnapInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-          handleImageUpload(e.target.files[0]);
-        }
-      });
-
-      globalCardUploadInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-          openAddModal(e.target.files[0]);
-        }
-      });
-
-      // Scanner Filter Buttons (Normal vs Sauvola)
-      document.querySelectorAll('.filter-pill-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.filter-pill-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentFilterMode = btn.getAttribute('data-filter');
-          drawScannerCanvasFeed();
-        });
-      });
-
-      // Global window drag and drop to import card photo
-      window.addEventListener('dragover', (e) => e.preventDefault());
-      window.addEventListener('drop', (e) => {
-        e.preventDefault();
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-          const file = e.dataTransfer.files[0];
-          if (file.type.startsWith('image/')) {
-            openAddModal(file);
-          }
-        }
-      });
 
       addModal.addEventListener('click', (e) => {
         if (e.target === addModal) closeAddModal();
@@ -2106,7 +1953,7 @@
       });
 
       /* ----------------------------------------------------------------------
-         11. INITIALIZE
+         10. INITIALIZE
          ---------------------------------------------------------------------- */
       updateCategoryCounts();
       renderCardsGrid();

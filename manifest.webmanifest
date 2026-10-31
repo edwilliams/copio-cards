@@ -1,6 +1,7 @@
 {
-  "short_name": "Copio Cards",
-  "name": "Copio Cards",
+  "short_name": "Stow Cards",
+  "name": "Stow Cards — The Private Loyalty Cards & Pocket Wallet",
+  "description": "100% client-side supermarket loyalty cards & barcode wallet powered by Copio SDK.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,7 +21,7 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
+  "theme_color": "#090c13",
+  "background_color": "#090c13",
   "orientation": "portrait"
 }
