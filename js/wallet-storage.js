@@ -1,6 +1,7 @@
 /**
  * Wallet Storage Service
  * Provides offline-first client-side card persistence via IndexedDB with LocalStorage fallback.
+ * Opens afresh with an empty wallet until the user adds their own loyalty cards.
  * Zero telemetry, zero cloud accounts, 100% private to device.
  */
 
@@ -12,7 +13,7 @@ export const STORE_PRESETS = [
     category: 'supermarket',
     color: '#00539f',
     colorEnd: '#002f6c',
-    barcodeType: 'ean13',
+    barcodeType: 'code128',
     symbol: '🛒',
     sampleNumber: '6340048291827401'
   },
@@ -95,16 +96,37 @@ export const STORE_PRESETS = [
   }
 ];
 
-const DB_NAME = 'stow_cards_wallet_db';
+const DB_NAME = 'stow_cards_wallet_db_v2';
 const STORE_NAME = 'cards';
 const DB_VERSION = 1;
-const LOCAL_STORAGE_KEY = 'stow_cards_wallet_data_v1';
+const LOCAL_STORAGE_KEY = 'stow_cards_wallet_data_v2';
 
 export class WalletStorage {
   #dbPromise = null;
+  #listeners = new Set();
 
   constructor() {
     this.#initDb();
+  }
+
+  /**
+   * Subscribe to wallet card changes (e.g. after P2P sync import)
+   * @param {() => void} fn
+   * @returns {() => void}
+   */
+  subscribe(fn) {
+    this.#listeners.add(fn);
+    return () => this.#listeners.delete(fn);
+  }
+
+  #notify() {
+    for (const fn of this.#listeners) {
+      try {
+        fn();
+      } catch {
+        // ignore listener error
+      }
+    }
   }
 
   #initDb() {
@@ -135,30 +157,8 @@ export class WalletStorage {
   }
 
   /**
-   * Initializes default card set from presets
-   * @returns {Array<Object>}
-   */
-  getDefaultCards() {
-    return STORE_PRESETS.map((p, idx) => ({
-      id: `card-${idx + 1}`,
-      store: p.store,
-      title: p.title,
-      category: p.category,
-      number: p.sampleNumber,
-      barcodeType: p.barcodeType,
-      color: p.color,
-      colorEnd: p.colorEnd,
-      symbol: p.symbol,
-      holder: 'ED WILLIAMS',
-      frontImage: null,
-      backImage: null,
-      isFlipped: false,
-      createdAt: Date.now() - (10 - idx) * 3600000,
-    }));
-  }
-
-  /**
-   * Loads all cards from storage
+   * Loads all user-added cards from storage.
+   * Returns an empty array [] on fresh start — no pre-seeded sample cards.
    * @returns {Promise<Array<Object>>}
    */
   async getCards() {
@@ -173,8 +173,7 @@ export class WalletStorage {
           req.onerror = () => reject(req.error);
         });
 
-        if (cards && cards.length > 0) {
-          // Sort by creation or position
+        if (Array.isArray(cards)) {
           return cards.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         }
       }
@@ -188,17 +187,14 @@ export class WalletStorage {
         const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
+          if (Array.isArray(parsed)) {
+            return parsed.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
           }
         }
       }
     } catch {}
 
-    // First run: save & return default presets
-    const defaults = this.getDefaultCards();
-    await this.saveAllCards(defaults);
-    return defaults;
+    return [];
   }
 
   /**
@@ -229,7 +225,7 @@ export class WalletStorage {
     try {
       if (typeof localStorage !== 'undefined') {
         const current = await this.getCards();
-        const existingIdx = current.findIndex(c => c.id === card.id);
+        const existingIdx = current.findIndex((c) => c.id === card.id);
         if (existingIdx >= 0) {
           current[existingIdx] = card;
         } else {
@@ -238,6 +234,8 @@ export class WalletStorage {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(current));
       }
     } catch {}
+
+    this.#notify();
   }
 
   /**
@@ -271,6 +269,8 @@ export class WalletStorage {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cards));
       }
     } catch {}
+
+    this.#notify();
   }
 
   /**
@@ -298,20 +298,64 @@ export class WalletStorage {
 
     try {
       if (typeof localStorage !== 'undefined') {
-        const current = (await this.getCards()).filter(c => c.id !== id);
+        const current = (await this.getCards()).filter((c) => c.id !== id);
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(current));
       }
     } catch {}
+
+    this.#notify();
   }
 
   /**
-   * Resets wallet to the default UK presets
-   * @returns {Promise<Array<Object>>}
+   * Clears all cards from the wallet
+   * @returns {Promise<void>}
    */
-  async resetToDefaults() {
-    const defaults = this.getDefaultCards();
-    await this.saveAllCards(defaults);
-    return defaults;
+  async clearAllCards() {
+    await this.saveAllCards([]);
+  }
+
+  /**
+   * Exports all cards for P2P Sync
+   * @returns {Promise<Record<string, Object>>}
+   */
+  async exportAll() {
+    const cards = await this.getCards();
+    /** @type {Record<string, Object>} */
+    const map = {};
+    for (const card of cards) {
+      if (card && card.id) {
+        map[card.id] = card;
+      }
+    }
+    return map;
+  }
+
+  /**
+   * Imports cards received from P2P Sync
+   * @param {Record<string, Object> | Array<Object>} incoming
+   * @returns {Promise<number>} Count of newly added cards
+   */
+  async importDocs(incoming) {
+    if (!incoming) return 0;
+    const current = await this.getCards();
+    const existingIds = new Set(current.map((c) => c.id));
+    const list = Array.isArray(incoming) ? incoming : Object.values(incoming);
+
+    let added = 0;
+    for (const item of list) {
+      if (item && item.id && item.store && item.number) {
+        if (!existingIds.has(item.id)) {
+          added++;
+          existingIds.add(item.id);
+          current.push({ ...item, isFlipped: false });
+        }
+      }
+    }
+
+    if (added > 0) {
+      await this.saveAllCards(current);
+    }
+    return added;
   }
 }
 
