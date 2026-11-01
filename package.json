@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "prepare": "node scripts/sync-sdk.mjs",
+    "build": "node scripts/sync-sdk.mjs",
     "sync:sdk": "node scripts/sync-sdk.mjs",
     "lint": "oxlint",
     "test": "web-test-runner test/**/*.test.js --node-resolve",
