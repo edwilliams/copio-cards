@@ -1,4 +1,4 @@
-const CACHE_NAME = 'copio-cards-cache-v5'; // bump this on every deploy
+const CACHE_NAME = 'copio-cards-cache-v7'; // bump this on every deploy
 
 // --------------------------------------------------------
 // install: fetch files-to-cache.json & cache all listed files
