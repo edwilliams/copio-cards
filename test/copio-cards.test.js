@@ -189,9 +189,10 @@ describe('Copio Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CP
       expect(backImg.getAttribute('src')).to.include('data:image/png;base64');
     });
 
-    it('flips card 180° in place, toggles ☀ Max Bright, and deletes card via trash icon on flipped back face', async () => {
+    it('flips card to full screen scanning mode, toggles ☀ Max Bright, Fullscreen, and deletes card via trash icon', async () => {
       app.openAddModal();
       container.querySelector('#add-input-store').value = 'City Gym';
+      container.querySelector('#add-input-number').value = '987654321';
       app.scannedCardPhoto =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
       await app.saveNewCard();
@@ -199,9 +200,31 @@ describe('Copio Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CP
       const card = container.querySelector('.card-3d-wrapper');
       expect(card.classList.contains('is-flipped')).to.be.false;
 
-      // Flip card to back face
+      // Flip card to back face in full screen
       card.click();
       expect(card.classList.contains('is-flipped')).to.be.true;
+
+      // Verify full screen styles and placeholder
+      const compStyle = window.getComputedStyle(card);
+      expect(compStyle.position).to.equal('fixed');
+      const placeholder = container.querySelector('.card-slot-placeholder');
+      expect(placeholder).to.exist;
+
+      // Verify fullscreen controls
+      const fsBtn = card.querySelector('button[data-action="fullscreen"]');
+      expect(fsBtn).to.exist;
+      fsBtn.click(); // should invoke toggleNativeFullscreen safely
+
+      // Verify close button
+      const closeBtn = card.querySelector('button[data-action="flip-back"]');
+      expect(closeBtn).to.exist;
+      expect(closeBtn.textContent).to.include('Close');
+
+      // Verify barcode number and hint
+      const numText = card.querySelector('.back-number-text');
+      expect(numText).to.exist;
+      expect(numText.textContent).to.equal('9876 5432 1');
+      expect(card.querySelector('.back-bottom-hint')).to.exist;
 
       // Verify hit-testing on flipped back face reaches the delete button and not the hidden front face
       const backDeleteBtn = card.querySelector('.card-face-back button[data-action="delete"]');
@@ -225,6 +248,31 @@ describe('Copio Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CP
       await new Promise((r) => setTimeout(r, 30));
       expect(app.cards).to.be.empty;
       expect(container.querySelectorAll('.card-3d-wrapper')).to.have.lengthOf(0);
+      expect(container.querySelector('.card-slot-placeholder')).to.not.exist;
+    });
+
+    it('unflips full screen card when clicking Close or pressing Escape', async () => {
+      app.openAddModal();
+      container.querySelector('#add-input-store').value = 'Supermarket Plus';
+      app.scannedCardPhoto =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+      await app.saveNewCard();
+
+      const card = container.querySelector('.card-3d-wrapper');
+      card.click();
+      expect(card.classList.contains('is-flipped')).to.be.true;
+
+      // Close using the Close button
+      const closeBtn = card.querySelector('button[data-action="flip-back"]');
+      closeBtn.click();
+      expect(card.classList.contains('is-flipped')).to.be.false;
+      expect(container.querySelector('.card-slot-placeholder')).to.not.exist;
+
+      // Flip again and close using Escape key
+      card.click();
+      expect(card.classList.contains('is-flipped')).to.be.true;
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      expect(card.classList.contains('is-flipped')).to.be.false;
     });
 
     it('filters cards by search query', async () => {

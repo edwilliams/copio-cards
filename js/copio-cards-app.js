@@ -353,7 +353,17 @@ export class CopioCardsApp {
       if (e.key === 'Escape') {
         if (this.addModal?.classList.contains('open')) this.closeAddModal();
         if (this.isBrightnessBoostActive) this.toggleBrightnessBoost(false);
+        this.unflipAllCards();
       }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      const isFs = !!document.fullscreenElement;
+      document.querySelectorAll('.btn-fullscreen').forEach((btn) => {
+        btn.classList.toggle('active', isFs);
+        const label = btn.querySelector('.fullscreen-label');
+        if (label) label.textContent = isFs ? 'Exit' : 'Fullscreen';
+      });
     });
 
     this.brightnessOverlay?.addEventListener('click', () => this.toggleBrightnessBoost(false));
@@ -449,19 +459,25 @@ export class CopioCardsApp {
                 </div>
               </div>
 
-              <!-- BACK FACE: Scanned Barcode / QR Image for Checkout -->
+              <!-- BACK FACE: Fullscreen Scanned Barcode / QR Image for Checkout -->
               <div class="card-face card-face-back">
                 <div class="back-top-row">
-                  <span class="back-store-name">${this.#escapeHtml(card.store || 'Loyalty Card')}</span>
+                  <div class="back-brand-info">
+                    <span class="back-store-name">${this.#escapeHtml(card.store || 'Loyalty Card')}</span>
+                    ${card.title ? `<span class="back-card-tier">${this.#escapeHtml(card.title)}</span>` : ''}
+                  </div>
                   <div class="back-actions-group">
                     <button type="button" class="btn-max-bright ${this.isBrightnessBoostActive ? 'active' : ''}" data-action="bright" title="Screen brightness boost for optical checkouts">
                       ☀ Max Bright
                     </button>
+                    <button type="button" class="btn-fullscreen" data-action="fullscreen" title="Toggle browser full screen">
+                      ⛶ <span class="fullscreen-label">Fullscreen</span>
+                    </button>
                     <button type="button" class="btn-card-delete" data-action="delete" title="Delete card">
                       🗑
                     </button>
-                    <button type="button" class="btn-flip-back" data-action="flip-back" title="Flip to front">
-                      ↻ Front
+                    <button type="button" class="btn-flip-back" data-action="flip-back" title="Close full screen & return to cards">
+                      ✕ Close
                     </button>
                   </div>
                 </div>
@@ -471,7 +487,7 @@ export class CopioCardsApp {
                     ${
                       barcodeImgSrc
                         ? `<img class="back-barcode-img" src="${barcodeImgSrc}" alt="${this.#escapeHtml(card.store || 'Card')} barcode" />`
-                        : `<div style="color: #64748b; font-size: 12px; font-weight: 600;">No barcode image</div>`
+                        : `<div style="color: #64748b; font-size: 14px; font-weight: 600;">No barcode image</div>`
                     }
                   </div>
                   ${
@@ -480,12 +496,22 @@ export class CopioCardsApp {
                       : ''
                   }
                 </div>
+
+                <div class="back-bottom-hint">
+                  <span>↻ Tap card to flip back • Esc to close</span>
+                </div>
               </div>
             </div>
           </div>
         `;
       })
       .join('');
+
+    if (filtered.some((c) => c.isFlipped)) {
+      this.cardsGrid.querySelectorAll('.card-3d-wrapper.is-flipped').forEach((wrapper) => {
+        this.#insertPlaceholder(/** @type {HTMLElement} */ (wrapper));
+      });
+    }
 
     this.cardsGrid.querySelectorAll('.card-3d-wrapper').forEach((wrapper) => {
       const id = wrapper.getAttribute('data-id');
@@ -506,14 +532,19 @@ export class CopioCardsApp {
         });
       });
 
+      wrapper.querySelectorAll('button[data-action="fullscreen"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.toggleNativeFullscreen();
+        });
+      });
+
       wrapper.querySelectorAll('button[data-action="flip-back"]').forEach((btn) => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          const card = this.cards.find((c) => c.id === id);
-          if (!card) return;
-          card.isFlipped = false;
-          wrapper.classList.remove('is-flipped');
+          if (id) this.setCardFlipped(id, false);
         });
       });
 
@@ -523,10 +554,104 @@ export class CopioCardsApp {
         }
         const card = this.cards.find((c) => c.id === id);
         if (!card) return;
-        card.isFlipped = !card.isFlipped;
-        wrapper.classList.toggle('is-flipped', card.isFlipped);
+        this.setCardFlipped(id, !card.isFlipped);
       });
     });
+  }
+
+  setCardFlipped(id, flipped) {
+    const card = this.cards.find((c) => c.id === id);
+    if (!card) return;
+
+    if (flipped) {
+      // Unflip any other card
+      this.cards.forEach((c) => {
+        if (c.id !== id && c.isFlipped) {
+          c.isFlipped = false;
+        }
+      });
+      this.cardsGrid?.querySelectorAll('.card-3d-wrapper.is-flipped').forEach((w) => {
+        if (w.getAttribute('data-id') !== id) {
+          w.classList.remove('is-flipped');
+          this.#removePlaceholder(/** @type {HTMLElement} */ (w));
+        }
+      });
+
+      card.isFlipped = true;
+      const wrapper = /** @type {HTMLElement|null} */ (
+        this.cardsGrid?.querySelector(`.card-3d-wrapper[data-id="${id}"]`)
+      );
+      if (wrapper) {
+        this.#insertPlaceholder(wrapper);
+        wrapper.classList.add('is-flipped');
+      }
+    } else {
+      card.isFlipped = false;
+      const wrapper = /** @type {HTMLElement|null} */ (
+        this.cardsGrid?.querySelector(`.card-3d-wrapper[data-id="${id}"]`)
+      );
+      if (wrapper) {
+        wrapper.classList.remove('is-flipped');
+        this.#removePlaceholder(wrapper);
+      }
+      if (document.fullscreenElement) {
+        document.exitFullscreen?.().catch(() => {});
+      }
+    }
+  }
+
+  unflipAllCards() {
+    this.cards.forEach((c) => {
+      c.isFlipped = false;
+    });
+    this.cardsGrid?.querySelectorAll('.card-3d-wrapper.is-flipped').forEach((w) => {
+      w.classList.remove('is-flipped');
+      this.#removePlaceholder(/** @type {HTMLElement} */ (w));
+    });
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  }
+
+  #insertPlaceholder(wrapper) {
+    if (!wrapper || !wrapper.parentNode) return;
+    const id = wrapper.getAttribute('data-id') || '';
+    const existing = wrapper.parentNode.querySelector(`.card-slot-placeholder[data-for="${id}"]`);
+    if (!existing) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'card-slot-placeholder';
+      placeholder.setAttribute('data-for', id);
+      wrapper.parentNode.insertBefore(placeholder, wrapper);
+    }
+  }
+
+  #removePlaceholder(wrapper) {
+    if (!wrapper || !wrapper.parentNode) return;
+    const id = wrapper.getAttribute('data-id') || '';
+    const existing = wrapper.parentNode.querySelector(`.card-slot-placeholder[data-for="${id}"]`);
+    if (existing) {
+      existing.remove();
+    }
+  }
+
+  toggleNativeFullscreen() {
+    try {
+      if (!document.fullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (/** @type {any} */ (document.documentElement).webkitRequestFullscreen) {
+          /** @type {any} */ (document.documentElement).webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (/** @type {any} */ (document).webkitExitFullscreen) {
+          /** @type {any} */ (document).webkitExitFullscreen();
+        }
+      }
+    } catch {
+      // Ignore unsupported or denied fullscreen permissions
+    }
   }
 
   toggleBrightnessBoost(forcedState) {
@@ -543,8 +668,15 @@ export class CopioCardsApp {
   }
 
   async deleteCard(id) {
+    const wrapper = /** @type {HTMLElement|null} */ (
+      this.cardsGrid?.querySelector(`.card-3d-wrapper[data-id="${id}"]`)
+    );
+    if (wrapper) this.#removePlaceholder(wrapper);
     await walletStorage.deleteCard(id);
     this.cards = this.cards.filter((c) => c.id !== id);
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.().catch(() => {});
+    }
     this.updateCardCount();
     this.renderCardsGrid();
     this.showToast('Card removed from wallet');
