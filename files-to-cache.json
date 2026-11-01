@@ -7,6 +7,9 @@
   "icon-192.png",
   "icon-512.png",
   "copio.svg",
+  "assets/icons/favicon-96x96.png",
+  "assets/icons/favicon.svg",
+  "assets/icons/favicon.ico",
   "css/copio-cards.css",
   "js/copio-cards-app.js",
   "vendor/copio/scanner.js"
