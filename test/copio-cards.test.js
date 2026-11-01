@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import '../vendor/copio/scanner.js';
+import '../vendor/copio.0.1.2.js';
 import {
   CARD_GRADIENTS,
   WalletStorage,
@@ -80,6 +80,11 @@ describe('Copio Cards — Simple Offline Loyalty Wallet with <copio-scanner> (CP
           styleLink.onload = resolve;
           styleLink.onerror = resolve;
         });
+
+        const noAnim = document.createElement('style');
+        noAnim.id = 'test-no-anim';
+        noAnim.textContent = '*, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; }';
+        document.head.appendChild(noAnim);
       }
 
       container = document.createElement('div');
