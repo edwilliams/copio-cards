@@ -13,16 +13,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 const defaultSdkDir = path.resolve(rootDir, '../copio');
 const sdkDir = process.env.COPIO_SDK_DIR || defaultSdkDir;
-const sourceScanner = path.join(sdkDir, 'dist/scanner.js');
 const vendorDir = path.join(rootDir, 'vendor/copio');
 const targetScanner = path.join(vendorDir, 'scanner.js');
 
 async function syncSdk() {
   console.log('🔄 Syncing canonical <copio-scanner> bundle from Copio SDK...\n');
 
+  const installedScanner = path.join(rootDir, 'node_modules/@copio/sdk/dist/scanner.js');
+  const fallbackScanner = path.join(sdkDir, 'dist/scanner.js');
+  const sourceScanner = existsSync(installedScanner) ? installedScanner : fallbackScanner;
+
   if (!existsSync(sourceScanner)) {
     console.error(`❌ Source bundle not found at: ${sourceScanner}`);
-    console.error('Please run "npm run build:sdk" in the copio repository first.');
+    console.error('Please run "npm install" or build the copio SDK first.');
     process.exit(1);
   }
 
