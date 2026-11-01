@@ -1,82 +1,59 @@
 /**
- * Copio Cards — Offline-First Supermarket Loyalty Card Wallet
+ * Copio Cards — Offline-First Loyalty & Pocket Card Wallet
  * Minimal client-side application showcasing <copio-scanner>.
- * Opens afresh with 0 cards. Users choose a store preset and use <copio-scanner>
- * to take a photo or upload a screenshot of their card's barcode or QR code.
+ * Opens afresh with 0 cards and no preset brands: users input their card/brand name,
+ * choose a colour gradient background, and use <copio-scanner> to take a photo
+ * or upload a screenshot of their card's barcode or QR code.
  */
 
-export const STORE_PRESETS = [
+export const CARD_GRADIENTS = [
   {
-    key: 'tesco',
-    store: 'Tesco',
-    title: 'Clubcard',
-    category: 'supermarket',
+    key: 'ocean',
+    label: 'Ocean',
     color: '#00539f',
     colorEnd: '#002f6c',
-    symbol: '🛒',
   },
   {
-    key: 'sainsburys',
-    store: "Sainsbury's",
-    title: 'Nectar',
-    category: 'supermarket',
+    key: 'sunset',
+    label: 'Sunset',
     color: '#e05a00',
     colorEnd: '#4e1e66',
-    symbol: '🍇',
   },
   {
-    key: 'boots',
-    store: 'Boots',
-    title: 'Advantage Card',
-    category: 'pharmacy',
-    color: '#004b91',
-    colorEnd: '#00254d',
-    symbol: '💊',
-  },
-  {
-    key: 'waitrose',
-    store: 'Waitrose',
-    title: 'myWaitrose',
-    category: 'supermarket',
+    key: 'emerald',
+    label: 'Emerald',
     color: '#025826',
     colorEnd: '#013316',
-    symbol: '🌿',
   },
   {
-    key: 'sparks',
-    store: 'Marks & Spencer',
-    title: 'Sparks',
-    category: 'supermarket',
-    color: '#111111',
-    colorEnd: '#242424',
-    symbol: '✨',
+    key: 'obsidian',
+    label: 'Obsidian',
+    color: '#1e293b',
+    colorEnd: '#0f172a',
   },
   {
-    key: 'costa',
-    store: 'Costa Coffee',
-    title: 'Costa Club',
-    category: 'coffee',
+    key: 'crimson',
+    label: 'Crimson',
     color: '#70081d',
     colorEnd: '#420410',
-    symbol: '☕',
   },
   {
-    key: 'morrisons',
-    store: 'Morrisons',
-    title: 'Morrisons More',
-    category: 'supermarket',
+    key: 'forest-gold',
+    label: 'Forest Gold',
     color: '#004f2f',
-    colorEnd: '#ffbe00',
-    symbol: '🌲',
+    colorEnd: '#ca8a04',
   },
   {
-    key: 'ikea',
-    store: 'IKEA',
-    title: 'IKEA Family',
-    category: 'home',
+    key: 'royal-gold',
+    label: 'Royal Gold',
     color: '#0058a3',
-    colorEnd: '#ffcc00',
-    symbol: '🏡',
+    colorEnd: '#eab308',
+  },
+  {
+    key: 'violet',
+    label: 'Violet',
+    color: '#6d28d9',
+    colorEnd: '#311068',
   },
 ];
 
@@ -227,11 +204,11 @@ export const walletStorage = new WalletStorage();
 export class CopioCardsApp {
   /** @type {Array<Object>} */
   cards = [];
-  /** @type {'all'|'supermarket'|'pharmacy'|'coffee'|'home'} */
-  activeCategory = 'all';
   searchQuery = '';
   isBrightnessBoostActive = false;
-  selectedPresetKey = 'tesco';
+  selectedGradientKey = CARD_GRADIENTS[0].key;
+  selectedColor = CARD_GRADIENTS[0].color;
+  selectedColorEnd = CARD_GRADIENTS[0].colorEnd;
   /** @type {string|null} */
   scannedCardPhoto = null;
   /** @type {any} */
@@ -245,7 +222,10 @@ export class CopioCardsApp {
   toastPill = null;
   toastMsg = null;
   addModal = null;
-  storePickerGrid = null;
+  gradientPickerGrid = null;
+  addInputStore = null;
+  addColorStart = null;
+  addColorEnd = null;
   modalCardPreview = null;
   previewStoreName = null;
   previewCardTier = null;
@@ -271,7 +251,10 @@ export class CopioCardsApp {
     this.toastMsg = document.getElementById('toast-msg');
 
     this.addModal = document.getElementById('add-modal');
-    this.storePickerGrid = document.getElementById('store-picker-grid');
+    this.gradientPickerGrid = document.getElementById('gradient-picker-grid');
+    this.addInputStore = document.getElementById('add-input-store');
+    this.addColorStart = document.getElementById('add-color-start');
+    this.addColorEnd = document.getElementById('add-color-end');
     this.modalCardPreview = document.getElementById('modal-card-preview');
     this.previewStoreName = document.getElementById('preview-store-name');
     this.previewCardTier = document.getElementById('preview-card-tier');
@@ -327,15 +310,6 @@ export class CopioCardsApp {
       });
     }
 
-    document.querySelectorAll('.category-pill, .pill-btn').forEach((pill) => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.category-pill, .pill-btn').forEach((p) => p.classList.remove('active'));
-        pill.classList.add('active');
-        this.activeCategory = /** @type {any} */ (pill.getAttribute('data-category') || 'all');
-        this.renderCardsGrid();
-      });
-    });
-
     document.getElementById('btn-open-add-card')?.addEventListener('click', () => this.openAddModal());
     document.getElementById('modal-close-btn')?.addEventListener('click', () => this.closeAddModal());
     document.getElementById('modal-cancel-btn')?.addEventListener('click', () => this.closeAddModal());
@@ -345,15 +319,34 @@ export class CopioCardsApp {
       if (e.target === this.addModal) this.closeAddModal();
     });
 
-    this.addInputNumber?.addEventListener('input', (e) => {
-      const val = /** @type {HTMLInputElement} */ (e.target).value;
-      if (this.previewMaskedNum) {
-        this.previewMaskedNum.textContent = maskCardNumber(val) || '•••• ••••';
-      }
+    this.addInputStore?.addEventListener('input', () => {
+      this.updatePreviewUI();
+    });
+
+    this.addColorStart?.addEventListener('input', (e) => {
+      this.selectedColor = /** @type {HTMLInputElement} */ (e.target).value;
+      this.selectedGradientKey = 'custom';
+      this.updatePreviewUI();
+    });
+
+    this.addColorEnd?.addEventListener('input', (e) => {
+      this.selectedColorEnd = /** @type {HTMLInputElement} */ (e.target).value;
+      this.selectedGradientKey = 'custom';
+      this.updatePreviewUI();
+    });
+
+    this.addInputNumber?.addEventListener('input', () => {
+      this.updatePreviewUI();
     });
 
     window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement !== this.searchInput && !this.addModal?.classList.contains('open')) {
+      if (
+        e.key === '/' &&
+        document.activeElement !== this.searchInput &&
+        document.activeElement !== this.addInputStore &&
+        document.activeElement !== this.addInputNumber &&
+        !this.addModal?.classList.contains('open')
+      ) {
         e.preventDefault();
         this.searchInput?.focus();
       }
@@ -368,18 +361,15 @@ export class CopioCardsApp {
 
   async loadCards() {
     this.cards = await walletStorage.getCards();
-    this.updateCategoryCounts();
+    this.updateCardCount();
     this.renderCardsGrid();
   }
 
-  updateCategoryCounts() {
-    ['all', 'supermarket', 'pharmacy', 'coffee', 'home'].forEach((cat) => {
-      const el = document.getElementById(`count-${cat}`);
-      if (!el) return;
-      el.textContent = String(
-        cat === 'all' ? this.cards.length : this.cards.filter((c) => c.category === cat).length
-      );
-    });
+  updateCardCount() {
+    const el = document.getElementById('count-all');
+    if (el) {
+      el.textContent = String(this.cards.length);
+    }
   }
 
   renderCardsGrid() {
@@ -391,7 +381,7 @@ export class CopioCardsApp {
           <div style="font-size: 42px; line-height: 1;">📇</div>
           <h3 style="font-size: 18px; font-weight: 700;">Your Pocket Wallet is Empty</h3>
           <p style="font-size: 14px; color: var(--color-text-muted); max-width: 420px;">
-            Add a loyalty card by choosing a store and taking a photo or uploading a screenshot of the barcode or QR code.
+            Add a loyalty card by entering the card name, choosing a colour gradient background, and taking a photo or uploading a screenshot of the barcode or QR code.
           </p>
           <button type="button" class="btn-action btn-action-primary" id="btn-empty-add-card" style="margin-top: 6px;">
             + Add Loyalty Card
@@ -402,15 +392,14 @@ export class CopioCardsApp {
       return;
     }
 
+    const q = this.searchQuery.toLowerCase().trim();
     const filtered = this.cards.filter((card) => {
-      const matchesCategory = this.activeCategory === 'all' || card.category === this.activeCategory;
-      const q = this.searchQuery.toLowerCase().trim();
-      const matchesSearch =
+      return (
         !q ||
         (card.store && card.store.toLowerCase().includes(q)) ||
         (card.title && card.title.toLowerCase().includes(q)) ||
-        (card.number && card.number.toLowerCase().includes(q));
-      return matchesCategory && matchesSearch;
+        (card.number && card.number.toLowerCase().includes(q))
+      );
     });
 
     if (filtered.length === 0) {
@@ -419,7 +408,7 @@ export class CopioCardsApp {
           <div style="font-size: 38px;">🔍</div>
           <h3 style="font-size: 16px; font-weight: 700;">No matching cards</h3>
           <p style="font-size: 13px; color: var(--color-text-muted);">
-            No loyalty cards matching "${this.#escapeHtml(this.searchQuery || this.activeCategory)}".
+            No loyalty cards matching "${this.#escapeHtml(this.searchQuery)}".
           </p>
         </div>
       `;
@@ -435,39 +424,43 @@ export class CopioCardsApp {
         return `
           <div class="card-3d-wrapper ${isFlipped ? 'is-flipped' : ''}" data-id="${card.id}">
             <div class="card-3d-flipper">
-              <!-- FRONT FACE: Store Brand Artwork -->
+              <!-- FRONT FACE: Custom Brand & Gradient Artwork -->
               <div class="card-face card-face-front" style="${frontStyle}">
                 <div class="front-top-row">
                   <div class="store-badge-group">
-                    <span class="store-brand-title">${this.#escapeHtml(card.store)}</span>
-                    <span class="store-card-tier">${this.#escapeHtml(card.title)}</span>
+                    <span class="store-brand-title">${this.#escapeHtml(card.store || 'Loyalty Card')}</span>
+                    <span class="store-card-tier">${this.#escapeHtml(card.title || 'Loyalty Card')}</span>
                   </div>
-                  <span class="flip-pill-hint">↻ Tap to scan</span>
+                  <div class="front-actions-group">
+                    <span class="flip-pill-hint">↻ Tap to scan</span>
+                    <button type="button" class="btn-card-delete-front" data-action="delete" title="Delete card">
+                      🗑
+                    </button>
+                  </div>
                 </div>
 
                 <div class="front-mid-row">
                   <div class="card-smart-chip"></div>
-                  <div class="store-logo-symbol">${card.symbol || '🛒'}</div>
                 </div>
 
                 <div class="front-bottom-row">
-                  <span class="card-holder-name">${this.#escapeHtml(card.holder || card.title?.toUpperCase() || 'LOYALTY CARD')}</span>
+                  <span class="card-holder-name">${this.#escapeHtml(card.holder || card.store?.toUpperCase() || 'LOYALTY CARD')}</span>
                   <span class="card-masked-number">${maskCardNumber(card.number)}</span>
                 </div>
               </div>
 
-              <!-- BACK FACE: Scanned Barcode / QR Image for Supermarket Till -->
+              <!-- BACK FACE: Scanned Barcode / QR Image for Checkout -->
               <div class="card-face card-face-back">
                 <div class="back-top-row">
-                  <span class="back-store-name">${this.#escapeHtml(card.store)}</span>
+                  <span class="back-store-name">${this.#escapeHtml(card.store || 'Loyalty Card')}</span>
                   <div class="back-actions-group">
-                    <button class="btn-max-bright ${this.isBrightnessBoostActive ? 'active' : ''}" data-action="bright" title="Screen brightness boost for optical checkouts">
+                    <button type="button" class="btn-max-bright ${this.isBrightnessBoostActive ? 'active' : ''}" data-action="bright" title="Screen brightness boost for optical checkouts">
                       ☀ Max Bright
                     </button>
-                    <button class="btn-card-delete" data-action="delete" title="Delete card">
+                    <button type="button" class="btn-card-delete" data-action="delete" title="Delete card">
                       🗑
                     </button>
-                    <button class="btn-flip-back" data-action="flip-back" title="Flip to front">
+                    <button type="button" class="btn-flip-back" data-action="flip-back" title="Flip to front">
                       ↻ Front
                     </button>
                   </div>
@@ -477,7 +470,7 @@ export class CopioCardsApp {
                   <div class="back-barcode-svg-wrap">
                     ${
                       barcodeImgSrc
-                        ? `<img class="back-barcode-img" src="${barcodeImgSrc}" alt="${this.#escapeHtml(card.store)} barcode" />`
+                        ? `<img class="back-barcode-img" src="${barcodeImgSrc}" alt="${this.#escapeHtml(card.store || 'Card')} barcode" />`
                         : `<div style="color: #64748b; font-size: 12px; font-weight: 600;">No barcode image</div>`
                     }
                   </div>
@@ -495,23 +488,41 @@ export class CopioCardsApp {
       .join('');
 
     this.cardsGrid.querySelectorAll('.card-3d-wrapper').forEach((wrapper) => {
-      wrapper.addEventListener('click', (e) => {
-        const id = wrapper.getAttribute('data-id');
-        const card = this.cards.find((c) => c.id === id);
-        if (!card) return;
+      const id = wrapper.getAttribute('data-id');
 
-        if (/** @type {HTMLElement} */ (e.target).closest('button[data-action="bright"]')) {
+      wrapper.querySelectorAll('button[data-action="delete"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (id) this.deleteCard(id);
+        });
+      });
+
+      wrapper.querySelectorAll('button[data-action="bright"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
           e.stopPropagation();
           this.toggleBrightnessBoost();
-          return;
-        }
+        });
+      });
 
-        if (/** @type {HTMLElement} */ (e.target).closest('button[data-action="delete"]')) {
+      wrapper.querySelectorAll('button[data-action="flip-back"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
           e.stopPropagation();
-          this.deleteCard(card.id);
+          const card = this.cards.find((c) => c.id === id);
+          if (!card) return;
+          card.isFlipped = false;
+          wrapper.classList.remove('is-flipped');
+        });
+      });
+
+      wrapper.addEventListener('click', (e) => {
+        if (/** @type {HTMLElement} */ (e.target).closest('button[data-action]')) {
           return;
         }
-
+        const card = this.cards.find((c) => c.id === id);
+        if (!card) return;
         card.isFlipped = !card.isFlipped;
         wrapper.classList.toggle('is-flipped', card.isFlipped);
       });
@@ -534,7 +545,7 @@ export class CopioCardsApp {
   async deleteCard(id) {
     await walletStorage.deleteCard(id);
     this.cards = this.cards.filter((c) => c.id !== id);
-    this.updateCategoryCounts();
+    this.updateCardCount();
     this.renderCardsGrid();
     this.showToast('Card removed from wallet');
   }
@@ -544,11 +555,17 @@ export class CopioCardsApp {
      ======================================================================== */
   openAddModal() {
     this.scannedCardPhoto = null;
+    if (this.addInputStore) this.addInputStore.value = '';
     if (this.addInputNumber) this.addInputNumber.value = '';
-    if (this.previewBadgeStatus) this.previewBadgeStatus.textContent = 'Official Artwork ✓';
+    this.selectedGradientKey = CARD_GRADIENTS[0].key;
+    this.selectedColor = CARD_GRADIENTS[0].color;
+    this.selectedColorEnd = CARD_GRADIENTS[0].colorEnd;
+    if (this.addColorStart) this.addColorStart.value = this.selectedColor;
+    if (this.addColorEnd) this.addColorEnd.value = this.selectedColorEnd;
+    if (this.previewBadgeStatus) this.previewBadgeStatus.textContent = 'Custom Gradient ✓';
 
-    this.renderStorePicker();
-    this.updatePresetUI();
+    this.renderGradientPicker();
+    this.updatePreviewUI();
     this.#setupEmbeddedScanner();
 
     this.addModal?.classList.add('open');
@@ -588,7 +605,7 @@ export class CopioCardsApp {
         } else {
           this.scannedCardPhoto = null;
           if (this.previewBadgeStatus) {
-            this.previewBadgeStatus.textContent = 'Official Artwork ✓';
+            this.previewBadgeStatus.textContent = 'Custom Gradient ✓';
           }
         }
         if (text && this.addInputNumber && !this.addInputNumber.value) {
@@ -607,6 +624,11 @@ export class CopioCardsApp {
         updateFromScannerPages(detail.pages || []);
       });
 
+      scanner.addEventListener('copio:page-removed', async () => {
+        const pages = typeof scanner.getPages === 'function' ? await scanner.getPages() : [];
+        updateFromScannerPages(pages || []);
+      });
+
       scanner.addEventListener('copio:scan-complete', (e) => {
         const detail = /** @type {CustomEvent} */ (e).detail || {};
         const pages = detail.pages || (detail.page ? [detail.page] : []);
@@ -620,42 +642,49 @@ export class CopioCardsApp {
     this.scannerElement = scanner;
   }
 
-  renderStorePicker() {
-    if (!this.storePickerGrid) return;
+  renderGradientPicker() {
+    if (!this.gradientPickerGrid) return;
 
-    this.storePickerGrid.innerHTML = STORE_PRESETS.map((preset) => {
-      const isSelected = preset.key === this.selectedPresetKey;
+    this.gradientPickerGrid.innerHTML = CARD_GRADIENTS.map((grad) => {
+      const isSelected = grad.key === this.selectedGradientKey;
       return `
-        <div class="store-chip-option ${isSelected ? 'selected' : ''}" data-key="${preset.key}">
-          <div class="store-thumb-badge" style="background: linear-gradient(135deg, ${preset.color}, ${preset.colorEnd});"></div>
-          <span class="store-thumb-label">${this.#escapeHtml(preset.store)}</span>
+        <div class="gradient-swatch-option ${isSelected ? 'selected' : ''}" data-key="${grad.key}" data-color="${grad.color}" data-color-end="${grad.colorEnd}">
+          <div class="gradient-thumb-badge" style="background: linear-gradient(135deg, ${grad.color}, ${grad.colorEnd});"></div>
+          <span class="gradient-thumb-label">${this.#escapeHtml(grad.label)}</span>
         </div>
       `;
     }).join('');
 
-    this.storePickerGrid.querySelectorAll('.store-chip-option').forEach((chip) => {
+    this.gradientPickerGrid.querySelectorAll('.gradient-swatch-option').forEach((chip) => {
       chip.addEventListener('click', () => {
-        this.selectedPresetKey = chip.getAttribute('data-key') || 'tesco';
-        this.updatePresetUI();
+        const key = chip.getAttribute('data-key') || CARD_GRADIENTS[0].key;
+        const grad = CARD_GRADIENTS.find((g) => g.key === key) || CARD_GRADIENTS[0];
+        this.selectedGradientKey = grad.key;
+        this.selectedColor = grad.color;
+        this.selectedColorEnd = grad.colorEnd;
+        if (this.addColorStart) this.addColorStart.value = grad.color;
+        if (this.addColorEnd) this.addColorEnd.value = grad.colorEnd;
+        this.updatePreviewUI();
       });
     });
   }
 
-  updatePresetUI() {
-    if (!this.storePickerGrid) return;
-    this.storePickerGrid.querySelectorAll('.store-chip-option').forEach((chip) => {
-      chip.classList.toggle('selected', chip.getAttribute('data-key') === this.selectedPresetKey);
-    });
+  updatePreviewUI() {
+    if (this.gradientPickerGrid) {
+      this.gradientPickerGrid.querySelectorAll('.gradient-swatch-option').forEach((chip) => {
+        chip.classList.toggle('selected', chip.getAttribute('data-key') === this.selectedGradientKey);
+      });
+    }
 
-    const preset = STORE_PRESETS.find((p) => p.key === this.selectedPresetKey) || STORE_PRESETS[0];
+    const storeName = this.addInputStore?.value.trim() || 'Card Name';
 
-    if (this.previewStoreName) this.previewStoreName.textContent = preset.store;
-    if (this.previewCardTier) this.previewCardTier.textContent = preset.title;
-    if (this.previewCardHolder) this.previewCardHolder.textContent = preset.title.toUpperCase();
+    if (this.previewStoreName) this.previewStoreName.textContent = storeName;
+    if (this.previewCardTier) this.previewCardTier.textContent = 'Loyalty Card';
+    if (this.previewCardHolder) this.previewCardHolder.textContent = storeName.toUpperCase();
 
     if (this.modalCardPreview) {
       this.modalCardPreview.style.backgroundImage = 'none';
-      this.modalCardPreview.style.background = `linear-gradient(135deg, ${preset.color}, ${preset.colorEnd})`;
+      this.modalCardPreview.style.background = `linear-gradient(135deg, ${this.selectedColor}, ${this.selectedColorEnd})`;
     }
 
     if (this.previewMaskedNum) {
@@ -674,24 +703,28 @@ export class CopioCardsApp {
       }
     }
 
+    const storeName = this.addInputStore?.value.trim() || '';
     const num = this.addInputNumber?.value.trim() || '';
+
+    if (!storeName) {
+      this.showToast('Please enter a card or brand name');
+      this.addInputStore?.focus();
+      return null;
+    }
+
     if (!this.scannedCardPhoto && !num) {
       this.showToast('Please take a photo or upload a screenshot of your card');
       return null;
     }
 
-    const preset = STORE_PRESETS.find((p) => p.key === this.selectedPresetKey) || STORE_PRESETS[0];
-
     const newCard = {
       id: `card-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      store: preset.store,
-      title: preset.title,
-      category: preset.category,
+      store: storeName,
+      title: 'Loyalty Card',
       number: num,
-      color: preset.color,
-      colorEnd: preset.colorEnd,
-      symbol: preset.symbol,
-      holder: preset.title.toUpperCase(),
+      color: this.selectedColor || '#00539f',
+      colorEnd: this.selectedColorEnd || '#002f6c',
+      holder: storeName.toUpperCase(),
       barcodeImage: this.scannedCardPhoto,
       isFlipped: false,
       createdAt: Date.now(),
@@ -699,10 +732,10 @@ export class CopioCardsApp {
 
     await walletStorage.saveCard(newCard);
     this.cards = await walletStorage.getCards();
-    this.updateCategoryCounts();
+    this.updateCardCount();
     this.renderCardsGrid();
     this.closeAddModal();
-    this.showToast(`Added ${newCard.store} ${newCard.title} to wallet! ↻ Tap to scan`);
+    this.showToast(`Added ${newCard.store} to wallet! ↻ Tap to scan`);
     return newCard;
   }
 
