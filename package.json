@@ -4,6 +4,7 @@
   "description": "Copio Cards — Simple 100% offline-first supermarket loyalty card wallet powered by <copio-scanner>.",
   "type": "module",
   "scripts": {
+    "sync:sdk": "node scripts/sync-sdk.mjs",
     "lint": "oxlint",
     "test": "web-test-runner test/**/*.test.js --node-resolve",
     "check:ci": "npm run lint && npm test"
