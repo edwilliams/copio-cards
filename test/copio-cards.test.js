@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import '../vendor/copio/scanner.js';
+import '../vendor/copio.0.1.2.js';
 import {
   CARD_GRADIENTS,
   WalletStorage,

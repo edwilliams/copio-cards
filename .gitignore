@@ -4,4 +4,3 @@ dist/
 coverage/
 .netlify
 docs/strategy/
-vendor/

@@ -12,5 +12,5 @@
   "assets/icons/favicon.ico",
   "css/copio-cards.css",
   "js/copio-cards-app.js",
-  "vendor/copio/scanner.js"
+  "vendor/copio.0.1.2.js"
 ]
